@@ -1,0 +1,15 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+  "include": [
+    "vite.config.mts",
+    "vite.main.config.mts",
+    "vite.preload.config.mts",
+    "scripts/**/*",
+    "package.json",
+    "src/main/**/*",
+    "src/preload/**/*"
+  ],
+  "compilerOptions": {
+    "composite": true
+  }
+}

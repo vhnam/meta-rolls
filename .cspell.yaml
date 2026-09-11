@@ -1,0 +1,28 @@
+---
+$schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
+version: "0.2"
+language: en-US
+useGitignore: true
+ignorePaths:
+  - .oxlintrc.json
+  - .vscode
+  - "**/*.svg"
+  - "**/routeTree.gen.ts"
+  - biome.json
+  - build
+  - components.json
+  - dist
+  - electron-builder.yml
+  - node_modules
+  - out
+  - package.json
+  - pnpm-lock.yaml
+  - pnpm-workspace.yaml
+  - src/renderer/src/components/ui/**
+ignoreRegExpList:
+  - /@import\s+["'][^"']+["']/g
+  - /from\s+['"][^'"]+['"]/g
+  - /import\s+['"][^'"]+['"]/g
+  - /role:\s*['"][^'"]+['"]/g
+words:
+  - Instax
