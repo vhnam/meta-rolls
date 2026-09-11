@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-09-12
+
+### Added
+
+- GitNexus indexing config, ignored generated skill copies, and agent commit/versioning rules.
+
 ## [0.2.0] - 2026-09-12
 
 ### Added
