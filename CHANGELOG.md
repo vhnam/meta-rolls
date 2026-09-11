@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-09-12
+
+### Changed
+
+- Albums screen reads and updates album list state from the album store.
+
 ## [0.7.0] - 2026-09-12
 
 ### Changed
