@@ -1,6 +1,7 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { Tabs, TabsList, TabsTrigger } from '#/components/ui/tabs';
 import { IconLibraryPhoto, IconPhoto, IconPhotoAlt } from '@tabler/icons-react';
+import appIcon from '@/resources/icon.png';
 
 const TAB_ROUTES = {
   media: '/media',
@@ -30,7 +31,10 @@ const AppTitleBar = () => {
   return (
     <div className="bg-accent shrink-0 border-t border-border">
       <div className="flex items-center justify-between w-full px-4">
-        <div className="text-sm font-semibold">Meta Rolls</div>
+        <div className="flex items-center gap-2">
+          <img src={appIcon} alt="Meta Rolls" className="size-4 rounded-md" />
+          <span className="text-xs font-semibold">Meta Rolls</span>
+        </div>
         <Tabs value={value} onValueChange={handleValueChange}>
           <TabsList variant="line">
             <TabsTrigger value="media">

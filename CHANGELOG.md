@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-12
+
+### Changed
+
+- App icon uses `resources/icon.png` in the title bar, favicon, dock, and About panel. Packaged macOS icons are generated into `build/icon.icns`.
+
 ## [0.2.1] - 2026-09-12
 
 ### Added

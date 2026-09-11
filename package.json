@@ -1,10 +1,10 @@
 {
   "name": "meta-rolls",
   "productName": "Meta Rolls",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Browse photos, manage album layouts, and print Instax",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "vhnam2504@gmail.com",
   "scripts": {
     "format": "biome format --write .",
     "lint": "oxlint .",
@@ -13,6 +13,7 @@
     "typecheck": "pnpm run typecheck:node && pnpm run typecheck:web",
     "start": "electron .",
     "dev": "tsx scripts/dev.ts",
+    "icons": "tsx scripts/generate-app-icons.ts",
     "build": "pnpm run typecheck && vite build --config vite.main.config.mts && vite build --config vite.preload.config.mts && vite build --config vite.config.mts",
     "postinstall": "electron-builder install-app-deps && tsx scripts/fix-macos-app-name.ts",
     "build:unpack": "pnpm run build && electron-builder --dir",

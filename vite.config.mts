@@ -13,7 +13,13 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '#': resolve('src/renderer/src')
+      '#': resolve('src/renderer/src'),
+      '@/resources': resolve('resources')
+    }
+  },
+  server: {
+    fs: {
+      allow: [resolve('.'), resolve('resources')]
     }
   },
   plugins: [

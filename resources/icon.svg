@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000" fill="none">
+  <title>Meta Rolls</title>
+  <desc>Minimal logo combining a film roll and photo frame.</desc>
+
+  <!-- Background -->
+  <rect width="1000" height="1000" rx="220" fill="#FFFFFF"/>
+
+  <!-- Film roll body -->
+  <g>
+    <path d="M220 300C220 260 252 228 292 228H470C510 228 542 260 542 300V690C542 730 510 762 470 762H292C252 762 220 730 220 690V300Z" fill="#242127"/>
+    <path d="M220 340C220 300 252 268 292 268H470C510 268 542 300 542 340V645C542 685 510 717 470 717H292C252 717 220 685 220 645V340Z" fill="#C8561D"/>
+    <path d="M220 340C220 300 252 268 292 268H470C510 268 542 300 542 340V365C542 405 510 437 470 437H292C252 437 220 405 220 365V340Z" fill="#242127"/>
+    <path d="M220 645C220 685 252 717 292 717H470C510 717 542 685 542 645V670C542 710 510 742 470 742H292C252 742 220 710 220 670V645Z" fill="#242127"/>
+    <rect x="292" y="176" width="178" height="104" rx="52" fill="#242127"/>
+    <path d="M300 228C300 205 319 186 342 186H420C443 186 462 205 462 228C462 251 443 270 420 270H342C319 270 300 251 300 228Z" fill="#FFFFFF" opacity=".08"/>
+    <path d="M292 268H470" stroke="#FFFFFF" stroke-opacity=".16" stroke-width="8"/>
+  </g>
+
+  <!-- Minimal roll label marks -->
+  <g stroke="#FFF8EC" stroke-width="16" stroke-linecap="round">
+    <path d="M286 608H390"/>
+    <path d="M286 648H430"/>
+  </g>
+  <rect x="456" y="610" width="44" height="44" rx="10" fill="#FFF8EC"/>
+
+  <!-- Film/photo card -->
+  <g>
+    <rect x="505" y="342" width="330" height="340" rx="42" fill="#C8561D"/>
+    <!-- sprocket holes -->
+    <rect x="555" y="378" width="30" height="30" rx="9" fill="#FFF8EC" opacity=".9"/>
+    <rect x="635" y="378" width="30" height="30" rx="9" fill="#FFF8EC" opacity=".9"/>
+    <rect x="715" y="378" width="30" height="30" rx="9" fill="#FFF8EC" opacity=".9"/>
+
+    <!-- photo window -->
+    <rect x="535" y="438" width="270" height="202" rx="24" fill="#242127"/>
+    <circle cx="736" cy="488" r="28" fill="#FFF8EC"/>
+    <path d="M557 618L634 540C642 532 655 533 662 542L704 594L733 565C742 556 756 557 764 566L792 596V616C792 629 781 640 768 640H560C547 640 535 629 535 616V608L557 618Z" fill="#FFF8EC" opacity=".14"/>
+  </g>
+
+  <!-- Subtle connection between roll and image -->
+  <path d="M510 506C530 506 544 520 544 540" stroke="#C8561D" stroke-width="24" stroke-linecap="round"/>
+</svg>

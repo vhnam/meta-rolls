@@ -1,5 +1,5 @@
 import { app, Menu, type MenuItemConstructorOptions } from 'electron';
-import { join } from 'path';
+import { APP_ICON_PATH } from './icon';
 
 export const APP_NAME = 'Meta Rolls';
 
@@ -11,7 +11,7 @@ export function setupAppMenu(): void {
     applicationVersion: app.getVersion(),
     copyright: 'Copyright © 2026',
     credits: 'Browse photos, manage album layouts, and print Instax.',
-    iconPath: join(__dirname, '../../resources/icon.png')
+    iconPath: APP_ICON_PATH
   });
 
   const isMac = process.platform === 'darwin';
