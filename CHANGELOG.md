@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-09-12
+
+### Added
+
+- Renderer domain types, const enums, and constants under `src/renderer/src/types` and `src/renderer/src/constants`.
+
 ## [0.4.0] - 2026-09-12
 
 ### Added
