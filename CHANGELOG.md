@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-09-12
+
+### Added
+
+- Zustand stores for the photo pool, albums, canvas slots, and settings, with settings hydrated over IPC.
+
 ## [0.5.0] - 2026-09-12
 
 ### Added
