@@ -1,27 +1,42 @@
 import {
   IconChevronLeft,
   IconChevronRight,
+  IconDots,
   IconLayoutGrid,
   IconLayoutList,
   IconLayoutSidebar,
   IconLayoutSidebarFilled,
+  IconRefresh
   // IconSearch
 } from '@tabler/icons-react';
 import { Button } from '#/components/ui/button';
 // import { Input } from '#/components/ui/input';
 import { Separator } from '#/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
+import { type MediaView } from '#/types';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '#/components/ui/dropdown-menu';
 
 type MediaToolbarProps = {
   query: string;
-  onQueryChange: (value: string) => void;
-  view: 'list' | 'grid';
-  onViewChange: (view: 'list' | 'grid') => void;
+  view: MediaView;
   zoom: number;
-  onZoomChange: (value: number) => void;
   folderTreeCollapsed: boolean;
-  onToggleFolderTree: () => void;
   currentFolderName: string;
+  canGoBack: boolean;
+  canGoForward: boolean;
+  onQueryChange: (value: string) => void;
+  onViewChange: (view: MediaView) => void;
+  onZoomChange: (value: number) => void;
+  onToggleFolderTree: () => void;
+  onBack: () => void;
+  onForward: () => void;
+  onRefresh: () => void;
 };
 
 const MediaToolbar = ({
@@ -33,7 +48,12 @@ const MediaToolbar = ({
   // onZoomChange,
   folderTreeCollapsed,
   onToggleFolderTree,
-  currentFolderName
+  currentFolderName,
+  canGoBack,
+  canGoForward,
+  onBack,
+  onForward,
+  onRefresh
 }: MediaToolbarProps) => {
   return (
     <div className="flex h-7 shrink-0 items-center gap-0.5 border-b border-border bg-muted px-1 text-muted-foreground">
@@ -53,13 +73,31 @@ const MediaToolbar = ({
         <TooltipContent>{folderTreeCollapsed ? 'Show disks' : 'Hide disks'}</TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger render={<Button variant="ghost" size="icon-xs" />}>
+        <TooltipTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon-xs"
+              disabled={!canGoBack}
+              onClick={onBack}
+            />
+          }
+        >
           <IconChevronLeft />
         </TooltipTrigger>
         <TooltipContent>Back</TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger render={<Button variant="ghost" size="icon-xs" />}>
+        <TooltipTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon-xs"
+              disabled={!canGoForward}
+              onClick={onForward}
+            />
+          }
+        >
           <IconChevronRight />
         </TooltipTrigger>
         <TooltipContent>Forward</TooltipContent>
@@ -86,6 +124,19 @@ const MediaToolbar = ({
         >
           <IconLayoutGrid />
         </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<Button variant="ghost" />}>
+            <IconDots />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={onRefresh}>
+                <IconRefresh />
+                <span>Refresh</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* <div className="relative mx-1 w-44">

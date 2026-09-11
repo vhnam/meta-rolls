@@ -1,12 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import {
   IconChevronDown,
   IconChevronRight,
   IconDeviceDesktop,
-  IconFolder
+  IconFolder,
+  IconLoader2
 } from '@tabler/icons-react';
-import { type PhotoFolder } from '#/modules/media/media-data';
+import { type PhotoFolder } from '#/types';
 import { cn } from '#/lib/utils';
+import { isFolderInPath } from '#/lib/find-folder';
+import { useMediaPoolStore } from '#/stores/media-pool.store';
+
+const SPINNER_DELAY_MS = 150;
 
 type MediaFolderItemProps = {
   folder: PhotoFolder;
@@ -21,28 +26,78 @@ const MediaFolderItem = ({
   selectedFolderId,
   onSelectFolder
 }: MediaFolderItemProps) => {
-  const hasChildren = Boolean(folder.children?.length);
-  const [open, setOpen] = useState(false);
+  const loadFolderChildren = useMediaPoolStore((state) => state.loadFolderChildren);
+  const hasChildren = folder.hasChildren ?? Boolean(folder.children?.length);
+  const inSelectedPath = isFolderInPath(folder.id, selectedFolderId);
+  const [userOpen, setUserOpen] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
+  const loadRequest = useRef<Promise<void> | null>(null);
+  const rowRef = useRef<HTMLButtonElement>(null);
   const selected = folder.id === selectedFolderId;
+  const open = inSelectedPath || userOpen;
+
+  const loadWithSpinner = () => {
+    if (loadRequest.current) {
+      return loadRequest.current;
+    }
+
+    const timer = window.setTimeout(() => {
+      setShowSpinner(true);
+    }, SPINNER_DELAY_MS);
+
+    loadRequest.current = loadFolderChildren(folder).finally(() => {
+      window.clearTimeout(timer);
+      setShowSpinner(false);
+      loadRequest.current = null;
+    });
+
+    return loadRequest.current;
+  };
+
+  useEffect(() => {
+    if (selected) {
+      rowRef.current?.scrollIntoView({ block: 'nearest' });
+    }
+  }, [selected]);
+
+  const handleSelect = () => {
+    onSelectFolder(folder.id);
+    void loadWithSpinner();
+    setUserOpen(true);
+  };
+
+  const handleToggle = (event: MouseEvent<HTMLSpanElement>) => {
+    event.stopPropagation();
+    if (inSelectedPath) {
+      return;
+    }
+    if (!userOpen) {
+      void loadWithSpinner();
+    }
+    setUserOpen((current) => !current);
+  };
 
   return (
     <div>
       <button
+        ref={rowRef}
         type="button"
+        aria-busy={showSpinner}
         className={cn(
           'flex h-6 w-full items-center gap-1 pr-2 text-left text-[11px] text-sidebar-foreground hover:bg-sidebar-accent/70',
           selected && 'bg-sidebar-accent text-sidebar-accent-foreground'
         )}
         style={{ paddingLeft: 8 + depth * 12 }}
-        onClick={() => onSelectFolder(folder.id)}
+        onClick={handleSelect}
       >
-        {hasChildren ? (
+        {showSpinner ? (
+          <span className="flex size-4 items-center justify-center text-muted-foreground">
+            <IconLoader2 className="size-3 animate-spin" />
+          </span>
+        ) : hasChildren ? (
           <span
             className="flex size-4 items-center justify-center text-muted-foreground"
-            onClick={(event) => {
-              event.stopPropagation();
-              setOpen((current) => !current);
-            }}
+            onClick={handleToggle}
           >
             {open ? (
               <IconChevronDown className="size-3" />

@@ -1,5 +1,5 @@
 import { cn } from '#/lib/utils';
-import { type PhotoFolder } from '#/modules/media/media-data';
+import { type PhotoFolder } from '#/types';
 
 import MediaFolderItem from './media-folder-item';
 

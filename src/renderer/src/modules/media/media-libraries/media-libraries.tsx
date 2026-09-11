@@ -1,7 +1,7 @@
 import { IconPlus } from '@tabler/icons-react';
 import { Button } from '#/components/ui/button';
 import { cn } from '#/lib/utils';
-import { ALBUM_LIBRARIES } from '#/modules/media/media-data';
+import { ALBUM_LIBRARIES } from '#/constants/media';
 
 type MediaLibrariesProps = {
   selectedId: string;

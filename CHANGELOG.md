@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-09-12
+
+### Changed
+
+- Media browser lists volumes and folders from disk instead of mock data.
+
 ## [0.6.0] - 2026-09-12
 
 ### Added

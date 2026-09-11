@@ -1,6 +1,6 @@
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { Button } from '#/components/ui/button';
-import { type PhotoItem } from '#/modules/media/media-data';
+import { type PhotoItem } from '#/types';
 
 type MediaPreviewProps = {
   photo: PhotoItem | null;

@@ -1,112 +1,96 @@
-import { useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { MediaFileList } from '#/modules/media/media-file-list';
 import { MediaFolderTree } from '#/modules/media/media-folder-tree';
 import { MediaGrid } from '#/modules/media/media-grid';
 import { MediaLibraries } from '#/modules/media/media-libraries';
 import { MediaPreview } from '#/modules/media/media-preview';
 import { MediaToolbar } from '#/modules/media/media-toolbar';
-import { PHOTO_FOLDERS, PHOTO_ITEMS, findFolder } from '#/modules/media/media-data';
+import {
+  canGoBack,
+  canGoForward,
+  getActivePhotoId,
+  getGridPhotos,
+  getListPhotos,
+  getSelectedFolder,
+  getSelectedPhoto,
+  useMediaPoolStore
+} from '#/stores/media-pool.store';
 
 const MediaScreen = () => {
-  const [query, setQuery] = useState('');
-  const [view, setView] = useState<'list' | 'grid'>('grid');
-  const [zoom, setZoom] = useState(31);
-  const [selectedFolderId, setSelectedFolderId] = useState('macintosh-hd');
-  const [selectedLibraryId, setSelectedLibraryId] = useState('all');
-  const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>('p1');
-  const [folderTreeCollapsed, setFolderTreeCollapsed] = useState(false);
-
-  const selectedFolder = findFolder(PHOTO_FOLDERS, selectedFolderId);
+  const store = useMediaPoolStore();
+  const selectedFolder = getSelectedFolder(store);
+  const listPhotos = getListPhotos(store);
+  const gridPhotos = getGridPhotos(store);
+  const activePhotoId = getActivePhotoId(store);
+  const selectedPhoto = getSelectedPhoto(store);
   const childFolders = selectedFolder?.children ?? [];
 
-  const listPhotos = useMemo(() => {
-    const needle = query.trim().toLowerCase();
-    return PHOTO_ITEMS.filter(
-      (photo) => photo.folderId === selectedFolderId && photo.name.toLowerCase().includes(needle)
-    );
-  }, [query, selectedFolderId]);
+  useEffect(() => {
+    void store.loadVolumes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const gridPhotos = useMemo(() => {
-    const needle = query.trim().toLowerCase();
-    const searched = PHOTO_ITEMS.filter((photo) => photo.name.toLowerCase().includes(needle));
-    if (selectedLibraryId === 'recent') {
-      return searched.slice(-3);
+  useEffect(() => {
+    const folder = getSelectedFolder(useMediaPoolStore.getState());
+    if (folder) {
+      void useMediaPoolStore.getState().loadFolderChildren(folder);
     }
-    if (selectedLibraryId === 'favorites' || selectedLibraryId === 'keywords') {
-      return [];
-    }
-    return searched;
-  }, [query, selectedLibraryId]);
-
-  const visiblePhotos = view === 'list' ? listPhotos : gridPhotos;
-  const selectedPhotoIdIsVisible =
-    selectedPhotoId !== null &&
-    (listPhotos.some((photo) => photo.id === selectedPhotoId) ||
-      gridPhotos.some((photo) => photo.id === selectedPhotoId));
-  const activePhotoId = selectedPhotoIdIsVisible
-    ? selectedPhotoId
-    : (listPhotos[0]?.id ?? gridPhotos[0]?.id ?? null);
-  const selectedPhoto =
-    listPhotos.find((photo) => photo.id === activePhotoId) ??
-    gridPhotos.find((photo) => photo.id === activePhotoId) ??
-    null;
-
-  const selectRelative = (offset: number) => {
-    if (visiblePhotos.length === 0) {
-      return;
-    }
-    const currentIndex = visiblePhotos.findIndex((photo) => photo.id === activePhotoId);
-    const nextIndex =
-      currentIndex === -1
-        ? 0
-        : (currentIndex + offset + visiblePhotos.length) % visiblePhotos.length;
-    setSelectedPhotoId(visiblePhotos[nextIndex].id);
-  };
+  }, [store.selectedFolderId]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-background text-foreground">
       <div className="flex min-h-0 flex-[1.15] border-b border-border">
         <div className="flex min-h-0 min-w-0 flex-[1.25] flex-col">
           <MediaToolbar
-            query={query}
-            onQueryChange={setQuery}
-            view={view}
-            onViewChange={setView}
-            zoom={zoom}
-            onZoomChange={setZoom}
-            folderTreeCollapsed={folderTreeCollapsed}
-            onToggleFolderTree={() => setFolderTreeCollapsed((current) => !current)}
+            query={store.query}
+            onQueryChange={store.setQuery}
+            view={store.view}
+            onViewChange={store.setView}
+            zoom={store.zoom}
+            onZoomChange={store.setZoom}
+            folderTreeCollapsed={store.folderTreeCollapsed}
+            onToggleFolderTree={store.toggleFolderTree}
             currentFolderName={selectedFolder?.name ?? 'Media Storage'}
+            canGoBack={canGoBack(store)}
+            canGoForward={canGoForward(store)}
+            onBack={store.goBack}
+            onForward={store.goForward}
+            onRefresh={() => {
+              void store.refresh();
+            }}
           />
           <div className="flex min-h-0 flex-1">
             <MediaFolderTree
-              folders={PHOTO_FOLDERS}
-              selectedFolderId={selectedFolderId}
-              onSelectFolder={setSelectedFolderId}
-              collapsed={folderTreeCollapsed}
+              folders={store.folders}
+              selectedFolderId={store.selectedFolderId}
+              onSelectFolder={store.setSelectedFolderId}
+              collapsed={store.folderTreeCollapsed}
             />
             <MediaFileList
               folders={childFolders}
               photos={listPhotos}
               selectedPhotoId={activePhotoId}
-              onSelectPhoto={setSelectedPhotoId}
-              onSelectFolder={setSelectedFolderId}
+              onSelectPhoto={store.setSelectedPhotoId}
+              onSelectFolder={store.setSelectedFolderId}
             />
           </div>
         </div>
         <MediaPreview
           photo={selectedPhoto}
-          onPrevious={() => selectRelative(-1)}
-          onNext={() => selectRelative(1)}
+          onPrevious={() => store.selectRelativePhoto(-1)}
+          onNext={() => store.selectRelativePhoto(1)}
         />
       </div>
       <div className="flex min-h-0 flex-1">
-        <MediaLibraries selectedId={selectedLibraryId} onSelect={setSelectedLibraryId} />
+        <MediaLibraries
+          selectedId={store.selectedLibraryId}
+          onSelect={store.setSelectedLibraryId}
+        />
         <MediaGrid
           photos={gridPhotos}
           selectedPhotoId={activePhotoId}
-          onSelectPhoto={setSelectedPhotoId}
-          zoom={zoom}
+          onSelectPhoto={store.setSelectedPhotoId}
+          zoom={store.zoom}
         />
       </div>
     </div>

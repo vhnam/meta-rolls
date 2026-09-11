@@ -1,6 +1,7 @@
-import { IconFolder } from '@tabler/icons-react';
 import { cn } from '#/lib/utils';
-import { type PhotoFolder, type PhotoItem } from '#/modules/media/media-data';
+import { type PhotoFolder, type PhotoItem } from '#/types';
+import MediaPhoto from './media-photo';
+import MediaFolder from './media-folder';
 
 type MediaFileListProps = {
   folders: PhotoFolder[];
@@ -10,7 +11,7 @@ type MediaFileListProps = {
   onSelectFolder: (id: string) => void;
 };
 
-const COLS = 'grid-cols-[minmax(9rem,1fr)_6.25rem_4.75rem]';
+export const COLUMN_CLASSES = 'grid-cols-[minmax(9rem,1fr)_6.25rem_4.75rem]';
 
 const MediaFileList = ({
   folders,
@@ -26,7 +27,7 @@ const MediaFileList = ({
       <div
         className={cn(
           'grid h-6 shrink-0 border-b border-border bg-muted px-2 font-medium tracking-wide text-muted-foreground',
-          COLS
+          COLUMN_CLASSES
         )}
       >
         <span className="truncate self-center text-tiny">File Name</span>
@@ -35,51 +36,27 @@ const MediaFileList = ({
       </div>
       <div className="min-h-0 flex-1 overflow-auto">
         {isEmpty ? (
-          <p className="px-3 py-6 text-xs text-muted-foreground">No photos in this folder.</p>
+          <p className="px-2 h-5.5 flex items-center text-tiny text-muted-foreground">No files in this folder.</p>
         ) : (
           <>
             {folders.map((folder, index) => (
-              <button
+              <MediaFolder
                 key={folder.id}
-                type="button"
-                className={cn(
-                  'grid h-5.5 w-full min-w-[20rem] px-2 text-left text-sm hover:bg-muted',
-                  COLS,
-                  index % 2 === 1 && 'bg-muted/40'
-                )}
-                onClick={() => onSelectFolder(folder.id)}
-              >
-                <span className="flex min-w-0 items-center gap-1.5 self-center">
-                  <IconFolder className="size-3.5 shrink-0 text-muted-foreground" />
-                  <span className="truncate">{folder.name}</span>
-                </span>
-                <span />
-                <span />
-              </button>
+                folder={folder}
+                index={index}
+                onSelectFolder={onSelectFolder}
+              />
             ))}
-            {photos.map((photo, index) => {
-              const selected = photo.id === selectedPhotoId;
-              const stripeIndex = folders.length + index;
-              return (
-                <button
-                  key={photo.id}
-                  type="button"
-                  className={cn(
-                    'grid h-5.5 w-full min-w-[20rem] px-2 text-left text-sm',
-                    COLS,
-                    stripeIndex % 2 === 1 && 'bg-muted/40',
-                    selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted'
-                  )}
-                  onClick={() => onSelectPhoto(photo.id)}
-                >
-                  <span className="truncate self-center">{photo.name}</span>
-                  <span className="self-center font-mono text-[11px] text-muted-foreground">
-                    {photo.date}
-                  </span>
-                  <span className="truncate self-center text-muted-foreground">{photo.camera}</span>
-                </button>
-              );
-            })}
+            {photos.map((photo, index) => (
+              <MediaPhoto
+                key={photo.id}
+                photo={photo}
+                selectedPhotoId={selectedPhotoId}
+                folders={folders}
+                index={index}
+                onSelectPhoto={onSelectPhoto}
+              />
+            ))}
           </>
         )}
       </div>

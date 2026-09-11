@@ -1,7 +1,7 @@
 import { IconDots, IconLayoutGrid, IconSearch } from '@tabler/icons-react';
 import { Button } from '#/components/ui/button';
 import { cn } from '#/lib/utils';
-import { type PhotoItem } from '#/modules/media/media-data';
+import { type PhotoItem } from '#/types';
 
 type MediaGridProps = {
   title?: string;
