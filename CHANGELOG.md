@@ -9,6 +9,12 @@ While the MVP is in development, versions bump **minor** for features and **patc
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-12
+
+### Added
+
+- Media storage browser with a collapsible disk list, current location in the toolbar, and folder/file listing.
+
 ## [1.0.0] - 2026-09-12
 
 ### Added
