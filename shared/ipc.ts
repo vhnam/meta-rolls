@@ -1,0 +1,7 @@
+export const IpcChannel = {
+  settingsGet: 'settings:get',
+  settingsSet: 'settings:set',
+  settingsRemove: 'settings:remove',
+  mediaListVolumes: 'media:list-volumes',
+  mediaListFolder: 'media:list-folder'
+} as const;

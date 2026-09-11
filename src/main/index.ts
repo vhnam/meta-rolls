@@ -1,11 +1,13 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron';
+import { app, shell, BrowserWindow } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { APP_NAME, setupAppMenu } from './app/menu';
+import { APP_ICON_PATH } from './app/icon';
+import { registerAllIpcHandlers } from './ipc';
 
 app.setName(APP_NAME);
 
-const icon = join(__dirname, '../../resources/icon.png');
+const icon = APP_ICON_PATH;
 
 if (process.env['REMOTE_DEBUGGING_PORT']) {
   app.commandLine.appendSwitch('remote-debugging-port', process.env['REMOTE_DEBUGGING_PORT']);
@@ -59,8 +61,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'));
+  registerAllIpcHandlers();
 
   createWindow();
 

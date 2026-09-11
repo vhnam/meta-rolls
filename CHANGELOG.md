@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-12
+
+### Added
+
+- Main-process IPC to list disk volumes and folders, and to persist settings in `userData/config.json`.
+
 ## [0.3.0] - 2026-09-12
 
 ### Changed
