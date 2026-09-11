@@ -9,6 +9,12 @@ While the MVP is in development, versions bump **minor** for features and **patc
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-12
+
+### Added
+
+- Media viewer and album pool so selected photos can be previewed and browsed as thumbnails.
+
 ## [1.1.0] - 2026-09-12
 
 ### Added
