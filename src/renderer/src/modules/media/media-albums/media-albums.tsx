@@ -11,7 +11,7 @@ type MediaLibrariesProps = {
 
 const MediaLibraries = ({ selectedId, onSelect }: MediaLibrariesProps) => {
   return (
-    <aside className="flex w-52 shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
+    <aside className="flex min-h-0 w-52 shrink-0 flex-col border-inline-end border-sidebar-border bg-sidebar">
       <div className="flex h-7 items-center justify-between border-b border-sidebar-border bg-muted px-2">
         <span className="text-[11px] font-medium text-sidebar-foreground">Albums</span>
         <Button variant="ghost" size="icon-xs">

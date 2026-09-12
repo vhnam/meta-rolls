@@ -9,6 +9,16 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-09-12
+
+### Added
+
+- Media screen metadata pane groups ExifTool tags by prefix and formats timestamps as readable dates.
+
+### Changed
+
+- Media layout is a two-by-two grid so preview and metadata sit beside the folder browser and albums.
+
 ## [0.14.0] - 2026-09-12
 
 ### Added

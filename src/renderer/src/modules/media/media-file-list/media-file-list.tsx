@@ -29,7 +29,7 @@ const MediaFileList = ({
   const isEmpty = folders.length === 0 && photos.length === 0;
 
   return (
-    <section className="flex min-h-0 min-w-[20rem] flex-[1.2] flex-col overflow-hidden border-r border-border bg-background">
+    <section className="flex min-h-0 min-w-[20rem] flex-[1.2] flex-col overflow-hidden bg-background">
       <div
         className={cn(
           'grid h-6 shrink-0 border-b border-border bg-muted px-2 font-medium tracking-wide text-muted-foreground',

@@ -20,11 +20,11 @@ const MediaFolderTree = ({
   return (
     <aside
       className={cn(
-        'flex shrink-0 flex-col border-r border-sidebar-border bg-sidebar',
+        'flex min-h-0 shrink-0 flex-col border-inline-end border-sidebar-border bg-sidebar',
         collapsed ? 'hidden' : 'w-52'
       )}
     >
-      <div className="min-h-0 flex-1 scroll-fade overflow-auto py-1">
+      <div className="min-h-0 flex-1 scroll-fade overflow-auto">
         {folders.map((folder) => (
           <MediaFolderItem
             key={folder.id}
