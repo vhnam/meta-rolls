@@ -1,1 +1,1 @@
-export { default as MediaBrowser } from './media-browser';
+export { MediaBrowser } from './media-browser';

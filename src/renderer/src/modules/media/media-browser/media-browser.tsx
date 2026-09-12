@@ -1,8 +1,5 @@
 import { useEffect } from 'react';
 
-import { MediaFileList } from '#/modules/media/media-file-list';
-import { MediaFolderTree } from '#/modules/media/media-folder-tree';
-import { MediaToolbar } from '#/modules/media/media-toolbar';
 import {
   canGoBack,
   canGoForward,
@@ -12,7 +9,11 @@ import {
   useMediaPoolStore
 } from '#/stores/media-pool.store';
 
-const MediaBrowser = () => {
+import { MediaBrowserFileList } from './media-browser-file-list';
+import { MediaBrowserFolderTree } from './media-browser-folder-tree';
+import { MediaBrowserToolbar } from './media-browser-toolbar';
+
+export const MediaBrowser = () => {
   const store = useMediaPoolStore();
   const selectedFolder = getSelectedFolder(store);
   const listPhotos = getListPhotos(store);
@@ -33,7 +34,7 @@ const MediaBrowser = () => {
 
   return (
     <div className="flex min-h-0 min-w-0 flex-col overflow-hidden border border-border">
-      <MediaToolbar
+      <MediaBrowserToolbar
         query={store.query}
         onQueryChange={store.setQuery}
         view={store.view}
@@ -52,13 +53,13 @@ const MediaBrowser = () => {
         }}
       />
       <div className="flex min-h-0 min-w-0 flex-1">
-        <MediaFolderTree
+        <MediaBrowserFolderTree
           folders={store.folders}
           selectedFolderId={store.selectedFolderId}
           onSelectFolder={store.setSelectedFolderId}
           collapsed={store.folderTreeCollapsed}
         />
-        <MediaFileList
+        <MediaBrowserFileList
           folders={childFolders}
           photos={listPhotos}
           selectedPhotoId={activePhotoId}
@@ -71,5 +72,3 @@ const MediaBrowser = () => {
     </div>
   );
 };
-
-export default MediaBrowser;
