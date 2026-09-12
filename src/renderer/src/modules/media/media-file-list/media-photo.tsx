@@ -2,19 +2,17 @@ import { IconPhoto, IconPhotoFilled } from '@tabler/icons-react';
 import { cn } from 'cn';
 
 import { FILE_LIST_COLUMN_CLASSES } from '#/constants/media';
-import { PhotoFolder, PhotoItem } from '#/types';
+import { PhotoItem } from '#/types';
 
 type MediaPhotoProps = {
   photo: PhotoItem;
   selectedPhotoId: string | null;
-  folders: PhotoFolder[];
   index: number;
   onSelectPhoto: (id: string) => void;
 };
 
-const MediaPhoto = ({ photo, selectedPhotoId, folders, index, onSelectPhoto }: MediaPhotoProps) => {
+const MediaPhoto = ({ photo, selectedPhotoId, index, onSelectPhoto }: MediaPhotoProps) => {
   const selected = photo.id === selectedPhotoId;
-  const stripeIndex = folders.length + index;
 
   return (
     <button
@@ -22,7 +20,7 @@ const MediaPhoto = ({ photo, selectedPhotoId, folders, index, onSelectPhoto }: M
       className={cn(
         'grid h-5.5 w-full min-w-[20rem] px-2 text-left',
         FILE_LIST_COLUMN_CLASSES,
-        stripeIndex % 2 === 1 && 'bg-muted/40',
+        index % 2 === 1 && 'bg-muted/40',
         selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground'
       )}
       onClick={() => onSelectPhoto(photo.id)}

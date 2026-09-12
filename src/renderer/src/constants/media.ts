@@ -13,6 +13,7 @@ export const MEDIA_VIEW = {
 export const DEFAULT_PHOTO_ACCENT = 'oklch(0.62 0.12 250)';
 
 export const FILE_LIST_COLUMN_CLASSES = 'grid-cols-[minmax(9rem,1fr)_6.25rem_4.75rem]';
+export const FILE_LIST_ROW_HEIGHT = 22;
 
 export const FOLDER_SPINNER_DELAY_MS = 150;
 export const FOLDER_TREE_PADDING_START = 8;

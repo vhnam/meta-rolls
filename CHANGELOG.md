@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-09-12
+
+### Changed
+
+- File list virtualizes folder and photo rows so large folders stay responsive.
+
 ## [0.18.0] - 2026-09-12
 
 ### Changed
