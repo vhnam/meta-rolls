@@ -1,1 +1,1 @@
-export { default as MediaAlbums } from './media-albums';
+export { MediaAlbums } from './media-albums';

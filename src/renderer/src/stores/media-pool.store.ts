@@ -56,7 +56,7 @@ export const getGridPhotos = (_state: MediaPoolState): PhotoItem[] => [];
 
 export const getVisiblePhotos = (state: MediaPoolState) => getListPhotos(state);
 
-export const getActivePhotoId = (state: MediaPoolState) => {
+export const getActivePhotoId = (state: MediaPoolState, extraPhotos: PhotoItem[] = []) => {
   if (state.selectedListFolderId) {
     return null;
   }
@@ -66,7 +66,8 @@ export const getActivePhotoId = (state: MediaPoolState) => {
   const selectedIsVisible =
     state.selectedPhotoId !== null &&
     (listPhotos.some((photo) => photo.id === state.selectedPhotoId) ||
-      gridPhotos.some((photo) => photo.id === state.selectedPhotoId));
+      gridPhotos.some((photo) => photo.id === state.selectedPhotoId) ||
+      extraPhotos.some((photo) => photo.id === state.selectedPhotoId));
 
   if (selectedIsVisible) {
     return state.selectedPhotoId;
@@ -75,11 +76,12 @@ export const getActivePhotoId = (state: MediaPoolState) => {
   return listPhotos[0]?.id ?? gridPhotos[0]?.id ?? null;
 };
 
-export const getSelectedPhoto = (state: MediaPoolState) => {
-  const activePhotoId = getActivePhotoId(state);
+export const getSelectedPhoto = (state: MediaPoolState, extraPhotos: PhotoItem[] = []) => {
+  const activePhotoId = getActivePhotoId(state, extraPhotos);
   return (
     getListPhotos(state).find((photo) => photo.id === activePhotoId) ??
     getGridPhotos(state).find((photo) => photo.id === activePhotoId) ??
+    extraPhotos.find((photo) => photo.id === activePhotoId) ??
     null
   );
 };

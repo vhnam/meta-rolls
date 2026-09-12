@@ -49,11 +49,7 @@ const MediaPreview = ({ photo }: MediaPreviewProps) => {
             onError={() => setFailedSrc(src)}
           />
         ) : photo && !src ? (
-          <div
-            className="aspect-3/2 h-full max-h-full w-full max-w-180"
-            style={{ background: photo.accent }}
-            aria-label={photo.name}
-          />
+          <div className="aspect-3/2 h-full max-h-full w-full max-w-180" aria-label={photo.name} />
         ) : photo ? (
           <p className="text-xs text-muted-foreground">Preview not available for {photo.name}</p>
         ) : (
