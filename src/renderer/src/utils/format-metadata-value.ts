@@ -13,6 +13,14 @@ const EXIF_DATE = /^\d{4}:\d{2}:\d{2}$/;
 const formatIfValid = (value: string, parsed: dayjs.Dayjs, template: string): string =>
   parsed.isValid() ? parsed.format(template) : value;
 
+export const formatCreatedAt = (value: string): string => {
+  if (!value) {
+    return '';
+  }
+
+  return formatIfValid(value, dayjs(value), METADATA_DATE_FORMAT);
+};
+
 export const formatMetadataValue = (value: string): string => {
   if (ISO_DATE_TIME.test(value)) {
     return formatIfValid(value, dayjs(value), METADATA_DATETIME_FORMAT);

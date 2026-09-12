@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-09-13
+
+### Changed
+
+- Media file list header and rows share compact cell spacing, with resizable columns for date, size, and resolution.
+
 ## [0.22.0] - 2026-09-13
 
 ### Added

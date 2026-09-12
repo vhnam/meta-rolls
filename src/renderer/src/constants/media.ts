@@ -1,5 +1,3 @@
-import type { Album, PhotoItem } from '#/types/media';
-
 export const FOLDER_KIND = {
   disk: 'disk',
   folder: 'folder'
@@ -10,10 +8,21 @@ export const MEDIA_VIEW = {
   grid: 'grid'
 } as const;
 
-export const DEFAULT_PHOTO_ACCENT = 'oklch(0.62 0.12 250)';
+export const FILE_LIST_COLUMNS = [
+  { id: 'name', label: 'File Name', defaultWidth: 220, minWidth: 120 },
+  { id: 'createdAt', label: 'Date Created', defaultWidth: 120, minWidth: 88 },
+  { id: 'size', label: 'Size', defaultWidth: 76, minWidth: 56 },
+  { id: 'resolution', label: 'Resolution', defaultWidth: 108, minWidth: 80 }
+] as const;
 
-export const FILE_LIST_COLUMN_CLASSES = 'grid-cols-[minmax(9rem,1fr)_6.25rem_4.75rem]';
-export const FILE_LIST_ROW_HEIGHT = 22;
+export type FileListColumnId = (typeof FILE_LIST_COLUMNS)[number]['id'];
+
+export const FILE_LIST_GRID_CLASS =
+  'grid w-full min-w-[var(--file-list-min-width)] [grid-template-columns:var(--file-list-cols)]';
+export const FILE_LIST_ROW_CLASS = `${FILE_LIST_GRID_CLASS} h-5 w-full`;
+export const FILE_LIST_CELL_CLASS = 'flex min-w-0 items-center self-stretch px-1.5';
+export const FILE_LIST_ROW_HEIGHT = 20;
+export const FILE_LIST_ROW_X_PADDING = 0;
 
 export const FOLDER_SPINNER_DELAY_MS = 150;
 export const FOLDER_TREE_PADDING_START = 8;
@@ -26,8 +35,8 @@ export const GRID_THUMB_ASPECT = 0.72;
 
 export const UNGROUPED_METADATA_GROUP = 'General';
 export const METADATA_NAME_LABEL = 'File:Name';
-export const METADATA_DATETIME_FORMAT = 'MMM D, YYYY h:mm:ss A';
-export const METADATA_DATE_FORMAT = 'MMM D, YYYY';
+export const METADATA_DATETIME_FORMAT = 'MMM DD, YYYY h:mm:ss A';
+export const METADATA_DATE_FORMAT = 'MMM DD, YYYY';
 
 export const PHOTO_OVERVIEW_FIELDS = [
   { id: 'iso', label: 'ISO', keys: ['ISO', 'ISOSpeed'] },
@@ -42,48 +51,3 @@ export const PHOTO_OVERVIEW_FIELDS = [
   { id: 'resolution', label: 'Resolution', keys: ['ImageSize'] },
   { id: 'colorSpace', label: 'Color Space', keys: ['ColorSpace', 'ColorSpaceData'] }
 ] as const;
-
-export const PHOTO_ITEMS: PhotoItem[] = [
-  {
-    id: 'p1',
-    folderId: '2025',
-    name: 'DSC_0142.jpg',
-    date: '2025-04-12',
-    camera: 'X100VI',
-    accent: 'oklch(0.62 0.12 250)'
-  },
-  {
-    id: 'p2',
-    folderId: '2025',
-    name: 'DSC_0143.jpg',
-    date: '2025-04-12',
-    camera: 'X100VI',
-    accent: 'oklch(0.68 0.14 70)'
-  },
-  {
-    id: 'p3',
-    folderId: '2025',
-    name: 'IMG_8810.heic',
-    date: '2025-06-02',
-    camera: 'iPhone',
-    accent: 'oklch(0.55 0.08 150)'
-  },
-  {
-    id: 'p4',
-    folderId: '2024',
-    name: 'Rollei_0021.jpg',
-    date: '2024-11-08',
-    camera: 'Rollei 35',
-    accent: 'oklch(0.58 0.1 30)'
-  },
-  {
-    id: 'p5',
-    folderId: 'downloads',
-    name: 'scan-tokyo-01.tif',
-    date: '2024-09-18',
-    camera: 'Scanner',
-    accent: 'oklch(0.5 0.04 280)'
-  }
-];
-
-export const ALBUM_ITEMS: Album[] = [] as const;

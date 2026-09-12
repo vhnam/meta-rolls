@@ -116,7 +116,7 @@ const MediaFolderTree = ({
   return (
     <aside
       className={cn(
-        'flex min-h-0 shrink-0 flex-col border-inline-end border-sidebar-border bg-sidebar',
+        'flex min-h-0 shrink-0 flex-col border-r border-sidebar-border bg-sidebar',
         collapsed ? 'hidden' : 'w-52'
       )}
     >

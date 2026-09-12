@@ -1,10 +1,17 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { cn } from 'cn';
-import { useMemo, useRef } from 'react';
+import { type CSSProperties, useMemo, useRef, useState } from 'react';
 
-import { FILE_LIST_COLUMN_CLASSES, FILE_LIST_ROW_HEIGHT } from '#/constants/media';
+import {
+  FILE_LIST_COLUMNS,
+  FILE_LIST_ROW_CLASS,
+  FILE_LIST_ROW_HEIGHT,
+  FILE_LIST_ROW_X_PADDING,
+  type FileListColumnId
+} from '#/constants/media';
 import { type PhotoFolder, type PhotoItem } from '#/types';
 
+import MediaFileListHeader from './media-file-list-header';
 import MediaFolder from './media-folder';
 import MediaPhoto from './media-photo';
 
@@ -22,6 +29,10 @@ type FileListRow =
   | { type: 'folder'; id: string; folder: PhotoFolder }
   | { type: 'photo'; id: string; photo: PhotoItem };
 
+const INITIAL_COLUMN_WIDTHS = Object.fromEntries(
+  FILE_LIST_COLUMNS.map((column) => [column.id, column.defaultWidth])
+) as Record<FileListColumnId, number>;
+
 const MediaFileList = ({
   folders,
   photos,
@@ -33,6 +44,8 @@ const MediaFileList = ({
 }: MediaFileListProps) => {
   'use no memo';
   const scrollRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [columnWidths, setColumnWidths] = useState(INITIAL_COLUMN_WIDTHS);
   const rows = useMemo<FileListRow[]>(
     () => [
       ...folders.map((folder) => ({ type: 'folder' as const, id: folder.id, folder })),
@@ -40,6 +53,16 @@ const MediaFileList = ({
     ],
     [folders, photos]
   );
+  const columnSum = FILE_LIST_COLUMNS.reduce((sum, column) => sum + columnWidths[column.id], 0);
+  const columnTemplate = FILE_LIST_COLUMNS.map((column) =>
+    column.id === 'name'
+      ? `minmax(${columnWidths[column.id]}px, 1fr)`
+      : `${columnWidths[column.id]}px`
+  ).join(' ');
+  const columnStyle = {
+    '--file-list-cols': columnTemplate,
+    '--file-list-min-width': `${columnSum + FILE_LIST_ROW_X_PADDING}px`
+  } as CSSProperties;
   // oxlint-disable-next-line react/incompatible-library -- TanStack Virtual is opted out via `use no memo`
   const virtualizer = useVirtualizer({
     count: rows.length,
@@ -50,24 +73,44 @@ const MediaFileList = ({
   });
 
   return (
-    <section className="flex min-h-0 min-w-[20rem] flex-[1.2] flex-col overflow-hidden bg-background">
+    <section
+      className="flex min-h-0 min-w-[20rem] flex-[1.2] flex-col overflow-hidden bg-background"
+      style={columnStyle}
+    >
       <div
-        className={cn(
-          'grid h-6 shrink-0 border-b border-border bg-muted px-2 font-medium tracking-wide text-muted-foreground',
-          FILE_LIST_COLUMN_CLASSES
-        )}
+        ref={headerRef}
+        className="shrink-0 overflow-x-auto border-b border-border bg-muted scrollbar-none [&::-webkit-scrollbar]:hidden"
       >
-        <span className="truncate self-center text-tiny">File Name</span>
-        <span className="truncate self-center text-tiny">Date</span>
-        <span className="truncate self-center text-tiny">Camera</span>
+        <MediaFileListHeader
+          widths={columnWidths}
+          onResizeColumn={(id, width) =>
+            setColumnWidths((current) => ({ ...current, [id]: width }))
+          }
+        />
       </div>
-      <div ref={scrollRef} className="min-h-0 flex-1 scroll-fade overflow-auto">
+      <div
+        ref={scrollRef}
+        className="min-h-0 flex-1 scroll-fade overflow-auto"
+        onScroll={(event) => {
+          if (headerRef.current) {
+            headerRef.current.scrollLeft = event.currentTarget.scrollLeft;
+          }
+        }}
+      >
         {rows.length === 0 ? (
-          <p className="px-2 h-5.5 flex items-center text-tiny text-muted-foreground">
-            No files in this folder.
+          <p className={cn(FILE_LIST_ROW_CLASS, 'px-1.5')}>
+            <span className="flex items-center text-tiny text-muted-foreground">
+              No files in this folder.
+            </span>
           </p>
         ) : (
-          <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }}>
+          <div
+            className="relative"
+            style={{
+              height: virtualizer.getTotalSize(),
+              minWidth: `var(--file-list-min-width)`
+            }}
+          >
             {virtualizer.getVirtualItems().map((item) => {
               const row = rows[item.index];
               if (!row) {
@@ -77,13 +120,15 @@ const MediaFileList = ({
               return (
                 <div
                   key={item.key}
-                  className="absolute top-0 left-0 w-full"
+                  className={cn(
+                    'absolute top-0 left-0 w-full',
+                    item.index % 2 === 0 ? 'bg-foreground/3' : 'bg-foreground/7'
+                  )}
                   style={{ transform: `translateY(${item.start}px)` }}
                 >
                   {row.type === 'folder' ? (
                     <MediaFolder
                       folder={row.folder}
-                      index={item.index}
                       selected={row.folder.id === selectedListFolderId}
                       onHighlightFolder={onHighlightFolder}
                       onOpenFolder={onOpenFolder}
@@ -92,7 +137,6 @@ const MediaFileList = ({
                     <MediaPhoto
                       photo={row.photo}
                       selectedPhotoId={selectedPhotoId}
-                      index={item.index}
                       onSelectPhoto={onSelectPhoto}
                     />
                   )}

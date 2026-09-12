@@ -1,6 +1,8 @@
 export { findFolder, isFolderInPath } from './find-folder';
 export { folderTreeChildren, folderTreePaddingLeft } from './folder-tree';
-export { formatMetadataValue } from './format-metadata-value';
+export { formatFileSize } from './format-file-size';
+export { formatResolution } from './format-resolution';
+export { formatCreatedAt, formatMetadataValue } from './format-metadata-value';
 export { getGridThumbnailSize } from './grid-thumbnail';
 export { buildMetadataRows, groupMetadataRows, type MetadataGroup } from './group-metadata';
 export { getPhotoOverview, type PhotoOverviewItem } from './photo-overview';

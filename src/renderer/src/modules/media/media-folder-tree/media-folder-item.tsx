@@ -83,7 +83,7 @@ const MediaFolderItem = ({ node, style }: NodeRendererProps<PhotoFolder>) => {
       ) : (
         <IconFolder className="size-3.5 shrink-0 text-muted-foreground" />
       )}
-      <span className="truncate font-mono text-xs">{folder.name}</span>
+      <span className="truncate font-mono text-tiny">{folder.name}</span>
     </div>
   );
 };
