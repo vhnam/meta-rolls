@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.19.2] - 2026-09-13
+
+### Changed
+
+- Media screen extracts the folder tree, toolbar, and file list into a `MediaBrowser` pane.
+
 ## [0.19.1] - 2026-09-12
 
 ### Fixed
