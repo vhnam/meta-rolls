@@ -4,6 +4,11 @@ export const THEME_PREFERENCE = {
   system: 'system'
 } as const;
 
+export const LANGUAGE_PREFERENCE = {
+  en: 'en',
+  vi: 'vi'
+} as const;
+
 export const PRINT_FORMAT = {
   instaxMini: 'instax-mini',
   instaxWide: 'instax-wide'

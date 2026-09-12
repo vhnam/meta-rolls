@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-09-12
+
+### Added
+
+- Preferences dialog with appearance settings: persisted theme (including system) and language preference.
+
 ## [0.9.0] - 2026-09-12
 
 ### Added

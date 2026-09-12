@@ -1,17 +1,19 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
 
-import { PRINT_FORMAT, THEME_PREFERENCE } from '#/constants/settings';
+import { LANGUAGE_PREFERENCE, PRINT_FORMAT, THEME_PREFERENCE } from '#/constants/settings';
 import { getApi } from '#/hooks/use-ipc';
-import { type PrintFormat, type ThemePreference } from '#/types';
+import { type LanguagePreference, type PrintFormat, type ThemePreference } from '#/types';
 
 type SettingsState = {
   theme: ThemePreference;
+  language: LanguagePreference;
   defaultPrintFormat: PrintFormat;
 };
 
 type SettingsActions = {
   setTheme: (theme: ThemePreference) => void;
+  setLanguage: (language: LanguagePreference) => void;
   setDefaultPrintFormat: (format: PrintFormat) => void;
 };
 
@@ -27,8 +29,10 @@ export const useSettingsStore = create<SettingsStore>()(
   persist(
     (set) => ({
       theme: THEME_PREFERENCE.system,
+      language: LANGUAGE_PREFERENCE.en,
       defaultPrintFormat: PRINT_FORMAT.instaxMini,
       setTheme: (theme) => set({ theme }),
+      setLanguage: (language) => set({ language }),
       setDefaultPrintFormat: (defaultPrintFormat) => set({ defaultPrintFormat })
     }),
     {
@@ -36,6 +40,7 @@ export const useSettingsStore = create<SettingsStore>()(
       storage: createJSONStorage(() => ipcSettingsStorage),
       partialize: (state) => ({
         theme: state.theme,
+        language: state.language,
         defaultPrintFormat: state.defaultPrintFormat
       }),
       skipHydration: true

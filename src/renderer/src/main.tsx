@@ -2,13 +2,15 @@ import { RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { applyDocumentTheme } from '#/hooks/use-theme';
 import { router } from '#/router';
-import { hydrateSettingsStore } from '#/stores/settings.store';
+import { hydrateSettingsStore, useSettingsStore } from '#/stores/settings.store';
 
 import '#/styles/global.css';
 
 const bootstrap = async () => {
   await hydrateSettingsStore();
+  applyDocumentTheme(useSettingsStore.getState().theme);
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
