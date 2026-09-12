@@ -2,25 +2,42 @@ import { IconPlus } from '@tabler/icons-react';
 import { cn } from 'cn';
 
 import { Button } from '#/components/ui/button';
-import { ALBUM_ITEMS } from '#/constants/media';
+import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
+import { useAlbumStore } from '#/stores/album.store';
 
-type MediaLibrariesProps = {
-  selectedId: string;
-  onSelect: (id: string) => void;
-};
+const MediaLibraries = () => {
+  const albums = useAlbumStore((state) => state.albums);
+  const selectedId = useAlbumStore((state) => state.activeAlbumId);
+  const onSelect = useAlbumStore((state) => state.setActiveAlbumId);
+  const addAlbum = useAlbumStore((state) => state.addAlbum);
 
-const MediaLibraries = ({ selectedId, onSelect }: MediaLibrariesProps) => {
   return (
     <aside className="flex min-h-0 w-52 shrink-0 flex-col border-inline-end border-sidebar-border bg-sidebar">
       <div className="flex h-7 items-center justify-between border-b border-sidebar-border bg-muted px-2">
         <span className="text-[11px] font-medium text-sidebar-foreground">Albums</span>
-        <Button variant="ghost" size="icon-xs">
-          <IconPlus />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                aria-label="New album"
+                onClick={() => {
+                  void addAlbum();
+                }}
+              />
+            }
+          >
+            <IconPlus />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Add album</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
-      {ALBUM_ITEMS.length > 0 ? (
+      {albums.length > 0 ? (
         <div className="flex-1 scroll-fade overflow-auto py-1">
-          {ALBUM_ITEMS.map((item) => (
+          {albums.map((item) => (
             <button
               key={item.id}
               type="button"

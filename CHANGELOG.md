@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.21.0] - 2026-09-13
+
+### Changed
+
+- Media albums sidebar loads, creates, and selects albums from the persisted album store.
+
 ## [0.20.0] - 2026-09-13
 
 ### Added

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+import { getApi } from '#/hooks/use-ipc';
 import { type Album } from '#/types';
 
 type AlbumState = {
@@ -11,17 +12,20 @@ type AlbumState = {
 type AlbumActions = {
   setActiveAlbumId: (albumId: string | null) => void;
   setCurrentPage: (page: number) => void;
-  addAlbum: (name?: string) => string;
-  renameAlbum: (albumId: string, name: string) => void;
-  removeAlbum: (albumId: string) => void;
+  loadAlbums: () => Promise<void>;
+  addAlbum: (name?: string) => Promise<string>;
+  renameAlbum: (albumId: string, name: string) => Promise<void>;
+  removeAlbum: (albumId: string) => Promise<void>;
 };
 
 export type AlbumStore = AlbumState & AlbumActions;
 
-const createAlbumId = () =>
-  typeof crypto !== 'undefined' && 'randomUUID' in crypto
-    ? crypto.randomUUID()
-    : `album-${Date.now()}`;
+const nextActiveAlbumId = (albums: Album[], currentId: string | null) => {
+  if (currentId && albums.some((album) => album.id === currentId)) {
+    return currentId;
+  }
+  return albums[0]?.id ?? null;
+};
 
 export const useAlbumStore = create<AlbumStore>((set, get) => ({
   albums: [],
@@ -29,33 +33,51 @@ export const useAlbumStore = create<AlbumStore>((set, get) => ({
   currentPage: 1,
   setActiveAlbumId: (activeAlbumId) => set({ activeAlbumId, currentPage: 1 }),
   setCurrentPage: (currentPage) => set({ currentPage: Math.max(1, currentPage) }),
-  addAlbum: (name) => {
-    const id = createAlbumId();
-    const album: Album = {
-      id,
-      name: name?.trim() || `Album ${get().albums.length + 1}`,
-      photoIds: []
-    };
+  loadAlbums: async () => {
+    const albums = await getApi().albums.list();
+    const activeAlbumId = nextActiveAlbumId(albums, get().activeAlbumId);
+    set({
+      albums,
+      activeAlbumId,
+      currentPage: activeAlbumId === get().activeAlbumId ? get().currentPage : 1
+    });
+  },
+  addAlbum: async (name) => {
+    const album = await getApi().albums.create(name);
     set((state) => ({
       albums: [...state.albums, album],
-      activeAlbumId: id,
+      activeAlbumId: album.id,
       currentPage: 1
     }));
-    return id;
+    return album.id;
   },
-  renameAlbum: (albumId, name) =>
+  renameAlbum: async (albumId, name) => {
+    const album = await getApi().albums.rename(albumId, name);
+    if (!album) {
+      return;
+    }
     set((state) => ({
-      albums: state.albums.map((album) => (album.id === albumId ? { ...album, name } : album))
-    })),
-  removeAlbum: (albumId) =>
+      albums: state.albums.map((item) => (item.id === albumId ? album : item))
+    }));
+  },
+  removeAlbum: async (albumId) => {
+    await getApi().albums.remove(albumId);
     set((state) => {
       const albums = state.albums.filter((album) => album.id !== albumId);
-      const activeAlbumId =
-        state.activeAlbumId === albumId ? (albums[0]?.id ?? null) : state.activeAlbumId;
+      const activeAlbumId = nextActiveAlbumId(albums, state.activeAlbumId);
       return {
         albums,
         activeAlbumId,
         currentPage: activeAlbumId === state.activeAlbumId ? state.currentPage : 1
       };
-    })
+    });
+  }
 }));
+
+export const hydrateAlbumStore = async () => {
+  try {
+    await useAlbumStore.getState().loadAlbums();
+  } catch (error) {
+    console.error('Failed to load albums from main process', error);
+  }
+};

@@ -21,7 +21,7 @@ const MediaScreen = () => {
       <MediaBrowser />
       <MediaPreview photo={selectedPhoto} />
       <div className="flex min-h-0 min-w-0 overflow-hidden border border-border">
-        <MediaAlbums selectedId={store.selectedLibraryId} onSelect={store.setSelectedLibraryId} />
+        <MediaAlbums />
         <MediaGrid
           photos={gridPhotos}
           selectedPhotoId={activePhotoId}

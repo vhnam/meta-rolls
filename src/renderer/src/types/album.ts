@@ -1,5 +1,3 @@
-export type Album = {
-  id: string;
-  name: string;
-  photoIds: string[];
-};
+import { type Album } from '../../../../shared/album';
+
+export type { Album };
