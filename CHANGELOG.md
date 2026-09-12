@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-09-12
+
+### Changed
+
+- Folder sidebar virtualizes rows with react-arborist so large expanded folders stay responsive.
+
 ## [0.17.1] - 2026-09-12
 
 ### Changed

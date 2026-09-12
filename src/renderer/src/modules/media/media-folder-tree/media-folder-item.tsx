@@ -7,133 +7,83 @@ import {
   IconLoader2
 } from '@tabler/icons-react';
 import { cn } from 'cn';
-import { useEffect, useRef, useState, type MouseEvent } from 'react';
+import { createContext, useContext, type CSSProperties, type MouseEvent } from 'react';
+import { type NodeRendererProps } from 'react-arborist';
 
-import { FOLDER_SPINNER_DELAY_MS } from '#/constants/media';
-import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoFolder } from '#/types';
 import { folderTreePaddingLeft, isFolderInPath } from '#/utils';
 
-type MediaFolderItemProps = {
-  folder: PhotoFolder;
-  depth: number;
+export type MediaFolderTreeUi = {
   selectedFolderId: string;
-  onSelectFolder: (id: string) => void;
+  loadingIds: ReadonlySet<string>;
+  loadWithSpinner: (folder: PhotoFolder) => void;
 };
 
-const MediaFolderItem = ({
-  folder,
-  depth,
-  selectedFolderId,
-  onSelectFolder
-}: MediaFolderItemProps) => {
-  const loadFolderChildren = useMediaPoolStore((state) => state.loadFolderChildren);
-  const hasChildren = folder.hasChildren ?? Boolean(folder.children?.length);
-  const inSelectedPath = isFolderInPath(folder.id, selectedFolderId);
-  const [userOpen, setUserOpen] = useState(false);
-  const [showSpinner, setShowSpinner] = useState(false);
-  const loadRequest = useRef<Promise<void> | null>(null);
-  const rowRef = useRef<HTMLButtonElement>(null);
-  const selected = folder.id === selectedFolderId;
-  const open = inSelectedPath || userOpen;
+export const MediaFolderTreeUiContext = createContext<MediaFolderTreeUi | null>(null);
 
-  const loadWithSpinner = () => {
-    if (loadRequest.current) {
-      return loadRequest.current;
-    }
-
-    const timer = window.setTimeout(() => {
-      setShowSpinner(true);
-    }, FOLDER_SPINNER_DELAY_MS);
-
-    loadRequest.current = loadFolderChildren(folder).finally(() => {
-      window.clearTimeout(timer);
-      setShowSpinner(false);
-      loadRequest.current = null;
-    });
-
-    return loadRequest.current;
-  };
-
-  useEffect(() => {
-    if (selected) {
-      rowRef.current?.scrollIntoView({ block: 'nearest' });
-    }
-  }, [selected]);
-
-  const handleSelect = () => {
-    onSelectFolder(folder.id);
-    void loadWithSpinner();
-    setUserOpen(true);
+const MediaFolderItem = ({ node, style }: NodeRendererProps<PhotoFolder>) => {
+  const ui = useContext(MediaFolderTreeUiContext);
+  const folder = node.data;
+  const selected = node.isSelected;
+  const hasChildren = node.isInternal;
+  const showSpinner = ui?.loadingIds.has(folder.id) ?? false;
+  const inSelectedPath = ui ? isFolderInPath(folder.id, ui.selectedFolderId) : false;
+  const rowStyle: CSSProperties = {
+    ...style,
+    paddingLeft: folderTreePaddingLeft(node.level)
   };
 
   const handleToggle = (event: MouseEvent<HTMLSpanElement>) => {
     event.stopPropagation();
-    if (inSelectedPath) {
+    if (inSelectedPath && node.isOpen) {
       return;
     }
-    if (!userOpen) {
-      void loadWithSpinner();
+    if (node.isClosed) {
+      ui?.loadWithSpinner(folder);
     }
-    setUserOpen((current) => !current);
+    node.toggle();
   };
 
   return (
-    <div>
-      <button
-        ref={rowRef}
-        type="button"
-        aria-busy={showSpinner}
-        className={cn(
-          'flex h-6 w-full items-center gap-1 pr-2 text-left',
-          selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground'
-        )}
-        style={{ paddingLeft: folderTreePaddingLeft(depth) }}
-        onClick={handleSelect}
-      >
-        {showSpinner ? (
-          <span className="flex size-4 items-center justify-center text-muted-foreground">
-            <IconLoader2 className="size-3 animate-spin" />
-          </span>
-        ) : hasChildren ? (
-          <span
-            className="flex size-4 items-center justify-center text-muted-foreground"
-            onClick={handleToggle}
-          >
-            {open ? (
-              <IconChevronDown className="size-3" />
-            ) : (
-              <IconChevronRight className="size-3" />
-            )}
-          </span>
-        ) : (
-          <span className="size-4" />
-        )}
-        {folder.kind === 'disk' ? (
-          <IconDeviceDesktop
-            className={cn(
-              'size-3.5 shrink-0',
-              selected ? 'text-accent-foreground' : 'text-sidebar-primary'
-            )}
-          />
-        ) : selected ? (
-          <IconFolderFilled className="size-3.5 shrink-0 text-accent-foreground" />
-        ) : (
-          <IconFolder className="size-3.5 shrink-0 text-muted-foreground" />
-        )}
-        <span className="truncate font-mono text-xs">{folder.name}</span>
-      </button>
-      {open && hasChildren
-        ? folder.children?.map((child) => (
-            <MediaFolderItem
-              key={child.id}
-              folder={child}
-              depth={depth + 1}
-              selectedFolderId={selectedFolderId}
-              onSelectFolder={onSelectFolder}
-            />
-          ))
-        : null}
+    <div
+      className={cn(
+        'flex h-6 w-full items-center gap-1 pr-2 text-left cursor-pointer',
+        selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground'
+      )}
+      style={rowStyle}
+      aria-busy={showSpinner}
+    >
+      {showSpinner ? (
+        <span className="flex size-4 items-center justify-center text-muted-foreground">
+          <IconLoader2 className="size-3 animate-spin" />
+        </span>
+      ) : hasChildren ? (
+        <span
+          className="flex size-4 items-center justify-center text-muted-foreground"
+          onClick={handleToggle}
+        >
+          {node.isOpen ? (
+            <IconChevronDown className="size-3" />
+          ) : (
+            <IconChevronRight className="size-3" />
+          )}
+        </span>
+      ) : (
+        <span className="size-4" />
+      )}
+      {folder.kind === 'disk' ? (
+        <IconDeviceDesktop
+          className={cn(
+            'size-3.5 shrink-0',
+            selected ? 'text-accent-foreground' : 'text-sidebar-primary'
+          )}
+        />
+      ) : selected ? (
+        <IconFolderFilled className="size-3.5 shrink-0 text-accent-foreground" />
+      ) : (
+        <IconFolder className="size-3.5 shrink-0 text-muted-foreground" />
+      )}
+      <span className="truncate font-mono text-xs">{folder.name}</span>
     </div>
   );
 };

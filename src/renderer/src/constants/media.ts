@@ -17,6 +17,7 @@ export const FILE_LIST_COLUMN_CLASSES = 'grid-cols-[minmax(9rem,1fr)_6.25rem_4.7
 export const FOLDER_SPINNER_DELAY_MS = 150;
 export const FOLDER_TREE_PADDING_START = 8;
 export const FOLDER_TREE_DEPTH_STEP = 12;
+export const FOLDER_TREE_ROW_HEIGHT = 24;
 
 export const GRID_THUMB_BASE = 48;
 export const GRID_THUMB_ZOOM_FACTOR = 1.2;
