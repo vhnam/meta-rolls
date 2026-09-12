@@ -7,6 +7,7 @@ import { APP_ICON_PATH } from './app/icon';
 import { handleMediaProtocol, registerMediaScheme } from './app/media-protocol';
 import { APP_NAME, setupAppMenu } from './app/menu';
 import { registerAllIpcHandlers } from './ipc';
+import { endExifTool } from './services/exif-reader';
 
 registerMediaScheme();
 app.setName(APP_NAME);
@@ -84,6 +85,10 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.on('before-quit', () => {
+  void endExifTool();
 });
 
 // In this file you can include the rest of your app's specific main process

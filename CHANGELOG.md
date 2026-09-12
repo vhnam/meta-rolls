@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-09-12
+
+### Added
+
+- Main process reads photo EXIF with ExifTool and exposes it to the renderer over IPC.
+
 ## [0.13.0] - 2026-09-12
 
 ### Added

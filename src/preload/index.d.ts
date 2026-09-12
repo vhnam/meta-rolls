@@ -1,5 +1,7 @@
 import { ElectronAPI } from '@electron-toolkit/preload';
 
+import { type PhotoExif } from '../../shared/media';
+
 export type SettingsStorageApi = {
   getItem: (name: string) => Promise<string | null>;
   setItem: (name: string, value: string) => Promise<void>;
@@ -28,6 +30,7 @@ export type MediaFolderListing = {
 export type MediaLibraryApi = {
   listVolumes: () => Promise<MediaLibraryEntry[]>;
   listFolder: (dirPath: string) => Promise<MediaFolderListing>;
+  readExif: (filePath: string) => Promise<PhotoExif | null>;
 };
 
 export type MenuApi = {

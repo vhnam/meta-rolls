@@ -1,3 +1,5 @@
+import { type PhotoExif } from '../../../../shared/media';
+
 export type FolderKind = 'disk' | 'folder';
 
 export type MediaView = 'list' | 'grid';
@@ -20,6 +22,8 @@ export type PhotoItem = {
   accent: string;
   path?: string;
 };
+
+export type { PhotoExif };
 
 export type Album = {
   id: string;

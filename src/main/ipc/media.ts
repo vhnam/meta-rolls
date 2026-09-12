@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron';
 
 import { IpcChannel } from '../../../shared/ipc';
+import { readPhotoExif } from '../services/exif-reader';
 import { listFolder, listVolumes } from '../services/media-library';
 
 const assertPath = (value: unknown): string => {
@@ -15,5 +16,9 @@ export const registerMediaIpc = () => {
 
   ipcMain.handle(IpcChannel.mediaListFolder, async (_event, dirPath: unknown) =>
     listFolder(assertPath(dirPath))
+  );
+
+  ipcMain.handle(IpcChannel.mediaReadExif, async (_event, filePath: unknown) =>
+    readPhotoExif(assertPath(filePath))
   );
 };

@@ -12,7 +12,8 @@ const api = {
   },
   media: {
     listVolumes: () => ipcRenderer.invoke(IpcChannel.mediaListVolumes),
-    listFolder: (dirPath: string) => ipcRenderer.invoke(IpcChannel.mediaListFolder, dirPath)
+    listFolder: (dirPath: string) => ipcRenderer.invoke(IpcChannel.mediaListFolder, dirPath),
+    readExif: (filePath: string) => ipcRenderer.invoke(IpcChannel.mediaReadExif, filePath)
   },
   menu: {
     onOpenPreferences: (callback: () => void) => {
