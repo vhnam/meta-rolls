@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.24.4] - 2026-09-13
+
+### Changed
+
+- Remove the standalone media file-list, folder-tree, and toolbar modules.
+
 ## [0.24.3] - 2026-09-13
 
 ### Changed
