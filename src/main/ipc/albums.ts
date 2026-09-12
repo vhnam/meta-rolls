@@ -2,8 +2,15 @@ import { join } from 'node:path';
 
 import { app, ipcMain } from 'electron';
 
+import { type AlbumPhoto } from '../../../shared/album';
 import { IpcChannel } from '../../../shared/ipc';
-import { createAlbum, listAlbums, removeAlbum, renameAlbum } from '../services/album-store';
+import {
+  addPhotoToAlbum,
+  createAlbum,
+  listAlbums,
+  removeAlbum,
+  renameAlbum
+} from '../services/album-store';
 
 const albumsFilePath = () => join(app.getPath('userData'), 'meta-rolls.sqlite');
 
@@ -24,6 +31,33 @@ const assertOptionalName = (value: unknown): string | undefined => {
   return value;
 };
 
+const assertAlbumPhoto = (value: unknown): AlbumPhoto => {
+  if (value === null || typeof value !== 'object') {
+    throw new Error('Album photo must be an object');
+  }
+  const photo = value as Record<string, unknown>;
+  if (
+    typeof photo.id !== 'string' ||
+    typeof photo.name !== 'string' ||
+    typeof photo.path !== 'string' ||
+    typeof photo.size !== 'number' ||
+    typeof photo.width !== 'number' ||
+    typeof photo.height !== 'number' ||
+    typeof photo.createdAt !== 'string'
+  ) {
+    throw new Error('Album photo is missing required fields');
+  }
+  return {
+    id: photo.id,
+    name: photo.name,
+    path: photo.path,
+    size: photo.size,
+    width: photo.width,
+    height: photo.height,
+    createdAt: photo.createdAt
+  };
+};
+
 export const registerAlbumsIpc = () => {
   ipcMain.handle(IpcChannel.albumsList, () => listAlbums(albumsFilePath()));
 
@@ -40,5 +74,9 @@ export const registerAlbumsIpc = () => {
 
   ipcMain.handle(IpcChannel.albumsRemove, (_event, albumId: unknown) =>
     removeAlbum(albumsFilePath(), assertId(albumId))
+  );
+
+  ipcMain.handle(IpcChannel.albumsAddPhoto, (_event, albumId: unknown, photo: unknown) =>
+    addPhotoToAlbum(albumsFilePath(), assertId(albumId), assertAlbumPhoto(photo))
   );
 };

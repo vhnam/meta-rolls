@@ -9,10 +9,17 @@ const migrate = (db: DatabaseSync) => {
     CREATE TABLE IF NOT EXISTS albums (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
-      photo_ids TEXT NOT NULL DEFAULT '[]',
+      photos TEXT NOT NULL DEFAULT '[]',
       created_at INTEGER NOT NULL
     )
   `);
+
+  const columns = db.prepare('PRAGMA table_info(albums)').all() as { name: string }[];
+  const hasLegacyPhotoIds = columns.some((column) => column.name === 'photo_ids');
+  const hasPhotos = columns.some((column) => column.name === 'photos');
+  if (hasLegacyPhotoIds && !hasPhotos) {
+    db.exec('ALTER TABLE albums RENAME COLUMN photo_ids TO photos');
+  }
 };
 
 export const getAppDatabase = (filePath: string): DatabaseSync => {

@@ -1,3 +1,4 @@
+export { toPhotoItem } from './album-photo';
 export { findFolder, isFolderInPath } from './find-folder';
 export { folderTreeChildren, folderTreePaddingLeft } from './folder-tree';
 export { formatFileSize } from './format-file-size';

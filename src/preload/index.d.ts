@@ -1,6 +1,6 @@
 import { ElectronAPI } from '@electron-toolkit/preload';
 
-import { type Album } from '../../shared/album';
+import { type Album, type AlbumPhoto } from '../../shared/album';
 import { type PhotoExif } from '../../shared/media';
 
 export type SettingsStorageApi = {
@@ -42,6 +42,7 @@ export type AlbumsApi = {
   create: (name?: string) => Promise<Album>;
   rename: (albumId: string, name: string) => Promise<Album | null>;
   remove: (albumId: string) => Promise<void>;
+  addPhoto: (albumId: string, photo: AlbumPhoto) => Promise<Album | null>;
 };
 
 export type MenuApi = {

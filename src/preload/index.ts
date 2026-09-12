@@ -1,6 +1,7 @@
 import { electronAPI } from '@electron-toolkit/preload';
 import { contextBridge, ipcRenderer } from 'electron';
 
+import { type AlbumPhoto } from '../../shared/album';
 import { IpcChannel } from '../../shared/ipc';
 
 const api = {
@@ -20,7 +21,9 @@ const api = {
     create: (name?: string) => ipcRenderer.invoke(IpcChannel.albumsCreate, name),
     rename: (albumId: string, name: string) =>
       ipcRenderer.invoke(IpcChannel.albumsRename, albumId, name),
-    remove: (albumId: string) => ipcRenderer.invoke(IpcChannel.albumsRemove, albumId)
+    remove: (albumId: string) => ipcRenderer.invoke(IpcChannel.albumsRemove, albumId),
+    addPhoto: (albumId: string, photo: AlbumPhoto) =>
+      ipcRenderer.invoke(IpcChannel.albumsAddPhoto, albumId, photo)
   },
   menu: {
     onOpenPreferences: (callback: () => void) => {

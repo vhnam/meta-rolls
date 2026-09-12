@@ -9,6 +9,16 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.26.0] - 2026-09-13
+
+### Added
+
+- Albums persist photo records and accept new photos over IPC.
+
+### Changed
+
+- Existing album rows migrate the `photo_ids` column to `photos`.
+
 ## [0.25.1] - 2026-09-13
 
 ### Changed

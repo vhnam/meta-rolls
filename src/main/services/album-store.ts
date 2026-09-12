@@ -1,21 +1,37 @@
 import { randomUUID } from 'node:crypto';
 
-import { type Album } from '../../../shared/album';
+import { type Album, type AlbumPhoto } from '../../../shared/album';
 import { getAppDatabase } from './app-database';
 
 type AlbumRow = {
   id: string;
   name: string;
-  photo_ids: string;
+  photos: string;
 };
 
-const parsePhotoIds = (value: string): string[] => {
+const isAlbumPhoto = (value: unknown): value is AlbumPhoto => {
+  if (value === null || typeof value !== 'object') {
+    return false;
+  }
+  const photo = value as Record<string, unknown>;
+  return (
+    typeof photo.id === 'string' &&
+    typeof photo.name === 'string' &&
+    typeof photo.path === 'string' &&
+    typeof photo.size === 'number' &&
+    typeof photo.width === 'number' &&
+    typeof photo.height === 'number' &&
+    typeof photo.createdAt === 'string'
+  );
+};
+
+const parseAlbumPhotos = (value: string): AlbumPhoto[] => {
   try {
     const parsed: unknown = JSON.parse(value);
     if (!Array.isArray(parsed)) {
       return [];
     }
-    return parsed.filter((item): item is string => typeof item === 'string');
+    return parsed.filter(isAlbumPhoto);
   } catch {
     return [];
   }
@@ -24,7 +40,7 @@ const parsePhotoIds = (value: string): string[] => {
 const toAlbum = (row: AlbumRow): Album => ({
   id: row.id,
   name: row.name,
-  photoIds: parsePhotoIds(row.photo_ids)
+  photos: parseAlbumPhotos(row.photos)
 });
 
 const readRow = (value: unknown): AlbumRow | null => {
@@ -35,18 +51,16 @@ const readRow = (value: unknown): AlbumRow | null => {
   if (
     typeof row.id !== 'string' ||
     typeof row.name !== 'string' ||
-    typeof row.photo_ids !== 'string'
+    typeof row.photos !== 'string'
   ) {
     return null;
   }
-  return { id: row.id, name: row.name, photo_ids: row.photo_ids };
+  return { id: row.id, name: row.name, photos: row.photos };
 };
 
 export const listAlbums = (filePath: string): Album[] => {
   const rows = getAppDatabase(filePath)
-    .prepare(
-      'SELECT id, name, photo_ids FROM albums ORDER BY created_at ASC, name COLLATE NOCASE ASC'
-    )
+    .prepare('SELECT id, name, photos FROM albums ORDER BY created_at ASC, name COLLATE NOCASE ASC')
     .all();
 
   return rows.flatMap((row) => {
@@ -69,13 +83,13 @@ export const createAlbum = (filePath: string, name?: string): Album => {
   const album: Album = {
     id: randomUUID(),
     name: trimmed || `Album ${count + 1}`,
-    photoIds: []
+    photos: []
   };
 
-  db.prepare('INSERT INTO albums (id, name, photo_ids, created_at) VALUES (?, ?, ?, ?)').run(
+  db.prepare('INSERT INTO albums (id, name, photos, created_at) VALUES (?, ?, ?, ?)').run(
     album.id,
     album.name,
-    JSON.stringify(album.photoIds),
+    JSON.stringify(album.photos),
     Date.now()
   );
 
@@ -90,12 +104,32 @@ export const renameAlbum = (filePath: string, albumId: string, name: string): Al
 
   const db = getAppDatabase(filePath);
   db.prepare('UPDATE albums SET name = ? WHERE id = ?').run(trimmed, albumId);
-  const row = readRow(
-    db.prepare('SELECT id, name, photo_ids FROM albums WHERE id = ?').get(albumId)
-  );
+  const row = readRow(db.prepare('SELECT id, name, photos FROM albums WHERE id = ?').get(albumId));
   return row ? toAlbum(row) : null;
 };
 
 export const removeAlbum = (filePath: string, albumId: string): void => {
   getAppDatabase(filePath).prepare('DELETE FROM albums WHERE id = ?').run(albumId);
+};
+
+export const addPhotoToAlbum = (
+  filePath: string,
+  albumId: string,
+  photo: AlbumPhoto
+): Album | null => {
+  const db = getAppDatabase(filePath);
+  const row = readRow(db.prepare('SELECT id, name, photos FROM albums WHERE id = ?').get(albumId));
+  if (!row) {
+    return null;
+  }
+
+  const album = toAlbum(row);
+  if (album.photos.some((existing) => existing.id === photo.id)) {
+    return album;
+  }
+
+  const photos = [...album.photos, photo];
+  db.prepare('UPDATE albums SET photos = ? WHERE id = ?').run(JSON.stringify(photos), albumId);
+
+  return { ...album, photos };
 };

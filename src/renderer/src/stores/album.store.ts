@@ -1,21 +1,29 @@
 import { create } from 'zustand';
 
+import { MEDIA_VIEW } from '#/constants/media';
 import { getApi } from '#/hooks/use-ipc';
-import { type Album } from '#/types';
+import { type Album, type AlbumPhoto, type MediaView } from '#/types';
 
 type AlbumState = {
   albums: Album[];
   activeAlbumId: string | null;
   currentPage: number;
+  view: MediaView;
+  zoom: number;
+  albumListCollapsed: boolean;
 };
 
 type AlbumActions = {
   setActiveAlbumId: (albumId: string | null) => void;
   setCurrentPage: (page: number) => void;
+  setView: (view: MediaView) => void;
+  setZoom: (zoom: number) => void;
+  toggleAlbumList: () => void;
   loadAlbums: () => Promise<void>;
   addAlbum: (name?: string) => Promise<string>;
   renameAlbum: (albumId: string, name: string) => Promise<void>;
   removeAlbum: (albumId: string) => Promise<void>;
+  addPhotoToAlbum: (albumId: string, photo: AlbumPhoto) => Promise<void>;
 };
 
 export type AlbumStore = AlbumState & AlbumActions;
@@ -31,8 +39,14 @@ export const useAlbumStore = create<AlbumStore>((set, get) => ({
   albums: [],
   activeAlbumId: null,
   currentPage: 1,
+  view: MEDIA_VIEW.grid,
+  zoom: 31,
+  albumListCollapsed: false,
   setActiveAlbumId: (activeAlbumId) => set({ activeAlbumId, currentPage: 1 }),
   setCurrentPage: (currentPage) => set({ currentPage: Math.max(1, currentPage) }),
+  setView: (view) => set({ view }),
+  setZoom: (zoom) => set({ zoom }),
+  toggleAlbumList: () => set((state) => ({ albumListCollapsed: !state.albumListCollapsed })),
   loadAlbums: async () => {
     const albums = await getApi().albums.list();
     const activeAlbumId = nextActiveAlbumId(albums, get().activeAlbumId);
@@ -71,6 +85,15 @@ export const useAlbumStore = create<AlbumStore>((set, get) => ({
         currentPage: activeAlbumId === state.activeAlbumId ? state.currentPage : 1
       };
     });
+  },
+  addPhotoToAlbum: async (albumId, photo) => {
+    const album = await getApi().albums.addPhoto(albumId, photo);
+    if (!album) {
+      return;
+    }
+    set((state) => ({
+      albums: state.albums.map((item) => (item.id === albumId ? album : item))
+    }));
   }
 }));
 

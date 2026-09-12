@@ -1,3 +1,3 @@
-import { type Album } from '../../../../shared/album';
+import { type Album, type AlbumPhoto } from '../../../../shared/album';
 
-export type { Album };
+export type { Album, AlbumPhoto };
