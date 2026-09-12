@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-09-13
+
+### Added
+
+- RAW files (NEF, ARW, CR2, and similar) show their embedded JPEG preview in the photo pane.
+
 ## [0.23.0] - 2026-09-13
 
 ### Changed
