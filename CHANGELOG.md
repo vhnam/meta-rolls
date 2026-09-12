@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.24.1] - 2026-09-13
+
+### Changed
+
+- Media toolbar shows a thumbnail-size slider in grid view and labels the list and thumbnail buttons.
+
 ## [0.24.0] - 2026-09-13
 
 ### Added

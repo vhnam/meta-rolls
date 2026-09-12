@@ -7,7 +7,6 @@ import {
   IconLayoutSidebar,
   IconLayoutSidebarFilled,
   IconRefresh
-  // IconSearch
 } from '@tabler/icons-react';
 
 import { Button } from '#/components/ui/button';
@@ -18,7 +17,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '#/components/ui/dropdown-menu';
-// import { Input } from '#/components/ui/input';
 import { Separator } from '#/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
 import { type MediaView } from '#/types';
@@ -41,12 +39,10 @@ type MediaToolbarProps = {
 };
 
 const MediaToolbar = ({
-  // query,
-  // onQueryChange,
   view,
   onViewChange,
-  // zoom,
-  // onZoomChange,
+  zoom,
+  onZoomChange,
   folderTreeCollapsed,
   onToggleFolderTree,
   currentFolderName,
@@ -92,27 +88,60 @@ const MediaToolbar = ({
         <TooltipContent>Forward</TooltipContent>
       </Tooltip>
 
-      <Separator orientation="vertical" className="mx-1 h-4 self-center" />
+      <Separator orientation="vertical" className="mx-1 h-8 self-center" />
 
       <span className="min-w-0 flex-1 truncate px-2 text-[11px] font-medium text-foreground">
         {currentFolderName}
       </span>
 
       <div className="ml-auto flex items-center gap-1">
-        <Button
-          variant={view === 'list' ? 'secondary' : 'ghost'}
-          size="icon-xs"
-          onClick={() => onViewChange('list')}
-        >
-          <IconLayoutList />
-        </Button>
-        <Button
-          variant={view === 'grid' ? 'secondary' : 'ghost'}
-          size="icon-xs"
-          onClick={() => onViewChange('grid')}
-        >
-          <IconLayoutGrid />
-        </Button>
+        {view === 'grid' && (
+          <div className="flex items-center gap-2 pr-1">
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={zoom}
+              onChange={(event) => onZoomChange(Number(event.target.value))}
+              className="h-1 w-24 cursor-pointer accent-muted-foreground"
+              aria-label="Thumbnail size"
+            />
+          </div>
+        )}
+
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                variant={view === 'list' ? 'secondary' : 'ghost'}
+                size="icon-xs"
+                onClick={() => onViewChange('list')}
+              />
+            }
+          >
+            <IconLayoutList />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>List view</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                variant={view === 'grid' ? 'secondary' : 'ghost'}
+                size="icon-xs"
+                onClick={() => onViewChange('grid')}
+              />
+            }
+          >
+            <IconLayoutGrid />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Thumbnail view</p>
+          </TooltipContent>
+        </Tooltip>
         <DropdownMenu>
           <DropdownMenuTrigger render={<Button variant="ghost" />}>
             <IconDots />
@@ -127,29 +156,6 @@ const MediaToolbar = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      {/* <div className="relative mx-1 w-44">
-        <IconSearch className="pointer-events-none absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={query}
-          onChange={(event) => onQueryChange(event.target.value)}
-          placeholder="Search"
-          className="h-6 pl-7"
-        />
-      </div> */}
-
-      {/* <div className="ml-auto flex items-center gap-2 pr-1">
-        <input
-          type="range"
-          min={20}
-          max={80}
-          value={zoom}
-          onChange={(event) => onZoomChange(Number(event.target.value))}
-          className="h-1 w-24 cursor-pointer accent-primary"
-          aria-label="Thumbnail size"
-        />
-        <span className="w-8 text-right font-mono text-tiny text-muted-foreground">{zoom}%</span>
-      </div> */}
     </div>
   );
 };
