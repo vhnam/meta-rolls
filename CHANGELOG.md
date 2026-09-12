@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.25.1] - 2026-09-13
+
+### Changed
+
+- Add context menu, field, and label UI primitives.
+
 ## [0.25.0] - 2026-09-13
 
 ### Added
