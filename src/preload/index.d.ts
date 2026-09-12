@@ -1,5 +1,6 @@
 import { ElectronAPI } from '@electron-toolkit/preload';
 
+import { type Album } from '../../shared/album';
 import { type PhotoExif } from '../../shared/media';
 
 export type SettingsStorageApi = {
@@ -33,6 +34,13 @@ export type MediaLibraryApi = {
   readExif: (filePath: string) => Promise<PhotoExif | null>;
 };
 
+export type AlbumsApi = {
+  list: () => Promise<Album[]>;
+  create: (name?: string) => Promise<Album>;
+  rename: (albumId: string, name: string) => Promise<Album | null>;
+  remove: (albumId: string) => Promise<void>;
+};
+
 export type MenuApi = {
   onOpenPreferences: (callback: () => void) => () => void;
 };
@@ -40,6 +48,7 @@ export type MenuApi = {
 export type RendererApi = {
   settings: SettingsStorageApi;
   media: MediaLibraryApi;
+  albums: AlbumsApi;
   menu: MenuApi;
 };
 

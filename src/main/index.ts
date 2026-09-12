@@ -7,6 +7,7 @@ import { APP_ICON_PATH } from './app/icon';
 import { handleMediaProtocol, registerMediaScheme } from './app/media-protocol';
 import { APP_NAME, setupAppMenu } from './app/menu';
 import { registerAllIpcHandlers } from './ipc';
+import { closeAppDatabase } from './services/app-database';
 import { endExifTool } from './services/exif-reader';
 
 registerMediaScheme();
@@ -90,6 +91,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('before-quit', () => {
+  closeAppDatabase();
   void endExifTool();
 });
 

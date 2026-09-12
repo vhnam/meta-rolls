@@ -15,6 +15,13 @@ const api = {
     listFolder: (dirPath: string) => ipcRenderer.invoke(IpcChannel.mediaListFolder, dirPath),
     readExif: (filePath: string) => ipcRenderer.invoke(IpcChannel.mediaReadExif, filePath)
   },
+  albums: {
+    list: () => ipcRenderer.invoke(IpcChannel.albumsList),
+    create: (name?: string) => ipcRenderer.invoke(IpcChannel.albumsCreate, name),
+    rename: (albumId: string, name: string) =>
+      ipcRenderer.invoke(IpcChannel.albumsRename, albumId, name),
+    remove: (albumId: string) => ipcRenderer.invoke(IpcChannel.albumsRemove, albumId)
+  },
   menu: {
     onOpenPreferences: (callback: () => void) => {
       const handler = () => callback();

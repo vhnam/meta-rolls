@@ -20,7 +20,13 @@ export default defineConfig({
       fileName: () => 'index.js'
     },
     rolldownOptions: {
-      external: ['electron', ...nodeBuiltins, ...Object.keys(pkg.dependencies)]
+      external: [
+        'electron',
+        'sqlite',
+        'node:sqlite',
+        ...nodeBuiltins,
+        ...Object.keys(pkg.dependencies)
+      ]
     }
   }
 });
