@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { DEFAULT_PHOTO_ACCENT, MEDIA_VIEW, FOLDER_KIND } from '#/constants/media';
+import { MEDIA_VIEW, FOLDER_KIND } from '#/constants/media';
 import { getApi } from '#/hooks/use-ipc';
 import { type MediaView, type PhotoFolder, type PhotoItem } from '#/types';
 import { findFolder } from '#/utils';
@@ -106,15 +106,24 @@ const setChildrenInTree = (
 
 const toPhotoItems = (
   folderId: string,
-  files: { id: string; name: string; date: string; path: string }[]
+  files: {
+    id: string;
+    name: string;
+    createdAt: string;
+    size: number;
+    width: number;
+    height: number;
+    path: string;
+  }[]
 ): PhotoItem[] =>
   files.map((file) => ({
     id: file.id,
     folderId,
     name: file.name,
-    date: file.date,
-    camera: '',
-    accent: DEFAULT_PHOTO_ACCENT,
+    createdAt: file.createdAt,
+    size: file.size,
+    width: file.width,
+    height: file.height,
     path: file.path
   }));
 
@@ -127,7 +136,7 @@ export const useMediaPoolStore = create<MediaPoolStore>((set, get) => ({
   photos: [],
   folders: [],
   query: '',
-  view: MEDIA_VIEW.grid,
+  view: MEDIA_VIEW.list,
   zoom: 31,
   selectedFolderId: '',
   folderHistory: [],

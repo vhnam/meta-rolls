@@ -1,6 +1,8 @@
 import { readdir, stat } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 
+import { readImageDimensions } from './image-dimensions';
+
 export type DiskEntry = {
   id: string;
   name: string;
@@ -14,7 +16,10 @@ export type FileEntry = {
   id: string;
   name: string;
   path: string;
-  date: string;
+  createdAt: string;
+  size: number;
+  width: number;
+  height: number;
 };
 
 export type FolderListing = {
@@ -22,20 +27,7 @@ export type FolderListing = {
   files: FileEntry[];
 };
 
-const IMAGE_EXTENSIONS = new Set([
-  '.jpg',
-  '.jpeg',
-  '.jpe',
-  '.jfif',
-  '.png',
-  '.gif',
-  '.webp',
-  '.tif',
-  '.tiff',
-  '.bmp',
-  '.avif',
-  '.heic',
-  '.heif',
+const RAW_IMAGE_EXTENSIONS = new Set([
   '.dng',
   '.raw',
   '.cr2',
@@ -62,9 +54,29 @@ const IMAGE_EXTENSIONS = new Set([
   '.rwl'
 ]);
 
+const IMAGE_EXTENSIONS = new Set([
+  '.jpg',
+  '.jpeg',
+  '.jpe',
+  '.jfif',
+  '.png',
+  '.gif',
+  '.webp',
+  '.tif',
+  '.tiff',
+  '.bmp',
+  '.avif',
+  '.heic',
+  '.heif',
+  ...RAW_IMAGE_EXTENSIONS
+]);
+
 const isHidden = (name: string) => name.startsWith('.');
 
 const isImageFile = (name: string) => IMAGE_EXTENSIONS.has(extname(name).toLowerCase());
+
+export const isRawImageFile = (filePath: string) =>
+  RAW_IMAGE_EXTENSIONS.has(extname(filePath).toLowerCase());
 
 const hasSubdirectories = async (dirPath: string): Promise<boolean> => {
   try {
@@ -126,7 +138,8 @@ export const listVolumes = async (): Promise<DiskEntry[]> => {
   return listVolumesFallback();
 };
 
-const formatMtime = (mtime: Date) => mtime.toISOString().slice(0, 10);
+const createdAtFromStat = (fileStat: { birthtimeMs: number; birthtime: Date; mtime: Date }) =>
+  (fileStat.birthtimeMs > 0 ? fileStat.birthtime : fileStat.mtime).toISOString();
 
 export const listFolder = async (dirPath: string): Promise<FolderListing> => {
   try {
@@ -145,10 +158,29 @@ export const listFolder = async (dirPath: string): Promise<FolderListing> => {
         .map(async (entry) => {
           const path = join(dirPath, entry.name);
           try {
-            const fileStat = await stat(path);
-            return { id: path, name: entry.name, path, date: formatMtime(fileStat.mtime) };
+            const [fileStat, dimensions] = await Promise.all([
+              stat(path),
+              readImageDimensions(path)
+            ]);
+            return {
+              id: path,
+              name: entry.name,
+              path,
+              createdAt: createdAtFromStat(fileStat),
+              size: fileStat.size,
+              width: dimensions.width,
+              height: dimensions.height
+            };
           } catch {
-            return { id: path, name: entry.name, path, date: '' };
+            return {
+              id: path,
+              name: entry.name,
+              path,
+              createdAt: '',
+              size: 0,
+              width: 0,
+              height: 0
+            };
           }
         })
     );

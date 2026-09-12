@@ -20,7 +20,10 @@ export type MediaFileEntry = {
   id: string;
   name: string;
   path: string;
-  date: string;
+  createdAt: string;
+  size: number;
+  width: number;
+  height: number;
 };
 
 export type MediaFolderListing = {

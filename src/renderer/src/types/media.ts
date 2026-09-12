@@ -17,16 +17,11 @@ export type PhotoItem = {
   id: string;
   folderId: string;
   name: string;
-  date: string;
-  camera: string;
-  accent: string;
+  createdAt: string;
+  size: number;
+  width: number;
+  height: number;
   path?: string;
 };
 
 export type { PhotoExif, PhotoExifField };
-
-export type Album = {
-  id: string;
-  name: string;
-  photos: PhotoItem[];
-};

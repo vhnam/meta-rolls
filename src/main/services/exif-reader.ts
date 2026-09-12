@@ -1,8 +1,67 @@
+import { stat } from 'node:fs/promises';
+
 import { BinaryField, ExifDate, ExifDateTime, ExifTime, ExifTool } from 'exiftool-vendored';
 
 import { type PhotoExif, type PhotoExifField } from '../../../shared/media';
 
-const exiftool = new ExifTool({ maxProcs: 1 });
+const exiftool = new ExifTool({ maxProcs: 2 });
+const PREVIEW_TAGS = ['PreviewImage', 'JpgFromRaw', 'OtherImage', 'ThumbnailImage'] as const;
+const PREVIEW_CACHE_LIMIT = 8;
+
+type CachedPreview = {
+  mtimeMs: number;
+  buffer: Buffer;
+};
+
+const previewCache = new Map<string, CachedPreview>();
+const inflightPreviews = new Map<string, Promise<Buffer | null>>();
+
+const isJpeg = (buffer: Buffer) => buffer.length > 2 && buffer[0] === 0xff && buffer[1] === 0xd8;
+
+const rememberPreview = (filePath: string, mtimeMs: number, buffer: Buffer) => {
+  previewCache.delete(filePath);
+  previewCache.set(filePath, { mtimeMs, buffer });
+  if (previewCache.size > PREVIEW_CACHE_LIMIT) {
+    const oldest = previewCache.keys().next().value;
+    if (oldest) {
+      previewCache.delete(oldest);
+    }
+  }
+};
+
+const extractPreviewBuffer = async (filePath: string, mtimeMs: number): Promise<Buffer | null> => {
+  for (const tag of PREVIEW_TAGS) {
+    try {
+      const buffer = await exiftool.extractBinaryTagToBuffer(tag, filePath);
+      if (isJpeg(buffer)) {
+        rememberPreview(filePath, mtimeMs, buffer);
+        return buffer;
+      }
+    } catch {
+      continue;
+    }
+  }
+  return null;
+};
+
+export const extractRawPreviewJpeg = async (filePath: string): Promise<Buffer | null> => {
+  const mtimeMs = (await stat(filePath)).mtimeMs;
+  const cached = previewCache.get(filePath);
+  if (cached && cached.mtimeMs === mtimeMs) {
+    return cached.buffer;
+  }
+
+  const pending = inflightPreviews.get(filePath);
+  if (pending) {
+    return pending;
+  }
+
+  const request = extractPreviewBuffer(filePath, mtimeMs).finally(() => {
+    inflightPreviews.delete(filePath);
+  });
+  inflightPreviews.set(filePath, request);
+  return request;
+};
 
 const SKIP_KEYS = new Set([
   'SourceFile',
@@ -45,6 +104,32 @@ const formatValue = (value: unknown): string | null => {
     }
   }
   return null;
+};
+
+const toPositiveInt = (value: unknown): number => {
+  const numeric = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(numeric) && numeric > 0 ? Math.round(numeric) : 0;
+};
+
+export const readExifImageDimensions = async (
+  filePath: string
+): Promise<{ width: number; height: number }> => {
+  try {
+    const tags = await exiftool.read(filePath, [
+      '-fast2',
+      '-n',
+      '-ImageWidth',
+      '-ImageHeight',
+      '-ExifImageWidth',
+      '-ExifImageHeight'
+    ]);
+    return {
+      width: toPositiveInt(tags.ImageWidth) || toPositiveInt(tags.ExifImageWidth),
+      height: toPositiveInt(tags.ImageHeight) || toPositiveInt(tags.ExifImageHeight)
+    };
+  } catch {
+    return { width: 0, height: 0 };
+  }
 };
 
 export const readPhotoExif = async (filePath: string): Promise<PhotoExif | null> => {

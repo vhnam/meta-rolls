@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.22.0] - 2026-09-13
+
+### Added
+
+- Folder listings include each photo's created date, file size, and pixel dimensions.
+
 ## [0.21.0] - 2026-09-13
 
 ### Changed
