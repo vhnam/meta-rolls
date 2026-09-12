@@ -9,6 +9,16 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-09-12
+
+### Added
+
+- Metadata pane shows a compact EXIF overview (ISO, shutter, aperture, white balance, format, resolution, color space) above the grouped tags.
+
+### Changed
+
+- Photo EXIF reads go through a shared renderer hook with request coalescing.
+
 ## [0.15.2] - 2026-09-12
 
 ### Changed

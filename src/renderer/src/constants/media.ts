@@ -27,6 +27,20 @@ export const METADATA_NAME_LABEL = 'File:Name';
 export const METADATA_DATETIME_FORMAT = 'MMM D, YYYY h:mm:ss A';
 export const METADATA_DATE_FORMAT = 'MMM D, YYYY';
 
+export const PHOTO_OVERVIEW_FIELDS = [
+  { id: 'iso', label: 'ISO', keys: ['ISO', 'ISOSpeed'] },
+  {
+    id: 'shutter',
+    label: 'Shutter Speed',
+    keys: ['ExposureTime', 'ShutterSpeed', 'ShutterSpeedValue']
+  },
+  { id: 'aperture', label: 'Aperture', keys: ['FNumber', 'Aperture', 'ApertureValue'] },
+  { id: 'whiteBalance', label: 'White Balance', keys: ['WhiteBalance'] },
+  { id: 'format', label: 'Image Format', keys: ['FileType', 'FileTypeExtension'] },
+  { id: 'resolution', label: 'Resolution', keys: ['ImageSize'] },
+  { id: 'colorSpace', label: 'Color Space', keys: ['ColorSpace', 'ColorSpaceData'] }
+] as const;
+
 export const PHOTO_ITEMS: PhotoItem[] = [
   {
     id: 'p1',
