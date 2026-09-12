@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import {
   copyFileSync,
   existsSync,
@@ -6,10 +7,10 @@ import {
   utimesSync,
   writeFileSync
 } from 'node:fs';
-import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import pkg from '../package.json' with { type: 'json' };
 
 const BUNDLE_ID = 'com.electron.meta-rolls';

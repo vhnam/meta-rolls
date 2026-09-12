@@ -6,12 +6,12 @@ Electron + React app: browse/filter photos, manage album layouts, print Instax.
 
 Put new code in one of four roots. Match the world to the runtime:
 
-| Root | Runtime | Owns |
-| --- | --- | --- |
-| `src/main/` | Node (main) | `app` lifecycle, `BrowserWindow`, menu, IPC handlers, `fs`, EXIF, print |
-| `src/preload/` | isolated preload | `contextBridge` only — keep thin |
-| `src/renderer/` | Chromium | React UI, TanStack Router, hooks, stores, Tailwind |
-| `shared/` | main + renderer | Types and constants only — no Node APIs, no DOM |
+| Root            | Runtime          | Owns                                                                    |
+| --------------- | ---------------- | ----------------------------------------------------------------------- |
+| `src/main/`     | Node (main)      | `app` lifecycle, `BrowserWindow`, menu, IPC handlers, `fs`, EXIF, print |
+| `src/preload/`  | isolated preload | `contextBridge` only — keep thin                                        |
+| `src/renderer/` | Chromium         | React UI, TanStack Router, hooks, stores, Tailwind                      |
+| `shared/`       | main + renderer  | Types and constants only — no Node APIs, no DOM                         |
 
 Renderer reaches main only through `window.api` (`src/renderer/src/hooks/use-ipc.ts`). Types for that API live in `src/preload/index.d.ts` and stay aligned with `src/preload/index.ts`. Cross-process domain types (`Photo`, `Album`, `FilterCriteria`, …) live in `shared/types.ts`. IPC channel names live in `shared/ipc.ts`.
 
@@ -111,7 +111,7 @@ New IPC domain → `src/main/ipc/<domain>.ts` plus Node work in `src/main/servic
 - Shared types: imported by both tsconfigs
 - Package: `electron-builder.yml`, `components.json`, `package.json`
 
-Commands: `package.json` scripts. Format with Biome; lint with oxlint.
+Commands: `package.json` scripts. Format with Oxfmt; lint with oxlint.
 
 ## Commits and versions
 
@@ -126,6 +126,7 @@ On every commit:
 Done when `package.json` version, the new `CHANGELOG.md` heading, and the commit message all describe the same bump.
 
 <!-- gitnexus:start -->
+
 # GitNexus — Code Intelligence
 
 This project is indexed by GitNexus as **meta-rolls** (551 symbols, 807 relationships, 11 execution flows).
@@ -150,12 +151,12 @@ This project is indexed by GitNexus as **meta-rolls** (551 symbols, 807 relation
 
 ## Resources
 
-| Resource | Use for |
-| --- | --- |
-| `gitnexus://repo/meta-rolls/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/meta-rolls/clusters` | All functional areas |
-| `gitnexus://repo/meta-rolls/processes` | All execution flows |
-| `gitnexus://repo/meta-rolls/process/{name}` | Step-by-step execution trace |
+| Resource                                    | Use for                                  |
+| ------------------------------------------- | ---------------------------------------- |
+| `gitnexus://repo/meta-rolls/context`        | Codebase overview, check index freshness |
+| `gitnexus://repo/meta-rolls/clusters`       | All functional areas                     |
+| `gitnexus://repo/meta-rolls/processes`      | All execution flows                      |
+| `gitnexus://repo/meta-rolls/process/{name}` | Step-by-step execution trace             |
 
 ## CLI
 
@@ -163,13 +164,13 @@ This project is indexed by GitNexus as **meta-rolls** (551 symbols, 807 relation
 
 Install editor skills and MCP with `gitnexus setup` (writes `~/.cursor/skills/`). This repo gitignores skill files and keeps gitignored links in `.cursor/skills/` so Cursor **Customize → Skills** can list them. Reload the window after `setup`. Index the repo with `node .gitnexus/run.cjs analyze`.
 
-| Task | Skill (`SKILL.md` in that folder) |
-| --- | --- |
-| Understand architecture / "How does X work?" | `gitnexus-exploring` |
-| Blast radius / "What breaks if I change X?" | `gitnexus-impact-analysis` |
-| Trace bugs / "Why is X failing?" | `gitnexus-debugging` |
-| Rename / extract / split / refactor | `gitnexus-refactoring` |
-| Tools, resources, schema reference | `gitnexus-guide` |
-| Index, status, clean, wiki CLI commands | `gitnexus-cli` |
+| Task                                         | Skill (`SKILL.md` in that folder) |
+| -------------------------------------------- | --------------------------------- |
+| Understand architecture / "How does X work?" | `gitnexus-exploring`              |
+| Blast radius / "What breaks if I change X?"  | `gitnexus-impact-analysis`        |
+| Trace bugs / "Why is X failing?"             | `gitnexus-debugging`              |
+| Rename / extract / split / refactor          | `gitnexus-refactoring`            |
+| Tools, resources, schema reference           | `gitnexus-guide`                  |
+| Index, status, clean, wiki CLI commands      | `gitnexus-cli`                    |
 
 <!-- gitnexus:end -->

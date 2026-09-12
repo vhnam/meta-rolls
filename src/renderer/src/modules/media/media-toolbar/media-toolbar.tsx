@@ -9,11 +9,8 @@ import {
   IconRefresh
   // IconSearch
 } from '@tabler/icons-react';
+
 import { Button } from '#/components/ui/button';
-// import { Input } from '#/components/ui/input';
-import { Separator } from '#/components/ui/separator';
-import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
-import { type MediaView } from '#/types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +18,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '#/components/ui/dropdown-menu';
+// import { Input } from '#/components/ui/input';
+import { Separator } from '#/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
+import { type MediaView } from '#/types';
 
 type MediaToolbarProps = {
   query: string;
@@ -74,14 +75,7 @@ const MediaToolbar = ({
       </Tooltip>
       <Tooltip>
         <TooltipTrigger
-          render={
-            <Button
-              variant="ghost"
-              size="icon-xs"
-              disabled={!canGoBack}
-              onClick={onBack}
-            />
-          }
+          render={<Button variant="ghost" size="icon-xs" disabled={!canGoBack} onClick={onBack} />}
         >
           <IconChevronLeft />
         </TooltipTrigger>
@@ -90,12 +84,7 @@ const MediaToolbar = ({
       <Tooltip>
         <TooltipTrigger
           render={
-            <Button
-              variant="ghost"
-              size="icon-xs"
-              disabled={!canGoForward}
-              onClick={onForward}
-            />
+            <Button variant="ghost" size="icon-xs" disabled={!canGoForward} onClick={onForward} />
           }
         >
           <IconChevronRight />

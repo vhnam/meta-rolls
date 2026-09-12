@@ -1,8 +1,10 @@
-import { app, shell, BrowserWindow } from 'electron';
 import { join } from 'path';
+
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
-import { APP_NAME, setupAppMenu } from './app/menu';
+import { app, shell, BrowserWindow } from 'electron';
+
 import { APP_ICON_PATH } from './app/icon';
+import { APP_NAME, setupAppMenu } from './app/menu';
 import { registerAllIpcHandlers } from './ipc';
 
 app.setName(APP_NAME);

@@ -1,4 +1,5 @@
 import { ipcMain } from 'electron';
+
 import { IpcChannel } from '../../../shared/ipc';
 import { listFolder, listVolumes } from '../services/media-library';
 

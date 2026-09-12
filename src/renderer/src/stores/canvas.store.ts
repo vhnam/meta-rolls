@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+
 import { DEFAULT_SLOT_SETTINGS } from '#/constants/canvas';
 import { type SlotFit, type SlotSettings } from '#/types';
 

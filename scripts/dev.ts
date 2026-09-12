@@ -1,6 +1,8 @@
 import { spawn, type ChildProcess } from 'child_process';
-import { createServer, build } from 'vite';
+
 import electronPath from 'electron';
+import { createServer, build } from 'vite';
+
 import { fixMacosAppName } from './fix-macos-app-name';
 
 type RolldownWatcher = Extract<Awaited<ReturnType<typeof build>>, { close: () => Promise<void> }>;

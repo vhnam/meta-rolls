@@ -1,4 +1,5 @@
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+
 import { Button } from '#/components/ui/button';
 import { type PhotoItem } from '#/types';
 

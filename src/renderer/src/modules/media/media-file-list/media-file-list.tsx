@@ -1,7 +1,8 @@
 import { cn } from '#/lib/utils';
 import { type PhotoFolder, type PhotoItem } from '#/types';
-import MediaPhoto from './media-photo';
+
 import MediaFolder from './media-folder';
+import MediaPhoto from './media-photo';
 
 type MediaFileListProps = {
   folders: PhotoFolder[];
@@ -36,7 +37,9 @@ const MediaFileList = ({
       </div>
       <div className="min-h-0 flex-1 overflow-auto">
         {isEmpty ? (
-          <p className="px-2 h-5.5 flex items-center text-tiny text-muted-foreground">No files in this folder.</p>
+          <p className="px-2 h-5.5 flex items-center text-tiny text-muted-foreground">
+            No files in this folder.
+          </p>
         ) : (
           <>
             {folders.map((folder, index) => (

@@ -1,5 +1,7 @@
-import { app, ipcMain } from 'electron';
 import { join } from 'node:path';
+
+import { app, ipcMain } from 'electron';
+
 import { IpcChannel } from '../../../shared/ipc';
 import { getConfigItem, removeConfigItem, setConfigItem } from '../services/config-store';
 

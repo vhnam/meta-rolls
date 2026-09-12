@@ -1,5 +1,6 @@
-import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
+import { contextBridge, ipcRenderer } from 'electron';
+
 import { IpcChannel } from '../../shared/ipc';
 
 const api = {

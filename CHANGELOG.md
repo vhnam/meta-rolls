@@ -9,6 +9,18 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.8.1] - 2026-09-12
+
+### Changed
+
+- Format source with Oxfmt instead of Biome, including sorted imports.
+- Editor setup uses the Oxc formatter (`js/ts.format.enabled`) instead of Biome.
+
+### Fixed
+
+- Sidebar toggle no longer shadows the outer `open` state.
+- `useIsMobile` reads viewport size through `useSyncExternalStore` instead of `setState` in an effect.
+
 ## [0.8.0] - 2026-09-12
 
 ### Changed

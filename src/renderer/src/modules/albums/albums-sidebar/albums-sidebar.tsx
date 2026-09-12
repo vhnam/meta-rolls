@@ -1,7 +1,8 @@
+import { IconPlus } from '@tabler/icons-react';
+
 import { Button } from '#/components/ui/button';
 import { cn } from '#/lib/utils';
 import { useAlbumStore } from '#/stores/album.store';
-import { IconPlus } from '@tabler/icons-react';
 
 const AlbumSidebar = () => {
   const albums = useAlbumStore((state) => state.albums);

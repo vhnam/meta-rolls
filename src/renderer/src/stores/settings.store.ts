@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
+
 import { PRINT_FORMAT, THEME_PREFERENCE } from '#/constants/settings';
 import { getApi } from '#/hooks/use-ipc';
 import { type PrintFormat, type ThemePreference } from '#/types';

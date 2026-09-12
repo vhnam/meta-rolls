@@ -1,5 +1,5 @@
-import { mkdirSync, rmSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
+import { mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
 if (process.platform !== 'darwin') {

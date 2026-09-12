@@ -1,6 +1,8 @@
 import { builtinModules } from 'module';
 import { resolve } from 'path';
+
 import { defineConfig } from 'vite';
+
 import pkg from './package.json' with { type: 'json' };
 
 const nodeBuiltins = builtinModules.flatMap((m) => [m, `node:${m}`]);

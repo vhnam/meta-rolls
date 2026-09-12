@@ -1,6 +1,7 @@
-import { useNavigate, useRouterState } from '@tanstack/react-router';
-import { Tabs, TabsList, TabsTrigger } from '#/components/ui/tabs';
 import { IconLibraryPhoto, IconPhoto, IconPhotoAlt } from '@tabler/icons-react';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
+
+import { Tabs, TabsList, TabsTrigger } from '#/components/ui/tabs';
 import appIcon from '@/resources/icon.png';
 
 const TAB_ROUTES = {

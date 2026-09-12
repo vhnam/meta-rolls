@@ -1,4 +1,5 @@
 import { Outlet } from '@tanstack/react-router';
+
 import { AppTitleBar } from '#/components/app-title-bar';
 import { TooltipProvider } from '#/components/ui/tooltip';
 

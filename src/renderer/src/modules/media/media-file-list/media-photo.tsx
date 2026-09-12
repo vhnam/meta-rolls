@@ -1,6 +1,8 @@
+import { IconPhoto } from '@tabler/icons-react';
+
 import { cn } from '#/lib/utils';
 import { PhotoFolder, PhotoItem } from '#/types';
-import { IconPhoto } from '@tabler/icons-react';
+
 import { COLUMN_CLASSES } from './media-file-list';
 
 type MediaPhotoProps = {

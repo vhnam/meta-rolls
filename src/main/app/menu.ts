@@ -1,4 +1,5 @@
 import { app, Menu, type MenuItemConstructorOptions } from 'electron';
+
 import { APP_ICON_PATH } from './icon';
 
 export const APP_NAME = 'Meta Rolls';

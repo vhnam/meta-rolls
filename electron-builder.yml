@@ -10,7 +10,7 @@ files:
   - '!vite.main.config.{js,ts,mjs,cjs,mts}'
   - '!vite.preload.config.{js,ts,mjs,cjs,mts}'
   - '!components.json'
-  - '!{.oxlintrc.json,biome.json,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.oxlintrc.json,.oxfmtrc.json,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:

@@ -1,14 +1,14 @@
 ---
 $schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
-version: "0.2"
+version: '0.2'
 language: en-US
 useGitignore: true
 ignorePaths:
   - .oxlintrc.json
   - .vscode
-  - "**/*.svg"
-  - "**/routeTree.gen.ts"
-  - biome.json
+  - '**/*.svg'
+  - '**/routeTree.gen.ts'
+  - .oxfmtrc.json
   - build
   - components.json
   - dist

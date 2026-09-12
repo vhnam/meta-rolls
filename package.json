@@ -1,12 +1,12 @@
 {
   "name": "meta-rolls",
   "productName": "Meta Rolls",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Browse photos, manage album layouts, and print Instax",
   "main": "./out/main/index.js",
   "author": "vhnam2504@gmail.com",
   "scripts": {
-    "format": "biome format --write .",
+    "format": "oxfmt .",
     "lint": "oxlint .",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
@@ -40,7 +40,6 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.13",
     "@electron-toolkit/tsconfig": "^2.0.0",
     "@tanstack/router-plugin": "^1.168.37",
     "@types/node": "^26.5.1",
@@ -49,6 +48,7 @@
     "@vitejs/plugin-react": "^5.2.0",
     "electron": "^44.3.0",
     "electron-builder": "^26.15.3",
+    "oxfmt": "^0.67.0",
     "oxlint": "^1.82.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

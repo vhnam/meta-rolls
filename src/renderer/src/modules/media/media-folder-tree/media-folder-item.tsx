@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import {
   IconChevronDown,
   IconChevronRight,
@@ -6,10 +5,12 @@ import {
   IconFolder,
   IconLoader2
 } from '@tabler/icons-react';
-import { type PhotoFolder } from '#/types';
-import { cn } from '#/lib/utils';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
+
 import { isFolderInPath } from '#/lib/find-folder';
+import { cn } from '#/lib/utils';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
+import { type PhotoFolder } from '#/types';
 
 const SPINNER_DELAY_MS = 150;
 
