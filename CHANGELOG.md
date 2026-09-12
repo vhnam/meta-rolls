@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-09-12
+
+### Added
+
+- Photo preview supports pan, pinch-zoom, two-finger scroll, and preset zoom levels (Fit through 300% actual size).
+
 ## [0.16.0] - 2026-09-12
 
 ### Added

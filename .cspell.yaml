@@ -26,3 +26,4 @@ ignoreRegExpList:
   - /role:\s*['"][^'"]+['"]/g
 words:
   - Instax
+  - panzoom
