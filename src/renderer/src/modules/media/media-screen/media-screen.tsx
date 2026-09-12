@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
+import { MediaAlbums } from '#/modules/media/media-albums';
 import { MediaFileList } from '#/modules/media/media-file-list';
 import { MediaFolderTree } from '#/modules/media/media-folder-tree';
 import { MediaGrid } from '#/modules/media/media-grid';
-import { MediaLibraries } from '#/modules/media/media-libraries';
 import { MediaPreview } from '#/modules/media/media-preview';
 import { MediaToolbar } from '#/modules/media/media-toolbar';
 import {
@@ -71,22 +71,17 @@ const MediaScreen = () => {
               folders={childFolders}
               photos={listPhotos}
               selectedPhotoId={activePhotoId}
+              selectedListFolderId={store.selectedListFolderId}
               onSelectPhoto={store.setSelectedPhotoId}
-              onSelectFolder={store.setSelectedFolderId}
+              onHighlightFolder={store.setSelectedListFolderId}
+              onOpenFolder={store.setSelectedFolderId}
             />
           </div>
         </div>
-        <MediaPreview
-          photo={selectedPhoto}
-          onPrevious={() => store.selectRelativePhoto(-1)}
-          onNext={() => store.selectRelativePhoto(1)}
-        />
+        <MediaPreview photo={selectedPhoto} />
       </div>
       <div className="flex min-h-0 flex-1">
-        <MediaLibraries
-          selectedId={store.selectedLibraryId}
-          onSelect={store.setSelectedLibraryId}
-        />
+        <MediaAlbums selectedId={store.selectedLibraryId} onSelect={store.setSelectedLibraryId} />
         <MediaGrid
           photos={gridPhotos}
           selectedPhotoId={activePhotoId}

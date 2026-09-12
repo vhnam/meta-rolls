@@ -19,3 +19,9 @@ export type PhotoItem = {
   camera: string;
   accent: string;
 };
+
+export type Album = {
+  id: string;
+  name: string;
+  photos: PhotoItem[];
+};

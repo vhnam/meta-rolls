@@ -1,4 +1,4 @@
-import { type PhotoItem } from '#/types/media';
+import type { Album, PhotoItem } from '#/types/media';
 
 export const FOLDER_KIND = {
   disk: 'disk',
@@ -55,9 +55,4 @@ export const PHOTO_ITEMS: PhotoItem[] = [
   }
 ];
 
-export const ALBUM_LIBRARIES = [
-  { id: 'daily', label: 'Daily' },
-  { id: 'weekly', label: 'Weekly' },
-  { id: 'monthly', label: 'Monthly' },
-  { id: 'yearly', label: 'Yearly' }
-] as const;
+export const ALBUM_ITEMS: Album[] = [] as const;

@@ -16,6 +16,7 @@ type MediaPoolState = {
   folderHistoryIndex: number;
   selectedLibraryId: string;
   selectedPhotoId: string | null;
+  selectedListFolderId: string | null;
   folderTreeCollapsed: boolean;
 };
 
@@ -28,6 +29,7 @@ type MediaPoolActions = {
   goForward: () => void;
   setSelectedLibraryId: (libraryId: string) => void;
   setSelectedPhotoId: (photoId: string | null) => void;
+  setSelectedListFolderId: (folderId: string | null) => void;
   toggleFolderTree: () => void;
   selectRelativePhoto: (offset: number) => void;
   loadVolumes: () => Promise<void>;
@@ -50,21 +52,15 @@ export const getListPhotos = (state: MediaPoolState) =>
     (photo) => photo.folderId === state.selectedFolderId && matchesQuery(photo, state.query)
   );
 
-export const getGridPhotos = (state: MediaPoolState) => {
-  const searched = state.photos.filter((photo) => matchesQuery(photo, state.query));
-  if (state.selectedLibraryId === 'recent') {
-    return searched.slice(-3);
-  }
-  if (state.selectedLibraryId === 'favorites' || state.selectedLibraryId === 'keywords') {
-    return [];
-  }
-  return searched;
-};
+export const getGridPhotos = (_state: MediaPoolState): PhotoItem[] => [];
 
-export const getVisiblePhotos = (state: MediaPoolState) =>
-  state.view === MEDIA_VIEW.list ? getListPhotos(state) : getGridPhotos(state);
+export const getVisiblePhotos = (state: MediaPoolState) => getListPhotos(state);
 
 export const getActivePhotoId = (state: MediaPoolState) => {
+  if (state.selectedListFolderId) {
+    return null;
+  }
+
   const listPhotos = getListPhotos(state);
   const gridPhotos = getGridPhotos(state);
   const selectedIsVisible =
@@ -137,6 +133,7 @@ export const useMediaPoolStore = create<MediaPoolStore>((set, get) => ({
   folderHistoryIndex: -1,
   selectedLibraryId: 'all',
   selectedPhotoId: null,
+  selectedListFolderId: null,
   folderTreeCollapsed: false,
   setQuery: (query) => set({ query }),
   setView: (view) => set({ view }),
@@ -152,6 +149,7 @@ export const useMediaPoolStore = create<MediaPoolStore>((set, get) => ({
       ];
       return {
         selectedFolderId,
+        selectedListFolderId: null,
         folderHistory,
         folderHistoryIndex: folderHistory.length - 1
       };
@@ -163,7 +161,7 @@ export const useMediaPoolStore = create<MediaPoolStore>((set, get) => ({
     }
     const folderHistoryIndex = state.folderHistoryIndex - 1;
     const selectedFolderId = state.folderHistory[folderHistoryIndex];
-    set({ folderHistoryIndex, selectedFolderId });
+    set({ folderHistoryIndex, selectedFolderId, selectedListFolderId: null });
   },
   goForward: () => {
     const state = get();
@@ -172,10 +170,12 @@ export const useMediaPoolStore = create<MediaPoolStore>((set, get) => ({
     }
     const folderHistoryIndex = state.folderHistoryIndex + 1;
     const selectedFolderId = state.folderHistory[folderHistoryIndex];
-    set({ folderHistoryIndex, selectedFolderId });
+    set({ folderHistoryIndex, selectedFolderId, selectedListFolderId: null });
   },
   setSelectedLibraryId: (selectedLibraryId) => set({ selectedLibraryId }),
-  setSelectedPhotoId: (selectedPhotoId) => set({ selectedPhotoId }),
+  setSelectedPhotoId: (selectedPhotoId) => set({ selectedPhotoId, selectedListFolderId: null }),
+  setSelectedListFolderId: (selectedListFolderId) =>
+    set({ selectedListFolderId, selectedPhotoId: null }),
   toggleFolderTree: () => set((state) => ({ folderTreeCollapsed: !state.folderTreeCollapsed })),
   selectRelativePhoto: (offset) => {
     const state = get();
@@ -188,7 +188,7 @@ export const useMediaPoolStore = create<MediaPoolStore>((set, get) => ({
       currentIndex === -1
         ? 0
         : (currentIndex + offset + visiblePhotos.length) % visiblePhotos.length;
-    set({ selectedPhotoId: visiblePhotos[nextIndex].id });
+    set({ selectedPhotoId: visiblePhotos[nextIndex].id, selectedListFolderId: null });
   },
   loadVolumes: async () => {
     const volumes = await getApi().media.listVolumes();
@@ -209,6 +209,7 @@ export const useMediaPoolStore = create<MediaPoolStore>((set, get) => ({
       return {
         folders,
         selectedFolderId,
+        selectedListFolderId: null,
         folderHistory: selectedFolderId ? [selectedFolderId] : [],
         folderHistoryIndex: selectedFolderId ? 0 : -1
       };

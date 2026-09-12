@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-09-12
+
+### Changed
+
+- Media sidebar lists albums instead of library filters, and the file list can highlight a folder without opening it.
+
 ## [0.10.0] - 2026-09-12
 
 ### Added

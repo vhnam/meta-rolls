@@ -1,6 +1,6 @@
-import { IconFolder } from '@tabler/icons-react';
+import { IconFolder, IconFolderFilled } from '@tabler/icons-react';
+import { cn } from 'cn';
 
-import { cn } from '#/lib/utils';
 import { PhotoFolder } from '#/types';
 
 import { COLUMN_CLASSES } from './media-file-list';
@@ -8,23 +8,37 @@ import { COLUMN_CLASSES } from './media-file-list';
 type MediaFolderProps = {
   folder: PhotoFolder;
   index: number;
-  onSelectFolder: (id: string) => void;
+  selected: boolean;
+  onHighlightFolder: (id: string) => void;
+  onOpenFolder: (id: string) => void;
 };
 
-const MediaFolder = ({ folder, index, onSelectFolder }: MediaFolderProps) => {
+const MediaFolder = ({
+  folder,
+  index,
+  selected,
+  onHighlightFolder,
+  onOpenFolder
+}: MediaFolderProps) => {
   return (
     <button
       type="button"
       className={cn(
-        'grid h-5.5 w-full min-w-[20rem] px-2 text-left text-tiny hover:bg-muted',
+        'grid h-5.5 w-full min-w-[20rem] px-2 text-left',
         COLUMN_CLASSES,
-        index % 2 === 1 && 'bg-muted/40'
+        index % 2 === 1 && 'bg-muted/40',
+        selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground'
       )}
-      onClick={() => onSelectFolder(folder.id)}
+      onClick={() => onHighlightFolder(folder.id)}
+      onDoubleClick={() => onOpenFolder(folder.id)}
     >
       <span className="flex min-w-0 items-center gap-1.5 self-center">
-        <IconFolder className="size-3.5 shrink-0 text-muted-foreground" />
-        <span className="truncate">{folder.name}</span>
+        {selected ? (
+          <IconFolderFilled className="size-3.5 shrink-0 text-accent-foreground" />
+        ) : (
+          <IconFolder className="size-3.5 shrink-0 text-muted-foreground" />
+        )}
+        <span className="truncate font-mono text-xs">{folder.name}</span>
       </span>
       <span />
       <span />
