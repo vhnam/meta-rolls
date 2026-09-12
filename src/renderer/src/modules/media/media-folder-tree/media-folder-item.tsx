@@ -9,11 +9,10 @@ import {
 import { cn } from 'cn';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 
-import { isFolderInPath } from '#/lib/find-folder';
+import { FOLDER_SPINNER_DELAY_MS } from '#/constants/media';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoFolder } from '#/types';
-
-const SPINNER_DELAY_MS = 150;
+import { folderTreePaddingLeft, isFolderInPath } from '#/utils';
 
 type MediaFolderItemProps = {
   folder: PhotoFolder;
@@ -45,7 +44,7 @@ const MediaFolderItem = ({
 
     const timer = window.setTimeout(() => {
       setShowSpinner(true);
-    }, SPINNER_DELAY_MS);
+    }, FOLDER_SPINNER_DELAY_MS);
 
     loadRequest.current = loadFolderChildren(folder).finally(() => {
       window.clearTimeout(timer);
@@ -89,7 +88,7 @@ const MediaFolderItem = ({
           'flex h-6 w-full items-center gap-1 pr-2 text-left',
           selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground'
         )}
-        style={{ paddingLeft: 8 + depth * 12 }}
+        style={{ paddingLeft: folderTreePaddingLeft(depth) }}
         onClick={handleSelect}
       >
         {showSpinner ? (

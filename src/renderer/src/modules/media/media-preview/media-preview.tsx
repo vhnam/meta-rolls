@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { toMediaFileUrl } from '#/lib/media-file-url';
 import { type PhotoItem } from '#/types';
+import { toMediaFileUrl } from '#/utils';
 
 type MediaPreviewProps = {
   photo: PhotoItem | null;

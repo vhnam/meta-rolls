@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.15.2] - 2026-09-12
+
+### Changed
+
+- File list, folder tree, preview URLs, and folder lookup use renderer `constants` and `utils` instead of inline values and `#/lib`.
+
 ## [0.15.1] - 2026-09-12
 
 ### Changed

@@ -2,8 +2,8 @@ import { create } from 'zustand';
 
 import { DEFAULT_PHOTO_ACCENT, MEDIA_VIEW, FOLDER_KIND } from '#/constants/media';
 import { getApi } from '#/hooks/use-ipc';
-import { findFolder } from '#/lib/find-folder';
 import { type MediaView, type PhotoFolder, type PhotoItem } from '#/types';
+import { findFolder } from '#/utils';
 
 type MediaPoolState = {
   photos: PhotoItem[];

@@ -1,9 +1,8 @@
 import { IconPhoto, IconPhotoFilled } from '@tabler/icons-react';
 import { cn } from 'cn';
 
+import { FILE_LIST_COLUMN_CLASSES } from '#/constants/media';
 import { PhotoFolder, PhotoItem } from '#/types';
-
-import { COLUMN_CLASSES } from './media-file-list';
 
 type MediaPhotoProps = {
   photo: PhotoItem;
@@ -22,7 +21,7 @@ const MediaPhoto = ({ photo, selectedPhotoId, folders, index, onSelectPhoto }: M
       type="button"
       className={cn(
         'grid h-5.5 w-full min-w-[20rem] px-2 text-left',
-        COLUMN_CLASSES,
+        FILE_LIST_COLUMN_CLASSES,
         stripeIndex % 2 === 1 && 'bg-muted/40',
         selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground'
       )}

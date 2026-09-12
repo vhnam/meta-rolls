@@ -1,5 +1,6 @@
 import { cn } from 'cn';
 
+import { FILE_LIST_COLUMN_CLASSES } from '#/constants/media';
 import { type PhotoFolder, type PhotoItem } from '#/types';
 
 import MediaFolder from './media-folder';
@@ -14,8 +15,6 @@ type MediaFileListProps = {
   onHighlightFolder: (id: string) => void;
   onOpenFolder: (id: string) => void;
 };
-
-export const COLUMN_CLASSES = 'grid-cols-[minmax(9rem,1fr)_6.25rem_4.75rem]';
 
 const MediaFileList = ({
   folders,
@@ -33,7 +32,7 @@ const MediaFileList = ({
       <div
         className={cn(
           'grid h-6 shrink-0 border-b border-border bg-muted px-2 font-medium tracking-wide text-muted-foreground',
-          COLUMN_CLASSES
+          FILE_LIST_COLUMN_CLASSES
         )}
       >
         <span className="truncate self-center text-tiny">File Name</span>

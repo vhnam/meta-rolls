@@ -1,9 +1,8 @@
 import { IconFolder, IconFolderFilled } from '@tabler/icons-react';
 import { cn } from 'cn';
 
+import { FILE_LIST_COLUMN_CLASSES } from '#/constants/media';
 import { PhotoFolder } from '#/types';
-
-import { COLUMN_CLASSES } from './media-file-list';
 
 type MediaFolderProps = {
   folder: PhotoFolder;
@@ -25,7 +24,7 @@ const MediaFolder = ({
       type="button"
       className={cn(
         'grid h-5.5 w-full min-w-[20rem] px-2 text-left',
-        COLUMN_CLASSES,
+        FILE_LIST_COLUMN_CLASSES,
         index % 2 === 1 && 'bg-muted/40',
         selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground'
       )}
