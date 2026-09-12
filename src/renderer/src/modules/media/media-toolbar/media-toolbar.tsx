@@ -71,7 +71,7 @@ const MediaToolbar = ({
         >
           {folderTreeCollapsed ? <IconLayoutSidebar /> : <IconLayoutSidebarFilled />}
         </TooltipTrigger>
-        <TooltipContent>{folderTreeCollapsed ? 'Show disks' : 'Hide disks'}</TooltipContent>
+        <TooltipContent>{folderTreeCollapsed ? 'Show panel' : 'Hide panel'}</TooltipContent>
       </Tooltip>
       <Tooltip>
         <TooltipTrigger

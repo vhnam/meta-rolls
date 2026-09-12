@@ -1,6 +1,6 @@
-import { IconPhoto } from '@tabler/icons-react';
+import { IconPhoto, IconPhotoFilled } from '@tabler/icons-react';
+import { cn } from 'cn';
 
-import { cn } from '#/lib/utils';
 import { PhotoFolder, PhotoItem } from '#/types';
 
 import { COLUMN_CLASSES } from './media-file-list';
@@ -24,16 +24,20 @@ const MediaPhoto = ({ photo, selectedPhotoId, folders, index, onSelectPhoto }: M
         'grid h-5.5 w-full min-w-[20rem] px-2 text-left',
         COLUMN_CLASSES,
         stripeIndex % 2 === 1 && 'bg-muted/40',
-        selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted'
+        selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground'
       )}
       onClick={() => onSelectPhoto(photo.id)}
     >
       <span className="flex min-w-0 items-center gap-1.5 self-center">
-        <IconPhoto className="size-3.5 shrink-0 text-muted-foreground" />
+        {selected ? (
+          <IconPhotoFilled className="size-3.5 shrink-0 text-accent-foreground" />
+        ) : (
+          <IconPhoto className="size-3.5 shrink-0 text-muted-foreground" />
+        )}
         <span className="truncate text-tiny">{photo.name}</span>
       </span>
-      <span className="self-center text-tiny text-muted-foreground">{photo.date}</span>
-      <span className="truncate self-center text-tiny text-muted-foreground">{photo.camera}</span>
+      <span className="self-center text-tiny">{photo.date}</span>
+      <span className="truncate self-center text-tiny">{photo.camera}</span>
     </button>
   );
 };

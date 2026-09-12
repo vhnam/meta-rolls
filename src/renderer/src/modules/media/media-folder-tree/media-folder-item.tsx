@@ -3,12 +3,13 @@ import {
   IconChevronRight,
   IconDeviceDesktop,
   IconFolder,
+  IconFolderFilled,
   IconLoader2
 } from '@tabler/icons-react';
+import { cn } from 'cn';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 
 import { isFolderInPath } from '#/lib/find-folder';
-import { cn } from '#/lib/utils';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoFolder } from '#/types';
 
@@ -85,8 +86,8 @@ const MediaFolderItem = ({
         type="button"
         aria-busy={showSpinner}
         className={cn(
-          'flex h-6 w-full items-center gap-1 pr-2 text-left text-[11px] text-sidebar-foreground hover:bg-sidebar-accent/70',
-          selected && 'bg-sidebar-accent text-sidebar-accent-foreground'
+          'flex h-6 w-full items-center gap-1 pr-2 text-left',
+          selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground'
         )}
         style={{ paddingLeft: 8 + depth * 12 }}
         onClick={handleSelect}
@@ -110,11 +111,18 @@ const MediaFolderItem = ({
           <span className="size-4" />
         )}
         {folder.kind === 'disk' ? (
-          <IconDeviceDesktop className="size-3.5 shrink-0 text-sidebar-primary" />
+          <IconDeviceDesktop
+            className={cn(
+              'size-3.5 shrink-0',
+              selected ? 'text-accent-foreground' : 'text-sidebar-primary'
+            )}
+          />
+        ) : selected ? (
+          <IconFolderFilled className="size-3.5 shrink-0 text-accent-foreground" />
         ) : (
           <IconFolder className="size-3.5 shrink-0 text-muted-foreground" />
         )}
-        <span className="truncate">{folder.name}</span>
+        <span className="truncate font-mono text-xs">{folder.name}</span>
       </button>
       {open && hasChildren
         ? folder.children?.map((child) => (

@@ -1,7 +1,7 @@
 import { IconDots, IconLayoutGrid, IconSearch } from '@tabler/icons-react';
+import { cn } from 'cn';
 
 import { Button } from '#/components/ui/button';
-import { cn } from '#/lib/utils';
 import { type PhotoItem } from '#/types';
 
 type MediaGridProps = {
@@ -31,32 +31,38 @@ const MediaGrid = ({ title, photos, selectedPhotoId, onSelectPhoto, zoom }: Medi
           </Button>
         </div>
       </div>
-      <div className="min-h-0 flex-1 overflow-auto p-3">
-        <div className="flex flex-wrap content-start gap-3">
-          {photos.map((photo) => {
-            const selected = photo.id === selectedPhotoId;
-            return (
-              <button
-                key={photo.id}
-                type="button"
-                className="flex flex-col items-center gap-1"
-                onClick={() => onSelectPhoto(photo.id)}
-              >
-                <span
-                  className={cn(
-                    'block border border-border',
-                    selected && 'border-primary ring-1 ring-primary'
-                  )}
-                  style={{ width: size, height: size * 0.72, background: photo.accent }}
-                />
-                <span className="max-w-28 truncate text-tiny text-muted-foreground">
-                  {photo.name}
-                </span>
-              </button>
-            );
-          })}
+      {photos.length > 0 ? (
+        <div className="min-h-0 flex-1 scroll-fade overflow-auto p-3">
+          <div className="flex flex-wrap content-start gap-3">
+            {photos.map((photo) => {
+              const selected = photo.id === selectedPhotoId;
+              return (
+                <button
+                  key={photo.id}
+                  type="button"
+                  className="flex flex-col items-center gap-1"
+                  onClick={() => onSelectPhoto(photo.id)}
+                >
+                  <span
+                    className={cn(
+                      'block border border-border',
+                      selected && 'border-primary ring-1 ring-primary'
+                    )}
+                    style={{ width: size, height: size * 0.72, background: photo.accent }}
+                  />
+                  <span className="max-w-28 truncate text-tiny text-muted-foreground">
+                    {photo.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex-1 flex items-center justify-center text-sidebar-foreground">
+          <p className="text-xs text-muted-foreground">No photos found</p>
+        </div>
+      )}
     </section>
   );
 };

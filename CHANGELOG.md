@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-09-12
+
+### Changed
+
+- Album grid shows an empty state, and folder-tree / file-list selection chrome uses filled icons and accent highlighting.
+
 ## [0.11.0] - 2026-09-12
 
 ### Changed
