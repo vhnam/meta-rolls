@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.12.1] - 2026-09-12
+
+### Changed
+
+- Import `cn` from the `cn` package instead of a local re-export, and ignore TypeScript `*.tsbuildinfo` files.
+
 ## [0.12.0] - 2026-09-12
 
 ### Changed
