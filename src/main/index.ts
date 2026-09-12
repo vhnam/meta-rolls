@@ -4,9 +4,11 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { app, shell, BrowserWindow } from 'electron';
 
 import { APP_ICON_PATH } from './app/icon';
+import { handleMediaProtocol, registerMediaScheme } from './app/media-protocol';
 import { APP_NAME, setupAppMenu } from './app/menu';
 import { registerAllIpcHandlers } from './ipc';
 
+registerMediaScheme();
 app.setName(APP_NAME);
 
 const icon = APP_ICON_PATH;
@@ -64,6 +66,7 @@ app.whenReady().then(() => {
   });
 
   registerAllIpcHandlers();
+  handleMediaProtocol();
 
   createWindow();
 

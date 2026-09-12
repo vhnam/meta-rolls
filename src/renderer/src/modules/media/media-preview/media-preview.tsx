@@ -1,3 +1,6 @@
+import { useState } from 'react';
+
+import { toMediaFileUrl } from '#/lib/media-file-url';
 import { type PhotoItem } from '#/types';
 
 type MediaPreviewProps = {
@@ -5,15 +8,28 @@ type MediaPreviewProps = {
 };
 
 const MediaPreview = ({ photo }: MediaPreviewProps) => {
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const src = photo?.path ? toMediaFileUrl(photo.path) : null;
+  const failed = src !== null && failedSrc === src;
+
   return (
-    <section className="flex min-h-0 min-w-[16rem] flex-1 flex-col bg-card">
+    <section className="flex min-h-0 min-w-0 flex-col overflow-hidden border border-border bg-card">
       <div className="flex min-h-0 flex-1 items-center justify-center bg-card p-2">
-        {photo ? (
+        {photo && src && !failed ? (
+          <img
+            src={src}
+            alt={photo.name}
+            className="max-h-full max-w-full object-contain"
+            onError={() => setFailedSrc(src)}
+          />
+        ) : photo && !src ? (
           <div
             className="aspect-3/2 h-full max-h-full w-full max-w-180"
             style={{ background: photo.accent }}
             aria-label={photo.name}
           />
+        ) : photo ? (
+          <p className="text-xs text-muted-foreground">Preview not available for {photo.name}</p>
         ) : (
           <p className="text-xs text-muted-foreground">Select a photo to preview</p>
         )}

@@ -18,6 +18,7 @@ export type PhotoItem = {
   date: string;
   camera: string;
   accent: string;
+  path?: string;
 };
 
 export type Album = {

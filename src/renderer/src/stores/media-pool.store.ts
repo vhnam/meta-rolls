@@ -106,7 +106,7 @@ const setChildrenInTree = (
 
 const toPhotoItems = (
   folderId: string,
-  files: { id: string; name: string; date: string }[]
+  files: { id: string; name: string; date: string; path: string }[]
 ): PhotoItem[] =>
   files.map((file) => ({
     id: file.id,
@@ -114,7 +114,8 @@ const toPhotoItems = (
     name: file.name,
     date: file.date,
     camera: '',
-    accent: DEFAULT_PHOTO_ACCENT
+    accent: DEFAULT_PHOTO_ACCENT,
+    path: file.path
   }));
 
 const replaceFolderPhotos = (photos: PhotoItem[], folderId: string, next: PhotoItem[]) => [

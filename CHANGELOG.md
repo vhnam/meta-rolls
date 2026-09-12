@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-09-12
+
+### Added
+
+- Local photo previews load through a privileged `meta-rolls-media` protocol so disk files can render in the viewer.
+
 ## [0.12.1] - 2026-09-12
 
 ### Changed
