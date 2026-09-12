@@ -3,6 +3,7 @@ import { cn } from 'cn';
 
 import { Button } from '#/components/ui/button';
 import { type PhotoItem } from '#/types';
+import { getGridThumbnailSize } from '#/utils';
 
 type MediaGridProps = {
   title?: string;
@@ -13,7 +14,7 @@ type MediaGridProps = {
 };
 
 const MediaGrid = ({ title, photos, selectedPhotoId, onSelectPhoto, zoom }: MediaGridProps) => {
-  const size = 48 + zoom * 1.2;
+  const size = getGridThumbnailSize(zoom);
 
   return (
     <section className="flex min-h-0 min-w-0 flex-1 flex-col bg-background">
@@ -48,7 +49,7 @@ const MediaGrid = ({ title, photos, selectedPhotoId, onSelectPhoto, zoom }: Medi
                       'block border border-border',
                       selected && 'border-primary ring-1 ring-primary'
                     )}
-                    style={{ width: size, height: size * 0.72, background: photo.accent }}
+                    style={{ width: size.width, height: size.height, background: photo.accent }}
                   />
                   <span className="max-w-28 truncate text-tiny text-muted-foreground">
                     {photo.name}

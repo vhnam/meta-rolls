@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.15.1] - 2026-09-12
+
+### Changed
+
+- Media metadata grouping, date formatting, and grid thumbnail sizing live in renderer `constants` and `utils` instead of the view components.
+
 ## [0.15.0] - 2026-09-12
 
 ### Added

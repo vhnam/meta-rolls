@@ -12,6 +12,21 @@ export const MEDIA_VIEW = {
 
 export const DEFAULT_PHOTO_ACCENT = 'oklch(0.62 0.12 250)';
 
+export const FILE_LIST_COLUMN_CLASSES = 'grid-cols-[minmax(9rem,1fr)_6.25rem_4.75rem]';
+
+export const FOLDER_SPINNER_DELAY_MS = 150;
+export const FOLDER_TREE_PADDING_START = 8;
+export const FOLDER_TREE_DEPTH_STEP = 12;
+
+export const GRID_THUMB_BASE = 48;
+export const GRID_THUMB_ZOOM_FACTOR = 1.2;
+export const GRID_THUMB_ASPECT = 0.72;
+
+export const UNGROUPED_METADATA_GROUP = 'General';
+export const METADATA_NAME_LABEL = 'File:Name';
+export const METADATA_DATETIME_FORMAT = 'MMM D, YYYY h:mm:ss A';
+export const METADATA_DATE_FORMAT = 'MMM D, YYYY';
+
 export const PHOTO_ITEMS: PhotoItem[] = [
   {
     id: 'p1',

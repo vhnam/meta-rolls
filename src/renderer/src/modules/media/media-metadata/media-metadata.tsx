@@ -2,53 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { getApi } from '#/hooks/use-ipc';
 import { type PhotoExif, type PhotoItem } from '#/types';
-
-import { formatMetadataValue } from './format-metadata-value';
+import { buildMetadataRows, groupMetadataRows } from '#/utils';
 
 type MediaMetadataProps = {
   photo: PhotoItem | null;
-};
-
-type MetadataRow = {
-  label: string;
-  value: string;
-};
-
-type MetadataGroup = {
-  name: string;
-  rows: MetadataRow[];
-};
-
-const UNGROUPED = 'General';
-
-const parseField = (label: string): { group: string; field: string } => {
-  const separator = label.indexOf(':');
-  if (separator <= 0) {
-    return { group: UNGROUPED, field: label };
-  }
-
-  return {
-    group: label.slice(0, separator),
-    field: label.slice(separator + 1)
-  };
-};
-
-const groupMetadataRows = (rows: MetadataRow[]): MetadataGroup[] => {
-  const groups = new Map<string, MetadataRow[]>();
-
-  for (const row of rows) {
-    const { group, field } = parseField(row.label);
-    const fields = groups.get(group) ?? [];
-    fields.push({ label: field, value: formatMetadataValue(row.value) });
-    groups.set(group, fields);
-  }
-
-  return [...groups.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([name, groupedRows]) => ({
-      name,
-      rows: groupedRows.sort((a, b) => a.label.localeCompare(b.label))
-    }));
 };
 
 const MediaMetadata = ({ photo }: MediaMetadataProps) => {
@@ -83,11 +40,7 @@ const MediaMetadata = ({ photo }: MediaMetadataProps) => {
   }, [filePath]);
 
   const groups = useMemo(
-    () =>
-      groupMetadataRows([
-        ...(photo ? [{ label: 'File:Name', value: photo.name }] : []),
-        ...(exif?.fields ?? [])
-      ]),
+    () => (photo ? groupMetadataRows(buildMetadataRows(photo, exif?.fields)) : []),
     [exif?.fields, photo]
   );
 
