@@ -23,7 +23,7 @@ const MediaMetadata = ({ photo }: MediaMetadataProps) => {
   return (
     <div className="flex min-h-0 min-w-0 flex-col overflow-hidden border border-border bg-sidebar">
       <div className="flex h-7 items-center justify-between border-b border-sidebar-border bg-muted px-2">
-        <span className="text-[11px] font-medium text-sidebar-foreground">Metadata</span>
+        <span className="text-tiny font-medium text-sidebar-foreground">Metadata</span>
       </div>
       {!photo ? (
         <div className="flex flex-1 items-center justify-center px-3">
@@ -32,7 +32,7 @@ const MediaMetadata = ({ photo }: MediaMetadataProps) => {
       ) : (
         <>
           <MediaMetadataOverview items={overview} />
-          <div className="min-h-0 flex-1 scroll-fade overflow-auto px-3 py-2">
+          <div className="min-h-0 flex-1 overflow-auto px-3 py-2">
             {groups.map((group) => (
               <section key={group.name} className="mb-2 last:mb-0">
                 <h3 className="sticky top-0 z-10 bg-sidebar py-1 text-tiny font-medium text-sidebar-foreground">

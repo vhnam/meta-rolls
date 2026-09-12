@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.19.1] - 2026-09-12
+
+### Fixed
+
+- Metadata group headings stay opaque while tags scroll underneath, including at the top of the list.
+
 ## [0.19.0] - 2026-09-12
 
 ### Changed
