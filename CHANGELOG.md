@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.8.2] - 2026-09-12
+
+### Added
+
+- shadcn Card, Dialog, Select, Toggle, and Toggle Group primitives for upcoming preferences UI.
+
 ## [0.8.1] - 2026-09-12
 
 ### Changed
