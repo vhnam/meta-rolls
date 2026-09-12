@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-09-13
+
+### Added
+
+- Failed main-process requests show an error toast in the app layout.
+
 ## [0.24.4] - 2026-09-13
 
 ### Changed

@@ -1,6 +1,7 @@
 import { Outlet } from '@tanstack/react-router';
 
 import { AppTitleBar } from '#/components/app-title-bar';
+import { Toaster } from '#/components/ui/toast';
 import { TooltipProvider } from '#/components/ui/tooltip';
 import { useThemeSync } from '#/hooks/use-theme';
 import { PreferencesDialog } from '#/modules/preferences/preferences-dialog';
@@ -17,6 +18,7 @@ const AppLayout = () => {
         <AppTitleBar />
         <PreferencesDialog />
       </div>
+      <Toaster />
     </TooltipProvider>
   );
 };
