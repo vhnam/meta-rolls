@@ -117,7 +117,7 @@ const MediaToolbar = ({
           <DropdownMenuTrigger render={<Button variant="ghost" />}>
             <IconDots />
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent align="end">
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={onRefresh}>
                 <IconRefresh />
