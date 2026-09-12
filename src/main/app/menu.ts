@@ -1,8 +1,26 @@
-import { app, Menu, type MenuItemConstructorOptions } from 'electron';
+import { app, BrowserWindow, Menu, type MenuItemConstructorOptions } from 'electron';
 
+import { IpcChannel } from '../../../shared/ipc';
 import { APP_ICON_PATH } from './icon';
 
 export const APP_NAME = 'Meta Rolls';
+
+function openPreferences(): void {
+  const window = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0];
+  if (!window) {
+    return;
+  }
+
+  window.show();
+  window.focus();
+  window.webContents.send(IpcChannel.menuOpenPreferences);
+}
+
+const preferencesMenuItem: MenuItemConstructorOptions = {
+  label: 'Preferences',
+  accelerator: 'CommandOrControl+,',
+  click: openPreferences
+};
 
 export function setupAppMenu(): void {
   app.setName(APP_NAME);
@@ -24,6 +42,8 @@ export function setupAppMenu(): void {
             label: APP_NAME,
             submenu: [
               { role: 'about' },
+              { type: 'separator' },
+              preferencesMenuItem,
               { type: 'separator' },
               { role: 'services' },
               { type: 'separator' },
@@ -71,7 +91,7 @@ export function setupAppMenu(): void {
       ? [
           {
             label: 'Help',
-            submenu: [{ role: 'about' }]
+            submenu: [{ role: 'about' }, { type: 'separator' }, preferencesMenuItem]
           } satisfies MenuItemConstructorOptions
         ]
       : [])

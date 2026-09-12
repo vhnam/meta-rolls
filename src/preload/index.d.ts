@@ -30,9 +30,14 @@ export type MediaLibraryApi = {
   listFolder: (dirPath: string) => Promise<MediaFolderListing>;
 };
 
+export type MenuApi = {
+  onOpenPreferences: (callback: () => void) => () => void;
+};
+
 export type RendererApi = {
   settings: SettingsStorageApi;
   media: MediaLibraryApi;
+  menu: MenuApi;
 };
 
 declare global {

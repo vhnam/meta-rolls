@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-09-12
+
+### Added
+
+- App menu Preferences item (⌘/,) that notifies the renderer to open preferences.
+
 ## [0.8.2] - 2026-09-12
 
 ### Added

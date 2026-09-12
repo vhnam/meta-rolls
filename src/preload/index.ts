@@ -13,6 +13,15 @@ const api = {
   media: {
     listVolumes: () => ipcRenderer.invoke(IpcChannel.mediaListVolumes),
     listFolder: (dirPath: string) => ipcRenderer.invoke(IpcChannel.mediaListFolder, dirPath)
+  },
+  menu: {
+    onOpenPreferences: (callback: () => void) => {
+      const handler = () => callback();
+      ipcRenderer.on(IpcChannel.menuOpenPreferences, handler);
+      return () => {
+        ipcRenderer.removeListener(IpcChannel.menuOpenPreferences, handler);
+      };
+    }
   }
 };
 

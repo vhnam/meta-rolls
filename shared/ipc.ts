@@ -3,5 +3,6 @@ export const IpcChannel = {
   settingsSet: 'settings:set',
   settingsRemove: 'settings:remove',
   mediaListVolumes: 'media:list-volumes',
-  mediaListFolder: 'media:list-folder'
+  mediaListFolder: 'media:list-folder',
+  menuOpenPreferences: 'menu:open-preferences'
 } as const;
