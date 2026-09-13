@@ -8,4 +8,3 @@ export type PhotoExifField = {
 export type PhotoExif = {
   fields: PhotoExifField[];
 };
-
