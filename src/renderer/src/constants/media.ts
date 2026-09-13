@@ -43,6 +43,11 @@ export const THUMBNAIL_PANE_CLASS =
 export const THUMBNAIL_GRID_CLASS =
   'grid w-full gap-3 [--thumb-fit-cols:1] @min-[12rem]/thumbnail:[--thumb-fit-cols:2] @min-[18rem]/thumbnail:[--thumb-fit-cols:3] @min-[24rem]/thumbnail:[--thumb-fit-cols:4] @min-[32rem]/thumbnail:[--thumb-fit-cols:5] @min-[40rem]/thumbnail:[--thumb-fit-cols:6]';
 
+export const METADATA_PANE_CLASS =
+  '@container/metadata flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border bg-sidebar';
+export const METADATA_OVERVIEW_GRID_CLASS =
+  'grid grid-cols-1 gap-x-4 gap-y-2 @min-[12rem]/metadata:grid-cols-2 @min-[20rem]/metadata:grid-cols-3 @min-[28rem]/metadata:grid-cols-4';
+
 export const UNGROUPED_METADATA_GROUP = 'General';
 export const METADATA_NAME_LABEL = 'File:Name';
 export const METADATA_DATETIME_FORMAT = 'MMM DD, YYYY h:mm:ss A';

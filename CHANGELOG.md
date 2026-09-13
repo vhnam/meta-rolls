@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Right-click an album photo to remove it from the album.
+- Metadata overview columns follow the metadata pane width.
 
 ## [1.0.0] - 2026-09-13
 
