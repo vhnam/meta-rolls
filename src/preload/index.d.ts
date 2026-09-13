@@ -48,6 +48,7 @@ export type AlbumsApi = {
     toAlbumId: string,
     photoId: string
   ) => Promise<{ from: Album; to: Album } | null>;
+  removePhoto: (albumId: string, photoId: string) => Promise<Album | null>;
 };
 
 export type MenuApi = {

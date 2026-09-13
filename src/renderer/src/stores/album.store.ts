@@ -25,6 +25,7 @@ type AlbumActions = {
   removeAlbum: (albumId: string) => Promise<void>;
   addPhotoToAlbum: (albumId: string, photo: AlbumPhoto) => Promise<void>;
   movePhotoToAlbum: (fromAlbumId: string, toAlbumId: string, photoId: string) => Promise<void>;
+  removePhotoFromAlbum: (albumId: string, photoId: string) => Promise<void>;
 };
 
 export type AlbumStore = AlbumState & AlbumActions;
@@ -111,6 +112,15 @@ export const useAlbumStore = create<AlbumStore>((set, get) => ({
         }
         return item;
       })
+    }));
+  },
+  removePhotoFromAlbum: async (albumId, photoId) => {
+    const album = await getApi().albums.removePhoto(albumId, photoId);
+    if (!album) {
+      return;
+    }
+    set((state) => ({
+      albums: state.albums.map((item) => (item.id === albumId ? album : item))
     }));
   }
 }));

@@ -185,3 +185,24 @@ export const movePhotoToAlbum = (
     to: { ...destinationAlbum, photos: toPhotos }
   };
 };
+
+export const removePhotoFromAlbum = (
+  filePath: string,
+  albumId: string,
+  photoId: string
+): Album | null => {
+  const db = getAppDatabase(filePath);
+  const album = readAlbum(db, albumId);
+  if (!album) {
+    return null;
+  }
+
+  if (!album.photos.some((item) => item.id === photoId)) {
+    return album;
+  }
+
+  const photos = album.photos.filter((item) => item.id !== photoId);
+  writeAlbumPhotos(db, albumId, photos);
+
+  return { ...album, photos };
+};

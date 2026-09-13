@@ -10,6 +10,7 @@ import {
   listAlbums,
   movePhotoToAlbum,
   removeAlbum,
+  removePhotoFromAlbum,
   renameAlbum
 } from '../services/album-store';
 
@@ -90,5 +91,9 @@ export const registerAlbumsIpc = () => {
         assertId(toAlbumId),
         assertId(photoId)
       )
+  );
+
+  ipcMain.handle(IpcChannel.albumsRemovePhoto, (_event, albumId: unknown, photoId: unknown) =>
+    removePhotoFromAlbum(albumsFilePath(), assertId(albumId), assertId(photoId))
   );
 };
