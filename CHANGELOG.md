@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Right-click an album photo to remove it from the album.
 - Metadata overview columns follow the metadata pane width.
 
+### Changed
+
+- Folder listings map into the shared photo item type.
+
 ## [1.0.0] - 2026-09-13
 
 First public release. Browse your photo library and build albums.
