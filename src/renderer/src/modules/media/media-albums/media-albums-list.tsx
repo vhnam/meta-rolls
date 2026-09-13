@@ -4,6 +4,8 @@ import { MediaPhotoListRow, MediaPhotoListShell } from '#/components/media-photo
 import { type Album, type AlbumPhoto } from '#/types';
 import { toPhotoItem } from '#/utils';
 
+import { MediaAlbumsPhotoContextMenu } from './media-albums-photo-context-menu';
+
 type MediaAlbumsListProps = {
   album: Album;
   photos: AlbumPhoto[];
@@ -29,13 +31,19 @@ export const MediaAlbumsList = ({
       emptyMessage="No photos in this album."
       droppable={{ ref, isDropTarget }}
       renderRow={(photo) => (
-        <MediaPhotoListRow
-          photo={toPhotoItem(photo)}
-          selected={photo.id === selectedPhotoId}
-          dragId={`album-photo:${album.id}:${photo.id}`}
-          dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
+        <MediaAlbumsPhotoContextMenu
+          albumId={album.id}
+          photoId={photo.id}
           onSelectPhoto={onSelectPhoto}
-        />
+        >
+          <MediaPhotoListRow
+            photo={toPhotoItem(photo)}
+            selected={photo.id === selectedPhotoId}
+            dragId={`album-photo:${album.id}:${photo.id}`}
+            dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
+            onSelectPhoto={onSelectPhoto}
+          />
+        </MediaAlbumsPhotoContextMenu>
       )}
     />
   );

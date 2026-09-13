@@ -5,6 +5,8 @@ import { THUMBNAIL_PANE_CLASS } from '#/constants/media';
 import { Album, type AlbumPhoto } from '#/types';
 import { getThumbnailColumnCount, toPhotoItem } from '#/utils';
 
+import { MediaAlbumsPhotoContextMenu } from './media-albums-photo-context-menu';
+
 type MediaAlbumsThumbnailsProps = {
   album: Album;
   photos: AlbumPhoto[];
@@ -38,14 +40,20 @@ export const MediaAlbumsThumbnails = ({
         droppable={{ ref, isDropTarget }}
       >
         {photos.map((photo) => (
-          <MediaPhotoThumbnailTile
+          <MediaAlbumsPhotoContextMenu
             key={photo.id}
-            photo={toPhotoItem(photo)}
-            selected={photo.id === selectedPhotoId}
-            dragId={`album-photo:${album.id}:${photo.id}`}
-            dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
+            albumId={album.id}
+            photoId={photo.id}
             onSelectPhoto={onSelectPhoto}
-          />
+          >
+            <MediaPhotoThumbnailTile
+              photo={toPhotoItem(photo)}
+              selected={photo.id === selectedPhotoId}
+              dragId={`album-photo:${album.id}:${photo.id}`}
+              dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
+              onSelectPhoto={onSelectPhoto}
+            />
+          </MediaAlbumsPhotoContextMenu>
         ))}
       </MediaPhotoThumbnailShell>
     </section>
