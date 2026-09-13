@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AlbumsRouteImport } from './routes/albums'
 import { Route as MediaRouteImport } from './routes/media'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlbumsRoute = AlbumsRouteImport.update({
+  id: '/albums',
+  path: '/albums',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MediaRoute = MediaRouteImport.update({
@@ -25,27 +31,31 @@ const MediaRoute = MediaRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/albums': typeof AlbumsRoute
   '/media': typeof MediaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/albums': typeof AlbumsRoute
   '/media': typeof MediaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/albums': typeof AlbumsRoute
   '/media': typeof MediaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/media'
+  fullPaths: '/' | '/albums' | '/media'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/media'
-  id: '__root__' | '/' | '/media'
+  to: '/' | '/albums' | '/media'
+  id: '__root__' | '/' | '/albums' | '/media'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AlbumsRoute: typeof AlbumsRoute
   MediaRoute: typeof MediaRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/albums': {
+      id: '/albums'
+      path: '/albums'
+      fullPath: '/albums'
+      preLoaderRoute: typeof AlbumsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/media': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AlbumsRoute: AlbumsRoute,
   MediaRoute: MediaRoute,
 }
 export const routeTree = rootRouteImport
