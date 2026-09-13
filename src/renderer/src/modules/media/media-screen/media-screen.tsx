@@ -1,5 +1,6 @@
 import { DragDropProvider, type DragEndEvent } from '@dnd-kit/react';
 
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import { MediaAlbums } from '#/modules/media/media-albums';
 import { MediaBrowser } from '#/modules/media/media-browser';
 import { MediaMetadata } from '#/modules/media/media-metadata';
@@ -40,12 +41,34 @@ const MediaScreen = () => {
 
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
-      <div className="grid min-h-0 flex-1 grid-cols-2 grid-rows-[minmax(0,1.15fr)_minmax(0,1fr)] bg-background text-foreground">
-        <MediaBrowser />
-        <MediaPreview photo={selectedPhoto} />
-        <MediaAlbums />
-        <MediaMetadata photo={selectedPhoto} />
-      </div>
+      <ResizablePanelGroup
+        orientation="vertical"
+        className="min-h-0 flex-1 bg-background text-foreground"
+      >
+        <ResizablePanel defaultSize="55%" minSize="20%" className="min-h-0 min-w-0">
+          <ResizablePanelGroup orientation="horizontal" className="min-h-0">
+            <ResizablePanel defaultSize="65%" minSize="20%" className="min-h-0 min-w-0">
+              <MediaBrowser />
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize="35%" minSize="20%" className="min-h-0 min-w-0">
+              <MediaPreview photo={selectedPhoto} />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel defaultSize="45%" minSize="20%" className="min-h-0 min-w-0">
+          <ResizablePanelGroup orientation="horizontal" className="min-h-0">
+            <ResizablePanel defaultSize="65%" minSize="20%" className="min-h-0 min-w-0">
+              <MediaAlbums />
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize="35%" minSize="20%" className="min-h-0 min-w-0">
+              <MediaMetadata photo={selectedPhoto} />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </DragDropProvider>
   );
 };

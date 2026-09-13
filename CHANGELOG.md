@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.31.0] - 2026-09-13
+
+### Added
+
+- Media workspace panes can be resized, and preview and metadata fill their panels.
+
 ## [0.30.0] - 2026-09-13
 
 ### Added

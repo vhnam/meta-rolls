@@ -26,7 +26,7 @@ const MediaPreview = ({ photo }: MediaPreviewProps) => {
   });
 
   return (
-    <section className="flex min-h-0 min-w-0 flex-col overflow-hidden border border-border bg-card">
+    <section className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border bg-card">
       <MediaPreviewToolbar
         photoName={photo?.name}
         zoomDisabled={!canPanzoom}
