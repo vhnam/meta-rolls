@@ -5,6 +5,7 @@ export { formatFileSize } from './format-file-size';
 export { formatResolution } from './format-resolution';
 export { formatCreatedAt, formatMetadataValue } from './format-metadata-value';
 export { getGridThumbnailSize } from './grid-thumbnail';
+export { getThumbnailColumnCount } from './thumbnail-columns';
 export { buildMetadataRows, groupMetadataRows, type MetadataGroup } from './group-metadata';
 export { getPhotoOverview, type PhotoOverviewItem } from './photo-overview';
 export { toMediaFileUrl } from './media-file-url';
