@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { MEDIA_VIEW, FOLDER_KIND } from '#/constants/media';
+import { FOLDER_KIND, MEDIA_VIEW, THUMBNAIL_ZOOM_STEP } from '#/constants/media';
 import { getApi } from '#/hooks/use-ipc';
 import { type MediaView, type PhotoFolder, type PhotoItem } from '#/types';
 import { findFolder } from '#/utils';
@@ -52,7 +52,7 @@ export const getListPhotos = (state: MediaPoolState) =>
     (photo) => photo.folderId === state.selectedFolderId && matchesQuery(photo, state.query)
   );
 
-export const getGridPhotos = (_state: MediaPoolState): PhotoItem[] => [];
+export const getGridPhotos = (state: MediaPoolState) => getListPhotos(state);
 
 export const getVisiblePhotos = (state: MediaPoolState) => getListPhotos(state);
 
@@ -139,7 +139,7 @@ export const useMediaPoolStore = create<MediaPoolStore>((set, get) => ({
   folders: [],
   query: '',
   view: MEDIA_VIEW.list,
-  zoom: 31,
+  zoom: THUMBNAIL_ZOOM_STEP,
   selectedFolderId: '',
   folderHistory: [],
   folderHistoryIndex: -1,

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import {
   canGoBack,
   canGoForward,
@@ -9,8 +10,9 @@ import {
   useMediaPoolStore
 } from '#/stores/media-pool.store';
 
-import { MediaBrowserFileList } from './media-browser-file-list';
 import { MediaBrowserFolderTree } from './media-browser-folder-tree';
+import { MediaBrowserList } from './media-browser-list';
+import { MediaBrowserThumbnails } from './media-browser-thumbnails';
 import { MediaBrowserToolbar } from './media-browser-toolbar';
 
 export const MediaBrowser = () => {
@@ -32,8 +34,32 @@ export const MediaBrowser = () => {
     }
   }, [store.selectedFolderId]);
 
+  const content =
+    store.view === 'thumbnail' ? (
+      <MediaBrowserThumbnails
+        folders={childFolders}
+        photos={listPhotos}
+        selectedPhotoId={activePhotoId}
+        selectedListFolderId={store.selectedListFolderId}
+        zoom={store.zoom}
+        onSelectPhoto={store.setSelectedPhotoId}
+        onHighlightFolder={store.setSelectedListFolderId}
+        onOpenFolder={store.setSelectedFolderId}
+      />
+    ) : (
+      <MediaBrowserList
+        folders={childFolders}
+        photos={listPhotos}
+        selectedPhotoId={activePhotoId}
+        selectedListFolderId={store.selectedListFolderId}
+        onSelectPhoto={store.setSelectedPhotoId}
+        onHighlightFolder={store.setSelectedListFolderId}
+        onOpenFolder={store.setSelectedFolderId}
+      />
+    );
+
   return (
-    <div className="flex min-h-0 min-w-0 flex-col overflow-hidden border border-border">
+    <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border">
       <MediaBrowserToolbar
         query={store.query}
         onQueryChange={store.setQuery}
@@ -52,23 +78,23 @@ export const MediaBrowser = () => {
           void store.refresh();
         }}
       />
-      <div className="flex min-h-0 min-w-0 flex-1">
-        <MediaBrowserFolderTree
-          folders={store.folders}
-          selectedFolderId={store.selectedFolderId}
-          onSelectFolder={store.setSelectedFolderId}
-          collapsed={store.folderTreeCollapsed}
-        />
-        <MediaBrowserFileList
-          folders={childFolders}
-          photos={listPhotos}
-          selectedPhotoId={activePhotoId}
-          selectedListFolderId={store.selectedListFolderId}
-          onSelectPhoto={store.setSelectedPhotoId}
-          onHighlightFolder={store.setSelectedListFolderId}
-          onOpenFolder={store.setSelectedFolderId}
-        />
-      </div>
+      {store.folderTreeCollapsed ? (
+        content
+      ) : (
+        <ResizablePanelGroup orientation="horizontal" className="min-h-0 min-w-0 flex-1">
+          <ResizablePanel defaultSize="13rem" minSize="8rem" maxSize="50%" className="min-h-0">
+            <MediaBrowserFolderTree
+              folders={store.folders}
+              selectedFolderId={store.selectedFolderId}
+              onSelectFolder={store.setSelectedFolderId}
+            />
+          </ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel defaultSize="70%" minSize="30%" className="min-h-0 min-w-0">
+            {content}
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      )}
     </div>
   );
 };

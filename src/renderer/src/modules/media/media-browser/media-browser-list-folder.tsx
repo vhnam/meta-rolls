@@ -4,19 +4,19 @@ import { cn } from 'cn';
 import { FILE_LIST_CELL_CLASS, FILE_LIST_ROW_CLASS } from '#/constants/media';
 import { PhotoFolder } from '#/types';
 
-type MediaBrowserFileListFolderProps = {
+type MediaBrowserListFolderProps = {
   folder: PhotoFolder;
   selected: boolean;
   onHighlightFolder: (id: string) => void;
   onOpenFolder: (id: string) => void;
 };
 
-export const MediaBrowserFileListFolder = ({
+export const MediaBrowserListFolder = ({
   folder,
   selected,
   onHighlightFolder,
   onOpenFolder
-}: MediaBrowserFileListFolderProps) => {
+}: MediaBrowserListFolderProps) => {
   return (
     <button
       type="button"

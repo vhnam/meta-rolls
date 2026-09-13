@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.29.0] - 2026-09-13
+
+### Added
+
+- Media browser list and thumbnail views share the photo chrome, with a resizable folder tree.
+
 ## [0.28.0] - 2026-09-13
 
 ### Added

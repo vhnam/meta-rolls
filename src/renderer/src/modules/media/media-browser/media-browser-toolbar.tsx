@@ -97,7 +97,7 @@ export const MediaBrowserToolbar = ({
       </span>
 
       <div className="ml-auto flex items-center gap-1">
-        {view === 'grid' && (
+        {view === 'thumbnail' && (
           <div className="flex items-center gap-2 pr-1">
             <input
               type="range"
@@ -132,13 +132,13 @@ export const MediaBrowserToolbar = ({
           <TooltipTrigger
             render={
               <Button
-                variant={view === 'grid' ? 'secondary' : 'ghost'}
+                variant={view === 'thumbnail' ? 'secondary' : 'ghost'}
                 size="icon-xs"
-                onClick={() => onViewChange('grid')}
+                onClick={() => onViewChange('thumbnail')}
               />
             }
           >
-            {view === 'grid' ? <IconLayoutGridFilled /> : <IconLayoutGrid />}
+            {view === 'thumbnail' ? <IconLayoutGridFilled /> : <IconLayoutGrid />}
           </TooltipTrigger>
           <TooltipContent>
             <p>Thumbnail view</p>

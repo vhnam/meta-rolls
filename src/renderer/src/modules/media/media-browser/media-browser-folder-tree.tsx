@@ -119,8 +119,8 @@ export const MediaBrowserFolderTree = ({
   return (
     <aside
       className={cn(
-        'flex min-h-0 shrink-0 flex-col border-r border-sidebar-border bg-sidebar',
-        collapsed ? 'hidden' : 'w-52'
+        'flex min-h-0 min-w-0 flex-col border-r border-sidebar-border bg-sidebar',
+        collapsed ? 'hidden' : 'h-full w-full'
       )}
     >
       <div ref={measureRef} className="min-h-0 flex-1">
