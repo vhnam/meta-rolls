@@ -34,6 +34,24 @@ const api = {
       return () => {
         ipcRenderer.removeListener(IpcChannel.menuOpenPreferences, handler);
       };
+    },
+    onTogglePhotoFullscreen: (callback: () => void) => {
+      const handler = () => callback();
+      ipcRenderer.on(IpcChannel.menuTogglePhotoFullscreen, handler);
+      return () => {
+        ipcRenderer.removeListener(IpcChannel.menuTogglePhotoFullscreen, handler);
+      };
+    }
+  },
+  window: {
+    setFullScreen: (enabled: boolean) =>
+      ipcRenderer.invoke(IpcChannel.windowSetFullScreen, enabled),
+    onLeaveFullScreen: (callback: () => void) => {
+      const handler = () => callback();
+      ipcRenderer.on(IpcChannel.windowLeaveFullScreen, handler);
+      return () => {
+        ipcRenderer.removeListener(IpcChannel.windowLeaveFullScreen, handler);
+      };
     }
   }
 };

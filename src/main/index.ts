@@ -25,6 +25,7 @@ function createWindow(): void {
     width: 900,
     height: 670,
     show: false,
+    fullscreenable: true,
     autoHideMenuBar: process.platform !== 'darwin',
     icon,
     webPreferences: {

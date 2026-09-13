@@ -5,7 +5,7 @@ import { APP_ICON_PATH } from './icon';
 
 export const APP_NAME = 'Meta Rolls';
 
-function openPreferences(): void {
+function sendMenuChannel(channel: (typeof IpcChannel)[keyof typeof IpcChannel]): void {
   const window = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0];
   if (!window) {
     return;
@@ -13,7 +13,15 @@ function openPreferences(): void {
 
   window.show();
   window.focus();
-  window.webContents.send(IpcChannel.menuOpenPreferences);
+  window.webContents.send(channel);
+}
+
+function openPreferences(): void {
+  sendMenuChannel(IpcChannel.menuOpenPreferences);
+}
+
+function togglePhotoFullscreen(): void {
+  sendMenuChannel(IpcChannel.menuTogglePhotoFullscreen);
 }
 
 const preferencesMenuItem: MenuItemConstructorOptions = {
@@ -83,6 +91,11 @@ export function setupAppMenu(): void {
         { role: 'zoomIn' },
         { role: 'zoomOut' },
         { type: 'separator' },
+        {
+          label: 'View Photo Full Screen',
+          accelerator: 'CommandOrControl+F',
+          click: togglePhotoFullscreen
+        },
         { role: 'togglefullscreen' }
       ]
     },

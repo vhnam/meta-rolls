@@ -52,6 +52,12 @@ export type AlbumsApi = {
 
 export type MenuApi = {
   onOpenPreferences: (callback: () => void) => () => void;
+  onTogglePhotoFullscreen: (callback: () => void) => () => void;
+};
+
+export type WindowApi = {
+  setFullScreen: (enabled: boolean) => Promise<void>;
+  onLeaveFullScreen: (callback: () => void) => () => void;
 };
 
 export type RendererApi = {
@@ -59,6 +65,7 @@ export type RendererApi = {
   media: MediaLibraryApi;
   albums: AlbumsApi;
   menu: MenuApi;
+  window: WindowApi;
 };
 
 declare global {

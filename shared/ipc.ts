@@ -11,5 +11,8 @@ export const IpcChannel = {
   albumsRemove: 'albums:remove',
   albumsAddPhoto: 'albums:add-photo',
   albumsMovePhoto: 'albums:move-photo',
-  menuOpenPreferences: 'menu:open-preferences'
+  menuOpenPreferences: 'menu:open-preferences',
+  menuTogglePhotoFullscreen: 'menu:toggle-photo-fullscreen',
+  windowSetFullScreen: 'window:set-full-screen',
+  windowLeaveFullScreen: 'window:leave-full-screen'
 } as const;

@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.34.0] - 2026-09-13
+
+### Added
+
+- Cmd/Ctrl+F shows the selected photo on the full display.
+
 ## [0.33.0] - 2026-09-13
 
 ### Added

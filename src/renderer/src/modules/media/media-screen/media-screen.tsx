@@ -4,7 +4,11 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/componen
 import { MediaAlbums } from '#/modules/media/media-albums';
 import { MediaBrowser } from '#/modules/media/media-browser';
 import { MediaMetadata } from '#/modules/media/media-metadata';
-import { MediaPreview } from '#/modules/media/media-preview';
+import {
+  MediaPreview,
+  MediaPreviewFullscreen,
+  useMediaPreviewFullscreen
+} from '#/modules/media/media-preview';
 import { useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { toPhotoItem } from '#/utils';
@@ -24,6 +28,8 @@ const MediaScreen = () => {
     (state) => state.albums.find((album) => album.id === activeAlbumId)?.photos ?? []
   );
   const selectedPhoto = getSelectedPhoto(store, activeAlbumPhotos.map(toPhotoItem));
+  const { open: fullscreenOpen, setOpen: setFullscreenOpen } =
+    useMediaPreviewFullscreen(selectedPhoto);
   const addPhotoToAlbum = useAlbumStore((state) => state.addPhotoToAlbum);
   const movePhotoToAlbum = useAlbumStore((state) => state.movePhotoToAlbum);
 
@@ -91,6 +97,11 @@ const MediaScreen = () => {
           </ResizablePanelGroup>
         </ResizablePanel>
       </ResizablePanelGroup>
+      <MediaPreviewFullscreen
+        photo={selectedPhoto}
+        open={fullscreenOpen}
+        onOpenChange={setFullscreenOpen}
+      />
     </DragDropProvider>
   );
 };
