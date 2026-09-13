@@ -29,7 +29,7 @@ export const MediaPhotoThumbnailTile = ({
     <button
       ref={ref}
       type="button"
-      className={cn('flex min-w-0 flex-col items-center gap-1', isDragging && 'opacity-50')}
+      className={cn('flex w-full min-w-0 flex-col items-center gap-1', isDragging && 'opacity-50')}
       onClick={() => onSelectPhoto(photo.id)}
     >
       <span

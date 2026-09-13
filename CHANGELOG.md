@@ -5,6 +5,17 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-09-14
+
+### Added
+
+- Right-click an album photo to remove it from the album.
+- Metadata overview columns follow the metadata pane width.
+
+### Changed
+
+- Folder listings map into the shared photo item type.
+
 ## [1.0.0] - 2026-09-13
 
 First public release. Browse your photo library and build albums.

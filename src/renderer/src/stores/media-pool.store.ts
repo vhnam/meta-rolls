@@ -108,18 +108,7 @@ const setChildrenInTree = (
     return folder;
   });
 
-const toPhotoItems = (
-  folderId: string,
-  files: {
-    id: string;
-    name: string;
-    createdAt: string;
-    size: number;
-    width: number;
-    height: number;
-    path: string;
-  }[]
-): PhotoItem[] =>
+const toPhotoItems = (folderId: string, files: PhotoItem[]): PhotoItem[] =>
   files.map((file) => ({
     id: file.id,
     folderId,
@@ -270,7 +259,7 @@ export const useMediaPoolStore = create<MediaPoolStore>((set, get) => ({
       kind: FOLDER_KIND.folder,
       hasChildren: entry.hasChildren
     }));
-    const photos = toPhotoItems(folder.id, listing.files);
+    const photos = toPhotoItems(folder.id, listing.files as PhotoItem[]);
     set((state) => ({
       folders: setChildrenInTree(state.folders, folder.id, children),
       photos: replaceFolderPhotos(state.photos, folder.id, photos)

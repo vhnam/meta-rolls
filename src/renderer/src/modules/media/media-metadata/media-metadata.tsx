@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { METADATA_PANE_CLASS } from '#/constants/media';
 import { usePhotoExif } from '#/hooks/use-photo-exif';
 import { type PhotoItem } from '#/types';
 import { buildMetadataRows, getPhotoOverview, groupMetadataRows } from '#/utils';
@@ -21,7 +22,7 @@ const MediaMetadata = ({ photo }: MediaMetadataProps) => {
   );
 
   return (
-    <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border bg-sidebar">
+    <div className={METADATA_PANE_CLASS}>
       <div className="flex h-7 items-center justify-between border-b border-sidebar-border bg-muted px-2">
         <span className="text-tiny font-medium text-sidebar-foreground">Metadata</span>
       </div>
