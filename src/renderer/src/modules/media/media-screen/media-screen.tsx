@@ -9,6 +9,14 @@ import { useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { toPhotoItem } from '#/utils';
 
+const readDragString = (value: unknown, key: string) => {
+  if (value === null || typeof value !== 'object') {
+    return undefined;
+  }
+  const record = value as Record<string, unknown>;
+  return typeof record[key] === 'string' ? record[key] : undefined;
+};
+
 const MediaScreen = () => {
   const store = useMediaPoolStore();
   const activeAlbumId = useAlbumStore((state) => state.activeAlbumId);
@@ -17,11 +25,25 @@ const MediaScreen = () => {
   );
   const selectedPhoto = getSelectedPhoto(store, activeAlbumPhotos.map(toPhotoItem));
   const addPhotoToAlbum = useAlbumStore((state) => state.addPhotoToAlbum);
+  const movePhotoToAlbum = useAlbumStore((state) => state.movePhotoToAlbum);
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const albumId = event.operation.target?.id;
-    const photoId = event.operation.source?.id;
+    if (event.canceled) {
+      return;
+    }
+    const target = event.operation.target;
+    const source = event.operation.source;
+    const albumId = readDragString(target?.data, 'albumId') ?? target?.id;
+    const photoId = readDragString(source?.data, 'photoId') ?? source?.id;
+    const sourceAlbumId = readDragString(source?.data, 'sourceAlbumId');
     if (typeof albumId !== 'string' || typeof photoId !== 'string') {
+      return;
+    }
+    if (sourceAlbumId === albumId) {
+      return;
+    }
+    if (sourceAlbumId) {
+      void movePhotoToAlbum(sourceAlbumId, albumId, photoId);
       return;
     }
     const photo = useMediaPoolStore.getState().photos.find((item) => item.id === photoId);

@@ -10,5 +10,6 @@ export const IpcChannel = {
   albumsRename: 'albums:rename',
   albumsRemove: 'albums:remove',
   albumsAddPhoto: 'albums:add-photo',
+  albumsMovePhoto: 'albums:move-photo',
   menuOpenPreferences: 'menu:open-preferences'
 } as const;

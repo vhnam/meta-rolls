@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { type DatabaseSync } from 'node:sqlite';
 
 import { type Album, type AlbumPhoto } from '../../../shared/album';
 import { getAppDatabase } from './app-database';
@@ -42,6 +43,15 @@ const toAlbum = (row: AlbumRow): Album => ({
   name: row.name,
   photos: parseAlbumPhotos(row.photos)
 });
+
+const readAlbum = (db: DatabaseSync, albumId: string): Album | null => {
+  const row = readRow(db.prepare('SELECT id, name, photos FROM albums WHERE id = ?').get(albumId));
+  return row ? toAlbum(row) : null;
+};
+
+const writeAlbumPhotos = (db: DatabaseSync, albumId: string, photos: AlbumPhoto[]) => {
+  db.prepare('UPDATE albums SET photos = ? WHERE id = ?').run(JSON.stringify(photos), albumId);
+};
 
 const readRow = (value: unknown): AlbumRow | null => {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) {
@@ -118,18 +128,60 @@ export const addPhotoToAlbum = (
   photo: AlbumPhoto
 ): Album | null => {
   const db = getAppDatabase(filePath);
-  const row = readRow(db.prepare('SELECT id, name, photos FROM albums WHERE id = ?').get(albumId));
-  if (!row) {
+  const album = readAlbum(db, albumId);
+  if (!album) {
     return null;
   }
 
-  const album = toAlbum(row);
   if (album.photos.some((existing) => existing.id === photo.id)) {
     return album;
   }
 
   const photos = [...album.photos, photo];
-  db.prepare('UPDATE albums SET photos = ? WHERE id = ?').run(JSON.stringify(photos), albumId);
+  writeAlbumPhotos(db, albumId, photos);
 
   return { ...album, photos };
+};
+
+export const movePhotoToAlbum = (
+  filePath: string,
+  fromAlbumId: string,
+  toAlbumId: string,
+  photoId: string
+): { from: Album; to: Album } | null => {
+  if (fromAlbumId === toAlbumId) {
+    return null;
+  }
+
+  const db = getAppDatabase(filePath);
+  const fromAlbum = readAlbum(db, fromAlbumId);
+  const destinationAlbum = readAlbum(db, toAlbumId);
+  if (!fromAlbum || !destinationAlbum) {
+    return null;
+  }
+
+  const photo = fromAlbum.photos.find((item) => item.id === photoId);
+  if (!photo) {
+    return null;
+  }
+
+  const fromPhotos = fromAlbum.photos.filter((item) => item.id !== photoId);
+  const toPhotos = destinationAlbum.photos.some((item) => item.id === photoId)
+    ? destinationAlbum.photos
+    : [...destinationAlbum.photos, photo];
+
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    writeAlbumPhotos(db, fromAlbumId, fromPhotos);
+    writeAlbumPhotos(db, toAlbumId, toPhotos);
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+
+  return {
+    from: { ...fromAlbum, photos: fromPhotos },
+    to: { ...destinationAlbum, photos: toPhotos }
+  };
 };

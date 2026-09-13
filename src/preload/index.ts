@@ -23,7 +23,9 @@ const api = {
       ipcRenderer.invoke(IpcChannel.albumsRename, albumId, name),
     remove: (albumId: string) => ipcRenderer.invoke(IpcChannel.albumsRemove, albumId),
     addPhoto: (albumId: string, photo: AlbumPhoto) =>
-      ipcRenderer.invoke(IpcChannel.albumsAddPhoto, albumId, photo)
+      ipcRenderer.invoke(IpcChannel.albumsAddPhoto, albumId, photo),
+    movePhoto: (fromAlbumId: string, toAlbumId: string, photoId: string) =>
+      ipcRenderer.invoke(IpcChannel.albumsMovePhoto, fromAlbumId, toAlbumId, photoId)
   },
   menu: {
     onOpenPreferences: (callback: () => void) => {

@@ -8,6 +8,7 @@ import {
   addPhotoToAlbum,
   createAlbum,
   listAlbums,
+  movePhotoToAlbum,
   removeAlbum,
   renameAlbum
 } from '../services/album-store';
@@ -78,5 +79,16 @@ export const registerAlbumsIpc = () => {
 
   ipcMain.handle(IpcChannel.albumsAddPhoto, (_event, albumId: unknown, photo: unknown) =>
     addPhotoToAlbum(albumsFilePath(), assertId(albumId), assertAlbumPhoto(photo))
+  );
+
+  ipcMain.handle(
+    IpcChannel.albumsMovePhoto,
+    (_event, fromAlbumId: unknown, toAlbumId: unknown, photoId: unknown) =>
+      movePhotoToAlbum(
+        albumsFilePath(),
+        assertId(fromAlbumId),
+        assertId(toAlbumId),
+        assertId(photoId)
+      )
   );
 };

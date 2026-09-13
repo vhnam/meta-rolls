@@ -43,6 +43,11 @@ export type AlbumsApi = {
   rename: (albumId: string, name: string) => Promise<Album | null>;
   remove: (albumId: string) => Promise<void>;
   addPhoto: (albumId: string, photo: AlbumPhoto) => Promise<Album | null>;
+  movePhoto: (
+    fromAlbumId: string,
+    toAlbumId: string,
+    photoId: string
+  ) => Promise<{ from: Album; to: Album } | null>;
 };
 
 export type MenuApi = {

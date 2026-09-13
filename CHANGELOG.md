@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.32.0] - 2026-09-13
+
+### Added
+
+- Photos can be dragged from one album to another.
+
 ## [0.31.0] - 2026-09-13
 
 ### Added
