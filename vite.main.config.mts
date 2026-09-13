@@ -14,6 +14,8 @@ export default defineConfig({
     emptyOutDir: true,
     minify: false,
     sourcemap: true,
+    // Electron bundles a single, always-current Node — no need to down-level.
+    target: 'esnext',
     lib: {
       entry: resolve('src/main/index.ts'),
       formats: ['cjs'],

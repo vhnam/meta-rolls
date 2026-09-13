@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.27.1] - 2026-09-13
+
+### Changed
+
+- Bundle renderer, main, and preload as esnext for the Electron runtime.
+
 ## [0.27.0] - 2026-09-13
 
 ### Added

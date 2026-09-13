@@ -10,7 +10,9 @@ export default defineConfig({
   root: 'src/renderer',
   build: {
     outDir: resolve('out/renderer'),
-    emptyOutDir: true
+    emptyOutDir: true,
+    // Electron bundles a single, always-current Chromium — no need to down-level for older browsers.
+    target: 'esnext'
   },
   resolve: {
     alias: {
