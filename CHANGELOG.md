@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.27.3] - 2026-09-13
+
+### Changed
+
+- Add resizable panel primitives for splitting the media workspace.
+
 ## [0.27.2] - 2026-09-13
 
 ### Changed
