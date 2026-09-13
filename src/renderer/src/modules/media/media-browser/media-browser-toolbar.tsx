@@ -92,7 +92,7 @@ export const MediaBrowserToolbar = ({
 
       <Separator orientation="vertical" className="mx-1 h-8 self-center" />
 
-      <span className="min-w-0 flex-1 truncate px-2 text-[11px] font-medium text-foreground">
+      <span className="min-w-0 flex-1 truncate px-2 text-tiny font-medium text-foreground">
         {currentFolderName}
       </span>
 

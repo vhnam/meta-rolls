@@ -45,7 +45,7 @@ export const MediaAlbumsToolbar = ({
         </TooltipTrigger>
         <TooltipContent>{folderTreeCollapsed ? 'Show panel' : 'Hide panel'}</TooltipContent>
       </Tooltip>
-      <span className="min-w-0 flex-1 truncate px-2 text-[11px] font-medium text-foreground">
+      <span className="min-w-0 flex-1 truncate px-2 text-tiny font-medium text-foreground">
         Albums
       </span>
 

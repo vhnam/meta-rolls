@@ -30,9 +30,6 @@ export const MediaAlbumsThumbnails = ({
 
   return (
     <section className={THUMBNAIL_PANE_CLASS}>
-      <div className="flex h-7 shrink-0 items-center border-b border-border bg-muted px-2">
-        <span className="text-tiny font-medium">{album.name}</span>
-      </div>
       <MediaPhotoThumbnailShell
         isEmpty={photos.length === 0}
         emptyMessage="No photos found"

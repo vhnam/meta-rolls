@@ -116,6 +116,9 @@ export const MediaAlbums = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize="70%" minSize="30%" className="min-h-0 min-w-0">
+            <div className="flex h-7 shrink-0 items-center border-b border-border bg-muted px-2">
+              <span className="text-tiny font-medium">{currentAlbum?.name ?? 'Albums'}</span>
+            </div>
             {albumContent}
           </ResizablePanel>
         </ResizablePanelGroup>
