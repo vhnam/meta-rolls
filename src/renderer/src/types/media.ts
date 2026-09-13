@@ -2,7 +2,7 @@ import { type PhotoExif, type PhotoExifField } from '../../../../shared/media';
 
 export type FolderKind = 'disk' | 'folder';
 
-export type MediaView = 'list' | 'grid' | 'thumbnail';
+export type MediaView = 'list' | 'thumbnail';
 
 export type PhotoFolder = {
   id: string;

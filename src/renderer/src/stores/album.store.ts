@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { MEDIA_VIEW } from '#/constants/media';
+import { MEDIA_VIEW, THUMBNAIL_ZOOM_STEP } from '#/constants/media';
 import { getApi } from '#/hooks/use-ipc';
 import { type Album, type AlbumPhoto, type MediaView } from '#/types';
 
@@ -39,8 +39,8 @@ export const useAlbumStore = create<AlbumStore>((set, get) => ({
   albums: [],
   activeAlbumId: null,
   currentPage: 1,
-  view: MEDIA_VIEW.grid,
-  zoom: 31,
+  view: MEDIA_VIEW.thumbnail,
+  zoom: THUMBNAIL_ZOOM_STEP,
   albumListCollapsed: false,
   setActiveAlbumId: (activeAlbumId) => set({ activeAlbumId, currentPage: 1 }),
   setCurrentPage: (currentPage) => set({ currentPage: Math.max(1, currentPage) }),

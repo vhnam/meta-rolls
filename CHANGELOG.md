@@ -9,6 +9,16 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.30.0] - 2026-09-13
+
+### Added
+
+- Album workspace shows list and thumbnail views with a resizable album sidebar.
+
+### Changed
+
+- Replace the album photo grid with shared list and thumbnail chrome.
+
 ## [0.29.0] - 2026-09-13
 
 ### Added

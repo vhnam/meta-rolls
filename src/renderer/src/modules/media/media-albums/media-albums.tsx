@@ -1,15 +1,6 @@
-import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
-import { cn } from 'cn';
 import { useState } from 'react';
 
-import { Button } from '#/components/ui/button';
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger
-} from '#/components/ui/context-menu';
-import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import { type AlbumSchema } from '#/schemas/album.schema';
 import { useAlbumStore } from '#/stores/album.store';
 import { getActivePhotoId, useMediaPoolStore } from '#/stores/media-pool.store';
@@ -17,7 +8,9 @@ import { type Album } from '#/types';
 import { toPhotoItem } from '#/utils';
 
 import { MediaAlbumsAlbumDialog } from './media-albums-album-dialog';
-import { MediaAlbumsGrid } from './media-albums-grid';
+import { MediaAlbumsList } from './media-albums-list';
+import { MediaAlbumsSidebar } from './media-albums-sidebar';
+import { MediaAlbumsThumbnails } from './media-albums-thumbnails';
 import { MediaAlbumsToolbar } from './media-albums-toolbar';
 
 export const MediaAlbums = () => {
@@ -62,8 +55,30 @@ export const MediaAlbums = () => {
     closeAlbumDialog();
   };
 
+  const albumContent = (
+    <>
+      {view === 'thumbnail' && currentAlbum && (
+        <MediaAlbumsThumbnails
+          album={currentAlbum}
+          photos={albumPhotos}
+          selectedPhotoId={activePhotoId}
+          onSelectPhoto={store.setSelectedPhotoId}
+          zoom={zoom}
+        />
+      )}
+      {view === 'list' && currentAlbum && (
+        <MediaAlbumsList
+          album={currentAlbum}
+          photos={albumPhotos}
+          selectedPhotoId={activePhotoId}
+          onSelectPhoto={store.setSelectedPhotoId}
+        />
+      )}
+    </>
+  );
+
   return (
-    <div className="flex min-h-0 min-w-0 flex-col overflow-hidden border border-border">
+    <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border">
       <MediaAlbumsToolbar
         view={view}
         zoom={zoom}
@@ -72,93 +87,32 @@ export const MediaAlbums = () => {
         onZoomChange={onZoomChange}
         onToggleFolderTree={onToggleAlbumList}
       />
-      <div className="flex min-h-0 min-w-0 flex-1">
-        <aside
-          className={cn(
-            'flex min-h-0 shrink-0 flex-col border-r border-sidebar-border bg-sidebar',
-            albumListCollapsed ? 'hidden' : 'w-52'
-          )}
-        >
-          <div className="flex h-7 shrink-0 items-center justify-end border-b border-border bg-sidebar-accent px-1">
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    aria-label="Add album"
-                    onClick={() => {
-                      setEditingAlbum(null);
-                      setAlbumDialogOpen(true);
-                    }}
-                  />
-                }
-              >
-                <IconPlus />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Add album</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-          {albums.length > 0 ? (
-            <div className="min-h-0 flex-1 scroll-fade overflow-auto py-1">
-              {albums.map((item) => (
-                <ContextMenu key={item.id}>
-                  <ContextMenuTrigger
-                    render={
-                      <button
-                        type="button"
-                        className={cn(
-                          'flex h-6 w-full items-center px-3 text-left text-[11px] text-sidebar-foreground hover:bg-sidebar-accent',
-                          selectedId === item.id
-                            ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                            : 'text-muted-foreground hover:text-sidebar-foreground'
-                        )}
-                        onClick={() => onSelect(item.id)}
-                      />
-                    }
-                  >
-                    {item.name}
-                  </ContextMenuTrigger>
-                  <ContextMenuContent>
-                    <ContextMenuItem
-                      onClick={() => {
-                        setEditingAlbum(item);
-                        setAlbumDialogOpen(true);
-                      }}
-                    >
-                      <IconEdit />
-                      Rename album
-                    </ContextMenuItem>
-                    <ContextMenuItem
-                      variant="destructive"
-                      onClick={() => void removeAlbum(item.id)}
-                    >
-                      <IconTrash />
-                      Remove album
-                    </ContextMenuItem>
-                  </ContextMenuContent>
-                </ContextMenu>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-1 items-center justify-center text-sidebar-foreground">
-              <p className="text-xs text-muted-foreground">No albums found</p>
-            </div>
-          )}
-        </aside>
-
-        {view === 'grid' && currentAlbum && (
-          <MediaAlbumsGrid
-            album={currentAlbum}
-            photos={albumPhotos}
-            selectedPhotoId={activePhotoId}
-            onSelectPhoto={store.setSelectedPhotoId}
-            zoom={zoom}
-          />
-        )}
-      </div>
+      {albumListCollapsed ? (
+        <div className="flex min-h-0 min-w-0 flex-1">{albumContent}</div>
+      ) : (
+        <ResizablePanelGroup orientation="horizontal" className="min-h-0 min-w-0 flex-1">
+          <ResizablePanel defaultSize="13rem" minSize="8rem" maxSize="50%" className="min-h-0">
+            <MediaAlbumsSidebar
+              albums={albums}
+              selectedId={selectedId}
+              onSelect={onSelect}
+              onAddAlbum={() => {
+                setEditingAlbum(null);
+                setAlbumDialogOpen(true);
+              }}
+              onRenameAlbum={(album) => {
+                setEditingAlbum(album);
+                setAlbumDialogOpen(true);
+              }}
+              onRemoveAlbum={removeAlbum}
+            />
+          </ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel defaultSize="70%" minSize="30%" className="min-h-0 min-w-0">
+            {albumContent}
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      )}
 
       <MediaAlbumsAlbumDialog
         open={albumDialogOpen}

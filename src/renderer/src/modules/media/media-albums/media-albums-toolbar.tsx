@@ -50,13 +50,12 @@ export const MediaAlbumsToolbar = ({
       </span>
 
       <div className="ml-auto flex items-center gap-1">
-        {view === 'grid' && (
+        {view === 'thumbnail' && (
           <div className="flex items-center gap-2 pr-1">
             <input
               type="range"
               min={0}
               max={100}
-              step={25}
               value={zoom}
               onChange={(event) => onZoomChange(Number(event.target.value))}
               className="h-1 w-24 cursor-pointer accent-muted-foreground"
@@ -86,13 +85,13 @@ export const MediaAlbumsToolbar = ({
           <TooltipTrigger
             render={
               <Button
-                variant={view === 'grid' ? 'secondary' : 'ghost'}
+                variant={view === 'thumbnail' ? 'secondary' : 'ghost'}
                 size="icon-xs"
-                onClick={() => onViewChange('grid')}
+                onClick={() => onViewChange('thumbnail')}
               />
             }
           >
-            {view === 'grid' ? <IconLayoutGridFilled /> : <IconLayoutGrid />}
+            {view === 'thumbnail' ? <IconLayoutGridFilled /> : <IconLayoutGrid />}
           </TooltipTrigger>
           <TooltipContent>
             <p>Thumbnail view</p>

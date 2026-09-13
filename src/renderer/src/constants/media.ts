@@ -5,7 +5,6 @@ export const FOLDER_KIND = {
 
 export const MEDIA_VIEW = {
   list: 'list',
-  grid: 'grid',
   thumbnail: 'thumbnail'
 } as const;
 
@@ -29,10 +28,6 @@ export const FOLDER_SPINNER_DELAY_MS = 150;
 export const FOLDER_TREE_PADDING_START = 8;
 export const FOLDER_TREE_DEPTH_STEP = 12;
 export const FOLDER_TREE_ROW_HEIGHT = 24;
-
-export const GRID_THUMB_BASE = 48;
-export const GRID_THUMB_ZOOM_FACTOR = 1.2;
-export const GRID_THUMB_ASPECT = 0.72;
 
 export const THUMBNAIL_MIN_COLUMNS = 3;
 export const THUMBNAIL_MAX_COLUMNS = 6;
