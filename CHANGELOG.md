@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.33.0] - 2026-09-13
+
+### Added
+
+- Preview zoom shows the current percent when it is not a preset.
+
 ## [0.32.0] - 2026-09-13
 
 ### Added

@@ -51,5 +51,23 @@ export const previewZoomFromPanzoomScale = (scale: number, image: HTMLImageEleme
       Math.abs(Number(option.value) - percent) < PERCENT_TOLERANCE
   );
 
-  return match?.value ?? null;
+  return match?.value ?? String(Math.round(percent));
+};
+
+export const formatPreviewZoomLabel = (value: string | null) => {
+  if (!value || value === PREVIEW_ZOOM_FIT) {
+    return 'Fit';
+  }
+
+  const match = PREVIEW_ZOOM_OPTIONS.find((option) => option.value === value);
+  if (match) {
+    return match.label;
+  }
+
+  const percent = Number(value);
+  if (!Number.isFinite(percent)) {
+    return 'Fit';
+  }
+
+  return `${Math.round(percent)}%`;
 };

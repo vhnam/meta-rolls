@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '#/components/ui/select';
-import { PREVIEW_ZOOM_FIT, PREVIEW_ZOOM_OPTIONS } from '#/utils';
+import { formatPreviewZoomLabel, PREVIEW_ZOOM_FIT, PREVIEW_ZOOM_OPTIONS } from '#/utils';
 
 type MediaPreviewToolbarProps = {
   photoName?: string;
@@ -21,16 +21,23 @@ const MediaPreviewToolbar = ({
   zoomValue,
   onZoomChange
 }: MediaPreviewToolbarProps) => {
+  const zoomLabel = formatPreviewZoomLabel(zoomValue);
+  const isPresetZoom =
+    !zoomValue || PREVIEW_ZOOM_OPTIONS.some((option) => option.value === zoomValue);
+  const selectItems = isPresetZoom
+    ? [...PREVIEW_ZOOM_OPTIONS]
+    : [...PREVIEW_ZOOM_OPTIONS, { value: zoomValue, label: zoomLabel }];
+
   return (
     <div className="flex h-7 items-center justify-between border-b border-sidebar-border bg-muted">
       <Select
         disabled={zoomDisabled}
-        items={[...PREVIEW_ZOOM_OPTIONS]}
-        value={zoomValue}
+        items={selectItems}
+        value={zoomValue ?? PREVIEW_ZOOM_FIT}
         onValueChange={onZoomChange}
       >
         <SelectTrigger size="sm" className="h-6 border-transparent bg-transparent shadow-none">
-          <SelectValue />
+          <SelectValue placeholder="Fit">{zoomLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent align="start">
           <SelectItem value={PREVIEW_ZOOM_FIT}>Fit</SelectItem>
