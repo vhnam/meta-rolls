@@ -1,14 +1,12 @@
 import { DragDropProvider, type DragEndEvent } from '@dnd-kit/react';
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
+import { useMediaPhotoArrowSelection } from '#/hooks/use-media-photo-arrow-selection';
+import { useMediaPreviewFullscreen } from '#/hooks/use-media-preview-fullscreen';
 import { MediaAlbums } from '#/modules/media/media-albums';
 import { MediaBrowser } from '#/modules/media/media-browser';
 import { MediaMetadata } from '#/modules/media/media-metadata';
-import {
-  MediaPreview,
-  MediaPreviewFullscreen,
-  useMediaPreviewFullscreen
-} from '#/modules/media/media-preview';
+import { MediaPreview, MediaPreviewFullscreen } from '#/modules/media/media-preview';
 import { useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { toPhotoItem } from '#/utils';
@@ -30,6 +28,7 @@ const MediaScreen = () => {
   const selectedPhoto = getSelectedPhoto(store, activeAlbumPhotos.map(toPhotoItem));
   const { open: fullscreenOpen, setOpen: setFullscreenOpen } =
     useMediaPreviewFullscreen(selectedPhoto);
+  useMediaPhotoArrowSelection();
   const addPhotoToAlbum = useAlbumStore((state) => state.addPhotoToAlbum);
   const movePhotoToAlbum = useAlbumStore((state) => state.movePhotoToAlbum);
 

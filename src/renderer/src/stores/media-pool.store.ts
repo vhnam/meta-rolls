@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
-import { FOLDER_KIND, MEDIA_VIEW, THUMBNAIL_ZOOM_STEP } from '#/constants/media';
+import { FOLDER_KIND, MEDIA_VIEW, PHOTO_PANE, THUMBNAIL_ZOOM_STEP } from '#/constants/media';
 import { getApi } from '#/hooks/use-ipc';
-import { type MediaView, type PhotoFolder, type PhotoItem } from '#/types';
+import { type MediaView, type PhotoFolder, type PhotoItem, type PhotoPane } from '#/types';
 import { findFolder } from '#/utils';
 
 type MediaPoolState = {
@@ -18,6 +18,7 @@ type MediaPoolState = {
   selectedPhotoId: string | null;
   selectedListFolderId: string | null;
   folderTreeCollapsed: boolean;
+  photoPane: PhotoPane | null;
 };
 
 type MediaPoolActions = {
@@ -31,7 +32,8 @@ type MediaPoolActions = {
   setSelectedPhotoId: (photoId: string | null) => void;
   setSelectedListFolderId: (folderId: string | null) => void;
   toggleFolderTree: () => void;
-  selectRelativePhoto: (offset: number) => void;
+  setPhotoPane: (photoPane: PhotoPane) => void;
+  selectRelativePhoto: (offset: number, extraPhotos?: PhotoItem[]) => void;
   loadVolumes: () => Promise<void>;
   refresh: () => Promise<void>;
   loadFolderChildren: (folder: PhotoFolder) => Promise<void>;
@@ -147,6 +149,7 @@ export const useMediaPoolStore = create<MediaPoolStore>((set, get) => ({
   selectedPhotoId: null,
   selectedListFolderId: null,
   folderTreeCollapsed: false,
+  photoPane: null,
   setQuery: (query) => set({ query }),
   setView: (view) => set({ view }),
   setZoom: (zoom) => set({ zoom }),
@@ -189,18 +192,36 @@ export const useMediaPoolStore = create<MediaPoolStore>((set, get) => ({
   setSelectedListFolderId: (selectedListFolderId) =>
     set({ selectedListFolderId, selectedPhotoId: null }),
   toggleFolderTree: () => set((state) => ({ folderTreeCollapsed: !state.folderTreeCollapsed })),
-  selectRelativePhoto: (offset) => {
-    const state = get();
-    const visiblePhotos = getVisiblePhotos(state);
-    if (visiblePhotos.length === 0) {
+  setPhotoPane: (photoPane) => {
+    if (get().photoPane === photoPane) {
       return;
     }
-    const currentIndex = visiblePhotos.findIndex((photo) => photo.id === getActivePhotoId(state));
-    const nextIndex =
-      currentIndex === -1
-        ? 0
-        : (currentIndex + offset + visiblePhotos.length) % visiblePhotos.length;
-    set({ selectedPhotoId: visiblePhotos[nextIndex].id, selectedListFolderId: null });
+    set({ photoPane });
+  },
+  selectRelativePhoto: (offset, extraPhotos = []) => {
+    const state = get();
+    if (!state.photoPane) {
+      return;
+    }
+    const photos = state.photoPane === PHOTO_PANE.albums ? extraPhotos : getVisiblePhotos(state);
+    if (photos.length === 0) {
+      return;
+    }
+    const activeId =
+      state.photoPane === PHOTO_PANE.albums
+        ? extraPhotos.some((photo) => photo.id === state.selectedPhotoId)
+          ? state.selectedPhotoId
+          : null
+        : getActivePhotoId(state);
+    if (!activeId) {
+      return;
+    }
+    const currentIndex = photos.findIndex((photo) => photo.id === activeId);
+    if (currentIndex === -1) {
+      return;
+    }
+    const nextIndex = (((currentIndex + offset) % photos.length) + photos.length) % photos.length;
+    set({ selectedPhotoId: photos[nextIndex].id, selectedListFolderId: null });
   },
   loadVolumes: async () => {
     const volumes = await getApi().media.listVolumes();

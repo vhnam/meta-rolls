@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
+import { PHOTO_PANE } from '#/constants/media';
 import {
   canGoBack,
   canGoForward,
@@ -19,7 +20,7 @@ export const MediaBrowser = () => {
   const store = useMediaPoolStore();
   const selectedFolder = getSelectedFolder(store);
   const listPhotos = getListPhotos(store);
-  const activePhotoId = getActivePhotoId(store);
+  const activePhotoId = store.photoPane === PHOTO_PANE.browser ? getActivePhotoId(store) : null;
   const childFolders = selectedFolder?.children ?? [];
 
   useEffect(() => {
@@ -59,7 +60,10 @@ export const MediaBrowser = () => {
     );
 
   return (
-    <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border">
+    <div
+      className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border"
+      onPointerDownCapture={() => store.setPhotoPane(PHOTO_PANE.browser)}
+    >
       <MediaBrowserToolbar
         query={store.query}
         onQueryChange={store.setQuery}

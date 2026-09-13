@@ -8,6 +8,7 @@ export { getThumbnailColumnCount } from './thumbnail-columns';
 export { buildMetadataRows, groupMetadataRows, type MetadataGroup } from './group-metadata';
 export { getPhotoOverview, type PhotoOverviewItem } from './photo-overview';
 export { toMediaFileUrl } from './media-file-url';
+export { isEditableKeyboardTarget } from './is-editable-keyboard-target';
 export {
   formatPreviewZoomLabel,
   PREVIEW_ZOOM_FIT,

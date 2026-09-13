@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
+import { PHOTO_PANE } from '#/constants/media';
 import { type AlbumSchema } from '#/schemas/album.schema';
 import { useAlbumStore } from '#/stores/album.store';
-import { getActivePhotoId, useMediaPoolStore } from '#/stores/media-pool.store';
+import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type Album } from '#/types';
-import { toPhotoItem } from '#/utils';
 
 import { MediaAlbumsAlbumDialog } from './media-albums-album-dialog';
 import { MediaAlbumsList } from './media-albums-list';
@@ -29,7 +29,11 @@ export const MediaAlbums = () => {
   const removeAlbum = useAlbumStore((state) => state.removeAlbum);
   const currentAlbum = albums.find((album) => album.id === selectedId);
   const albumPhotos = currentAlbum?.photos ?? [];
-  const activePhotoId = getActivePhotoId(store, albumPhotos.map(toPhotoItem));
+  const activePhotoId =
+    store.photoPane === PHOTO_PANE.albums &&
+    albumPhotos.some((photo) => photo.id === store.selectedPhotoId)
+      ? store.selectedPhotoId
+      : null;
   const [albumDialogOpen, setAlbumDialogOpen] = useState(false);
   const [editingAlbum, setEditingAlbum] = useState<Album | null>(null);
 
@@ -78,7 +82,10 @@ export const MediaAlbums = () => {
   );
 
   return (
-    <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border">
+    <div
+      className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border"
+      onPointerDownCapture={() => store.setPhotoPane(PHOTO_PANE.albums)}
+    >
       <MediaAlbumsToolbar
         view={view}
         zoom={zoom}

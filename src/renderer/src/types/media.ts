@@ -4,6 +4,8 @@ export type FolderKind = 'disk' | 'folder';
 
 export type MediaView = 'list' | 'thumbnail';
 
+export type PhotoPane = 'browser' | 'albums';
+
 export type PhotoFolder = {
   id: string;
   name: string;

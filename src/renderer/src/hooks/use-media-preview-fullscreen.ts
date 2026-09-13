@@ -2,19 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { getApi } from '#/hooks/use-ipc';
 import { type PhotoItem } from '#/types';
-
-const isEditableTarget = (target: EventTarget | null) => {
-  if (!(target instanceof HTMLElement)) {
-    return false;
-  }
-
-  return (
-    target.isContentEditable ||
-    target.tagName === 'INPUT' ||
-    target.tagName === 'TEXTAREA' ||
-    target.tagName === 'SELECT'
-  );
-};
+import { isEditableKeyboardTarget } from '#/utils';
 
 const isPhotoFullscreenShortcut = (event: KeyboardEvent) =>
   event.key.toLowerCase() === 'f' &&
@@ -42,7 +30,7 @@ export const useMediaPreviewFullscreen = (photo: PhotoItem | null) => {
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (!isPhotoFullscreenShortcut(event) || isEditableTarget(event.target)) {
+      if (!isPhotoFullscreenShortcut(event) || isEditableKeyboardTarget(event.target)) {
         return;
       }
       event.preventDefault();

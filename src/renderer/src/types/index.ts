@@ -5,6 +5,7 @@ export type {
   MediaView,
   PhotoFolder,
   PhotoItem,
+  PhotoPane,
   PhotoExif,
   PhotoExifField
 } from './media';

@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.35.0] - 2026-09-13
+
+### Added
+
+- Arrow keys move the photo selection in the focused library or album pane, including full screen.
+
 ## [0.34.0] - 2026-09-13
 
 ### Added

@@ -8,6 +8,11 @@ export const MEDIA_VIEW = {
   thumbnail: 'thumbnail'
 } as const;
 
+export const PHOTO_PANE = {
+  browser: 'browser',
+  albums: 'albums'
+} as const;
+
 export const FILE_LIST_COLUMNS = [
   { id: 'name', label: 'File Name', defaultWidth: 220, minWidth: 120 },
   { id: 'createdAt', label: 'Date Created', defaultWidth: 120, minWidth: 88 },
