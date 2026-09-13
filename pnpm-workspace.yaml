@@ -3,3 +3,11 @@ allowBuilds:
   electron: true
   electron-winstaller: true
   esbuild: true
+onlyBuiltDependencies:
+  - '@ladybugdb/core'
+  - onnxruntime-node
+  - protobufjs
+  - sharp
+  - tree-sitter
+  - tree-sitter-javascript
+  - tree-sitter-typescript

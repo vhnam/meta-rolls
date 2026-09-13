@@ -9,6 +9,12 @@ The project starts at **0.0.0**. While the MVP is in development, versions bump 
 
 ## [Unreleased]
 
+## [0.27.2] - 2026-09-13
+
+### Changed
+
+- Add a GitNexus analyze script and allow its native dependencies to build under pnpm.
+
 ## [0.27.1] - 2026-09-13
 
 ### Changed
