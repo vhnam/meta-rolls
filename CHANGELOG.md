@@ -1,13 +1,22 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to Meta Rolls are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-The project starts at **0.0.0**. While the MVP is in development, versions bump **minor** for features and **patch** for everything else.
+## [1.0.0] - 2026-09-13
 
-## [Unreleased]
+First public release. Browse your photo library and build albums.
+
+### Changed
+
+- Product copy is now "Browse your photo library and build albums."
+- The title bar only lists the Media workspace.
+
+### Removed
+
+- Standalone Photos and Albums screens. Browsing and albums share the Media workspace.
 
 ## [0.35.0] - 2026-09-13
 

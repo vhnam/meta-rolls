@@ -1,6 +1,8 @@
-# meta-rolls
+# Meta Rolls
 
-An Electron application with React and TypeScript
+Browse your photo library and build albums.
+
+A desktop app (Electron + React) for browsing a local photo library and assembling albums.
 
 ## Recommended IDE Setup
 

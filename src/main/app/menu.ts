@@ -37,7 +37,7 @@ export function setupAppMenu(): void {
     applicationName: APP_NAME,
     applicationVersion: app.getVersion(),
     copyright: 'Copyright © 2026',
-    credits: 'Browse photos, manage album layouts, and print Instax.',
+    credits: 'Browse your photo library and build albums.',
     iconPath: APP_ICON_PATH
   });
 
