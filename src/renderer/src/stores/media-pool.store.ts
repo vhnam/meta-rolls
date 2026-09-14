@@ -93,6 +93,20 @@ export const canGoBack = (state: MediaPoolState) => state.folderHistoryIndex > 0
 export const canGoForward = (state: MediaPoolState) =>
   state.folderHistoryIndex >= 0 && state.folderHistoryIndex < state.folderHistory.length - 1;
 
+const mergeFolderChildren = (
+  previous: PhotoFolder[] | undefined,
+  next: PhotoFolder[]
+): PhotoFolder[] => {
+  const previousById = new Map((previous ?? []).map((folder) => [folder.id, folder]));
+  return next.map((folder) => {
+    const existing = previousById.get(folder.id);
+    if (!existing?.children) {
+      return folder;
+    }
+    return { ...folder, children: existing.children };
+  });
+};
+
 const setChildrenInTree = (
   folders: PhotoFolder[],
   folderId: string,
@@ -100,7 +114,7 @@ const setChildrenInTree = (
 ): PhotoFolder[] =>
   folders.map((folder) => {
     if (folder.id === folderId) {
-      return { ...folder, children };
+      return { ...folder, children: mergeFolderChildren(folder.children, children) };
     }
     if (folder.children) {
       return { ...folder, children: setChildrenInTree(folder.children, folderId, children) };

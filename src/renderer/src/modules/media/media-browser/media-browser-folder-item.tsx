@@ -8,18 +8,31 @@ import {
 } from '@tabler/icons-react';
 import { cn } from 'cn';
 import { createContext, useContext, type CSSProperties, type MouseEvent } from 'react';
-import { type NodeRendererProps } from 'react-arborist';
+import { type NodeApi, type NodeRendererProps } from 'react-arborist';
 
 import { type PhotoFolder } from '#/types';
-import { folderTreePaddingLeft, isFolderInPath } from '#/utils';
+import { folderTreePaddingLeft } from '#/utils';
 
 export type MediaBrowserFolderTreeUi = {
-  selectedFolderId: string;
   loadingIds: ReadonlySet<string>;
   loadWithSpinner: (folder: PhotoFolder) => void;
 };
 
 export const MediaBrowserFolderTreeUiContext = createContext<MediaBrowserFolderTreeUi | null>(null);
+
+const collectOpenDescendantIds = (node: NodeApi<PhotoFolder>): string[] => {
+  const ids: string[] = [];
+  const visit = (current: NodeApi<PhotoFolder>) => {
+    for (const child of current.children ?? []) {
+      if (child.isOpen) {
+        ids.push(child.id);
+      }
+      visit(child);
+    }
+  };
+  visit(node);
+  return ids;
+};
 
 export const MediaBrowserFolderItem = ({ node, style }: NodeRendererProps<PhotoFolder>) => {
   const ui = useContext(MediaBrowserFolderTreeUiContext);
@@ -27,7 +40,6 @@ export const MediaBrowserFolderItem = ({ node, style }: NodeRendererProps<PhotoF
   const selected = node.isSelected;
   const hasChildren = node.isInternal;
   const showSpinner = ui?.loadingIds.has(folder.id) ?? false;
-  const inSelectedPath = ui ? isFolderInPath(folder.id, ui.selectedFolderId) : false;
   const rowStyle: CSSProperties = {
     ...style,
     paddingLeft: folderTreePaddingLeft(node.level)
@@ -35,13 +47,18 @@ export const MediaBrowserFolderItem = ({ node, style }: NodeRendererProps<PhotoF
 
   const handleToggle = (event: MouseEvent<HTMLSpanElement>) => {
     event.stopPropagation();
-    if (inSelectedPath && node.isOpen) {
+    if (node.isOpen) {
+      const keepOpen = collectOpenDescendantIds(node);
+      node.close();
+      for (const id of keepOpen) {
+        node.tree.open(id);
+      }
       return;
     }
-    if (node.isClosed) {
+    if (folder.children === undefined) {
       ui?.loadWithSpinner(folder);
     }
-    node.toggle();
+    node.open();
   };
 
   return (
