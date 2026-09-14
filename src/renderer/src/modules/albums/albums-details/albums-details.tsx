@@ -1,4 +1,3 @@
-import { PHOTO_PANE } from '#/constants/media';
 import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 
@@ -16,11 +15,9 @@ export const AlbumsDetails = () => {
   const onZoomChange = useAlbumStore((state) => state.setZoom);
   const currentAlbum = albums.find((album) => album.id === selectedId);
   const albumPhotos = currentAlbum?.photos ?? [];
-  const activePhotoId =
-    store.photoPane === PHOTO_PANE.albums &&
-    albumPhotos.some((photo) => photo.id === store.selectedPhotoId)
-      ? store.selectedPhotoId
-      : null;
+  const activePhotoId = albumPhotos.some((photo) => photo.id === store.selectedPhotoId)
+    ? store.selectedPhotoId
+    : null;
 
   const albumContent = (
     <>
@@ -45,7 +42,7 @@ export const AlbumsDetails = () => {
   );
 
   return (
-    <>
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
       <AlbumsDetailsToolbar
         view={view}
         zoom={zoom}
@@ -53,7 +50,7 @@ export const AlbumsDetails = () => {
         onViewChange={onViewChange}
         onZoomChange={onZoomChange}
       />
-      {albumContent}
-    </>
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{albumContent}</div>
+    </div>
   );
 };

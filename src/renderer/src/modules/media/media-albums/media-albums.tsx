@@ -95,7 +95,7 @@ export const MediaAlbums = () => {
         onToggleFolderTree={onToggleAlbumList}
       />
       {albumListCollapsed ? (
-        <div className="flex min-h-0 min-w-0 flex-1">{albumContent}</div>
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{albumContent}</div>
       ) : (
         <ResizablePanelGroup orientation="horizontal" className="min-h-0 min-w-0 flex-1">
           <ResizablePanel defaultSize="13rem" minSize="8rem" maxSize="50%" className="min-h-0">
@@ -116,10 +116,12 @@ export const MediaAlbums = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize="70%" minSize="30%" className="min-h-0 min-w-0">
-            <div className="flex h-7 shrink-0 items-center border-b border-border bg-muted px-2">
-              <span className="text-tiny font-medium">{currentAlbum?.name ?? 'Albums'}</span>
+            <div className="flex h-full min-h-0 flex-col overflow-hidden">
+              <div className="flex h-7 shrink-0 items-center border-b border-border bg-muted px-2">
+                <span className="text-tiny font-medium">{currentAlbum?.name ?? 'Albums'}</span>
+              </div>
+              <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{albumContent}</div>
             </div>
-            {albumContent}
           </ResizablePanel>
         </ResizablePanelGroup>
       )}

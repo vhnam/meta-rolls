@@ -25,26 +25,28 @@ export const AlbumsDetailsList = ({
   });
 
   return (
-    <MediaPhotoListShell
-      rows={photos}
-      getRowKey={(photo) => photo.id}
-      emptyMessage="No photos in this album."
-      droppable={{ ref, isDropTarget }}
-      renderRow={(photo) => (
-        <AlbumsDetailsPhotoContextMenu
-          albumId={album.id}
-          photoId={photo.id}
-          onSelectPhoto={onSelectPhoto}
-        >
-          <MediaPhotoListRow
-            photo={toPhotoItem(photo)}
-            selected={photo.id === selectedPhotoId}
-            dragId={`album-photo:${album.id}:${photo.id}`}
-            dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
+    <div className="h-full min-h-0">
+      <MediaPhotoListShell
+        rows={photos}
+        getRowKey={(photo) => photo.id}
+        emptyMessage="No photos in this album."
+        droppable={{ ref, isDropTarget }}
+        renderRow={(photo) => (
+          <AlbumsDetailsPhotoContextMenu
+            albumId={album.id}
+            photoId={photo.id}
             onSelectPhoto={onSelectPhoto}
-          />
-        </AlbumsDetailsPhotoContextMenu>
-      )}
-    />
+          >
+            <MediaPhotoListRow
+              photo={toPhotoItem(photo)}
+              selected={photo.id === selectedPhotoId}
+              dragId={`album-photo:${album.id}:${photo.id}`}
+              dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
+              onSelectPhoto={onSelectPhoto}
+            />
+          </AlbumsDetailsPhotoContextMenu>
+        )}
+      />
+    </div>
   );
 };

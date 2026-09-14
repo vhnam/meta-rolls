@@ -61,12 +61,12 @@ export const MediaPhotoListShell = <T,>({
 
   return (
     <section
-      className="flex min-h-0 min-w-[20rem] flex-[1.2] flex-col overflow-hidden bg-background"
+      className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden bg-background"
       style={columnStyle}
     >
       <div
         ref={headerRef}
-        className="shrink-0 overflow-x-auto border-b border-border bg-muted scrollbar-none [&::-webkit-scrollbar]:hidden"
+        className="relative z-10 shrink-0 overflow-x-auto border-b border-border bg-muted scrollbar-none [&::-webkit-scrollbar]:hidden"
       >
         <MediaPhotoListHeader
           widths={columnWidths}

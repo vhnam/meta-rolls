@@ -83,7 +83,7 @@ export const MediaBrowser = () => {
         }}
       />
       {store.folderTreeCollapsed ? (
-        content
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{content}</div>
       ) : (
         <ResizablePanelGroup orientation="horizontal" className="min-h-0 min-w-0 flex-1">
           <ResizablePanel defaultSize="13rem" minSize="8rem" maxSize="50%" className="min-h-0">
@@ -95,7 +95,7 @@ export const MediaBrowser = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize="70%" minSize="30%" className="min-h-0 min-w-0">
-            {content}
+            <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden">{content}</div>
           </ResizablePanel>
         </ResizablePanelGroup>
       )}

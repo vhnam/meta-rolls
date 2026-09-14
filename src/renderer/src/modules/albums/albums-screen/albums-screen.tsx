@@ -83,7 +83,9 @@ export const AlbumsScreen = () => {
               <AlbumsPreview photo={selectedPhoto} />
             </ResizablePanel>
             <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
-              <AlbumsDetails />
+              <div className="h-full min-h-0 overflow-hidden">
+                <AlbumsDetails />
+              </div>
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>

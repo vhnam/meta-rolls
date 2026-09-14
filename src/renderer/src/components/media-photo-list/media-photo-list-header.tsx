@@ -53,7 +53,7 @@ const ColumnResizeHandle = ({ label, minWidth, width, onResize }: ColumnResizeHa
 
 export const MediaPhotoListHeader = ({ widths, onResizeColumn }: MediaPhotoListHeaderProps) => {
   return (
-    <div className={cn(FILE_LIST_ROW_CLASS, 'select-none')}>
+    <div className={cn(FILE_LIST_ROW_CLASS, 'sticky top-0 z-20 bg-muted select-none')}>
       {FILE_LIST_COLUMNS.map((column, index) => (
         <div
           key={column.id}
