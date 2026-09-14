@@ -5,6 +5,17 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2026-09-14
+
+### Changed
+
+- Tiny type uses a 24px line height, and file-list rows match that size.
+- Vite resolves `cn` through the renderer helper so `text-tiny` merges with other font-size classes.
+
+### Fixed
+
+- Selected thumbnail names use the foreground color.
+
 ## [1.2.2] - 2026-09-14
 
 ### Fixed

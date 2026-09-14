@@ -41,7 +41,7 @@ export const AlbumsSidebarAlbum = ({
             <button
               type="button"
               className={cn(
-                'flex h-6 w-full items-center px-3 text-left text-xs text-sidebar-foreground hover:bg-sidebar-accent',
+                'flex h-6 w-full items-center px-3 text-left text-tiny text-sidebar-foreground hover:bg-sidebar-accent',
                 selected
                   ? 'bg-sidebar-accent text-sidebar-accent-foreground'
                   : 'text-muted-foreground hover:text-sidebar-foreground'

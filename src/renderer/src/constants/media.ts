@@ -24,9 +24,9 @@ export type FileListColumnId = (typeof FILE_LIST_COLUMNS)[number]['id'];
 
 export const FILE_LIST_GRID_CLASS =
   'grid w-full min-w-[var(--file-list-min-width)] [grid-template-columns:var(--file-list-cols)]';
-export const FILE_LIST_ROW_CLASS = `${FILE_LIST_GRID_CLASS} h-5 w-full`;
+export const FILE_LIST_ROW_CLASS = `${FILE_LIST_GRID_CLASS} h-6 w-full`;
 export const FILE_LIST_CELL_CLASS = 'flex min-w-0 items-center self-stretch px-1.5';
-export const FILE_LIST_ROW_HEIGHT = 20;
+export const FILE_LIST_ROW_HEIGHT = 24;
 export const FILE_LIST_ROW_X_PADDING = 0;
 
 export const FOLDER_SPINNER_DELAY_MS = 150;

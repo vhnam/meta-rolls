@@ -49,7 +49,12 @@ export const MediaPhotoThumbnailTile = ({
           />
         )}
       </span>
-      <span className="w-full truncate text-center text-tiny text-muted-foreground">
+      <span
+        className={cn(
+          'w-full truncate text-center text-tiny',
+          selected ? 'text-foreground' : 'text-muted-foreground'
+        )}
+      >
         {photo.name}
       </span>
     </button>

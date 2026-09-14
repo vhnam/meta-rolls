@@ -15,10 +15,11 @@ export default defineConfig({
     target: 'esnext'
   },
   resolve: {
-    alias: {
-      '#': resolve('src/renderer/src'),
-      '@/resources': resolve('resources')
-    }
+    alias: [
+      { find: '#', replacement: resolve('src/renderer/src') },
+      { find: '@/resources', replacement: resolve('resources') },
+      { find: /^cn$/, replacement: resolve('src/renderer/src/lib/utils.ts') }
+    ]
   },
   server: {
     fs: {
