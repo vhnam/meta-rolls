@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import { useMediaPanzoom } from '#/hooks/use-media-panzoom';
 import { type PhotoItem } from '#/types';
@@ -9,6 +9,34 @@ import MediaPreviewToolbar from './media-preview-toolbar';
 type MediaPreviewProps = {
   photo: PhotoItem | null;
 };
+
+type MediaPreviewImageProps = {
+  src: string;
+  name: string;
+  onImage: (node: HTMLImageElement | null) => void;
+  onLoad: (src: string) => void;
+  onError: (src: string) => void;
+};
+
+const MediaPreviewImage = memo(function MediaPreviewImage({
+  src,
+  name,
+  onImage,
+  onLoad,
+  onError
+}: MediaPreviewImageProps) {
+  return (
+    <img
+      ref={onImage}
+      src={src}
+      alt={name}
+      draggable={false}
+      className="max-h-full max-w-full translate-z-0 will-change-transform select-none object-contain"
+      onLoad={() => onLoad(src)}
+      onError={() => onError(src)}
+    />
+  );
+});
 
 const MediaPreview = ({ photo }: MediaPreviewProps) => {
   const [viewport, setViewport] = useState<HTMLDivElement | null>(null);
@@ -38,15 +66,13 @@ const MediaPreview = ({ photo }: MediaPreviewProps) => {
         className="flex min-h-0 flex-1 touch-none items-center justify-center overflow-hidden overscroll-none bg-card p-2"
       >
         {photo && src && !failed ? (
-          <img
-            ref={setImageEl}
+          <MediaPreviewImage
             key={src}
             src={src}
-            alt={photo.name}
-            draggable={false}
-            className="max-h-full max-w-full will-change-transform select-none object-contain"
-            onLoad={() => setLoadedSrc(src)}
-            onError={() => setFailedSrc(src)}
+            name={photo.name}
+            onImage={setImageEl}
+            onLoad={setLoadedSrc}
+            onError={setFailedSrc}
           />
         ) : photo && !src ? (
           <div className="aspect-3/2 h-full max-h-full w-full max-w-180" aria-label={photo.name} />

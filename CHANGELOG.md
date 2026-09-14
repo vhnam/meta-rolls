@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.6] - 2026-09-14
+
+### Fixed
+
+- Preview zoom follows trackpad pinch distance, and the preview image is isolated so panzoom updates do not remount it.
+
 ## [1.2.5] - 2026-09-14
 
 ### Fixed

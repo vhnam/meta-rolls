@@ -11,6 +11,9 @@ const MAX_SCALE = 64;
 const MIN_SCALE = 0.125;
 const ZOOM_ANIMATION_MS = 240;
 const WHEEL_STEP = 0.3;
+const WHEEL_LINE_PX = 16;
+const WHEEL_PAGE_PX = 800;
+const WHEEL_ZOOM_INTENSITY = 0.0016;
 
 type UseMediaPanzoomArgs = {
   viewport: HTMLElement | null;
@@ -28,8 +31,19 @@ const easeOutCubic = (t: number) => 1 - (1 - t) ** 3;
 
 const clampScale = (scale: number) => Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
 
-const wheelDirection = (event: WheelEvent) =>
-  (event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY) < 0 ? 1 : -1;
+const wheelDeltaPx = (event: WheelEvent) => {
+  const raw = event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY;
+  if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+    return raw * WHEEL_LINE_PX;
+  }
+  if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+    return raw * WHEEL_PAGE_PX;
+  }
+  return raw;
+};
+
+const isWheelZoom = (event: WheelEvent) =>
+  event.ctrlKey || event.metaKey || event.deltaMode !== WheelEvent.DOM_DELTA_PIXEL;
 
 export const useMediaPanzoom = ({ viewport, target, enabled, resetKey }: UseMediaPanzoomArgs) => {
   const panzoomRef = useRef<PanzoomObject | null>(null);
@@ -66,7 +80,7 @@ export const useMediaPanzoom = ({ viewport, target, enabled, resetKey }: UseMedi
     let wheelRaf = 0;
     let panX = 0;
     let panY = 0;
-    let pinchSteps = 0;
+    let pinchDelta = 0;
     let pinchPoint: { clientX: number; clientY: number } | null = null;
 
     const cancelEase = () => {
@@ -80,12 +94,14 @@ export const useMediaPanzoom = ({ viewport, target, enabled, resetKey }: UseMedi
       cancelEase();
       const fromScale = panzoom.getScale();
       const fromPan = panzoom.getPan();
+      const fromLog = Math.log(fromScale);
+      const toLog = Math.log(toScale);
       const start = performance.now();
 
       const tick = (now: number) => {
         const t = Math.min(1, (now - start) / ZOOM_ANIMATION_MS);
         const k = easeOutCubic(t);
-        panzoom.zoom(fromScale + (toScale - fromScale) * k, { animate: false });
+        panzoom.zoom(Math.exp(fromLog + (toLog - fromLog) * k), { animate: false });
         panzoom.pan(fromPan.x + (toPan.x - fromPan.x) * k, fromPan.y + (toPan.y - fromPan.y) * k, {
           animate: false,
           force: true
@@ -103,8 +119,10 @@ export const useMediaPanzoom = ({ viewport, target, enabled, resetKey }: UseMedi
 
     const flushWheel = () => {
       wheelRaf = 0;
-      if (pinchPoint && pinchSteps !== 0) {
-        const nextScale = clampScale(panzoom.getScale() * Math.exp((pinchSteps * WHEEL_STEP) / 3));
+      if (pinchPoint && pinchDelta !== 0) {
+        const nextScale = clampScale(
+          panzoom.getScale() * Math.exp(-pinchDelta * WHEEL_ZOOM_INTENSITY)
+        );
         panzoom.zoomToPoint(nextScale, pinchPoint, { animate: false });
       } else if (panX !== 0 || panY !== 0) {
         const scale = panzoom.getScale();
@@ -112,19 +130,20 @@ export const useMediaPanzoom = ({ viewport, target, enabled, resetKey }: UseMedi
       }
       panX = 0;
       panY = 0;
-      pinchSteps = 0;
+      pinchDelta = 0;
       pinchPoint = null;
     };
 
     const syncZoomValue = () => {
-      setZoomValue(previewZoomFromPanzoomScale(panzoom.getScale(), target));
+      const next = previewZoomFromPanzoomScale(panzoom.getScale(), target);
+      setZoomValue((current) => (current === next ? current : next));
     };
 
     const onWheel = (event: WheelEvent) => {
       event.preventDefault();
       cancelEase();
-      if (event.ctrlKey) {
-        pinchSteps += wheelDirection(event);
+      if (isWheelZoom(event)) {
+        pinchDelta += wheelDeltaPx(event);
         pinchPoint = { clientX: event.clientX, clientY: event.clientY };
       } else {
         panX += event.deltaX;
