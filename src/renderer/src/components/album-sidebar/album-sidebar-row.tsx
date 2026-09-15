@@ -10,7 +10,7 @@ import {
 import { cn } from '#/lib/utils';
 import { type Album } from '#/types';
 
-type AlbumsSidebarAlbumProps = {
+type AlbumSidebarRowProps = {
   album: Album;
   selected: boolean;
   onSelect: (id: string) => void;
@@ -18,13 +18,13 @@ type AlbumsSidebarAlbumProps = {
   onRemoveAlbum: (id: string) => void;
 };
 
-export const AlbumsSidebarAlbum = ({
+export const AlbumSidebarRow = ({
   album,
   selected,
   onSelect,
   onRenameAlbum,
   onRemoveAlbum
-}: AlbumsSidebarAlbumProps) => {
+}: AlbumSidebarRowProps) => {
   const { ref, isDropTarget } = useDroppable({
     id: `album-sidebar:${album.id}`,
     data: { albumId: album.id }
@@ -54,7 +54,7 @@ export const AlbumsSidebarAlbum = ({
             <IconFolderOpenFilled className="size-3" />
           ) : (
             <IconFolder className="size-3" />
-          )}{' '}
+          )}
           <span className="truncate">{album.name}</span>
         </ContextMenuTrigger>
         <ContextMenuContent>

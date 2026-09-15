@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { AlbumFormDialog } from '#/components/album-form-dialog';
+import { AlbumSidebarShell } from '#/components/album-sidebar';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import { PHOTO_PANE } from '#/constants/media';
 import { type AlbumSchema } from '#/schemas/album.schema';
@@ -9,7 +10,6 @@ import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type Album } from '#/types';
 
 import { MediaAlbumsList } from './media-albums-list';
-import { MediaAlbumsSidebar } from './media-albums-sidebar';
 import { MediaAlbumsThumbnails } from './media-albums-thumbnails';
 import { MediaAlbumsToolbar } from './media-albums-toolbar';
 
@@ -99,7 +99,7 @@ export const MediaAlbums = () => {
       ) : (
         <ResizablePanelGroup orientation="horizontal" className="min-h-0 min-w-0 flex-1">
           <ResizablePanel defaultSize="13rem" minSize="8rem" maxSize="50%" className="min-h-0">
-            <MediaAlbumsSidebar
+            <AlbumSidebarShell
               albums={albums}
               selectedId={selectedId}
               onSelect={onSelect}

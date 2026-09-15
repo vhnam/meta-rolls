@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { AlbumFormDialog } from '#/components/album-form-dialog';
+import { AlbumSidebarShell } from '#/components/album-sidebar';
 import { PhotoPreview, PhotoPreviewFullscreen } from '#/components/photo-preview';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import { useMediaPreviewFullscreen } from '#/hooks/use-media-preview-fullscreen';
@@ -12,7 +13,6 @@ import { Album } from '#/types';
 import { toPhotoItem } from '#/utils/album-photo';
 
 import { AlbumsDetails } from '../albums-details';
-import { AlbumsSidebar } from '../albums-sidebar';
 
 export const AlbumsScreen = () => {
   const albums = useAlbumStore((state) => state.albums);
@@ -64,7 +64,7 @@ export const AlbumsScreen = () => {
         <ResizablePanel defaultSize="15%" minSize="10%" maxSize="30%" className="min-h-0 min-w-0">
           <ResizablePanelGroup orientation="vertical" className="min-h-0">
             <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
-              <AlbumsSidebar
+              <AlbumSidebarShell
                 albums={albums}
                 selectedId={selectedId}
                 onSelect={onSelect}
