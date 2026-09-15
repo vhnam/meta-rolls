@@ -20,4 +20,4 @@ export {
   PREVIEW_ZOOM_OPTIONS,
   type PreviewZoomValue
 } from './preview';
-export { isEditableKeyboardTarget } from './is-editable-keyboard-target';
+export { cn, isEditableKeyboardTarget } from './common';

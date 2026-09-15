@@ -86,8 +86,6 @@ src/renderer/src/
 │   ├── album-store.ts             # album list, active album, current page
 │   ├── canvas-store.ts            # selected slot, crop/fit
 │   └── settings-store.ts          # theme, print format (Zustand persist → IPC)
-├── lib/
-│   └── utils.ts                   # shadcn cn()
 └── assets/
     └── main.css                   # Tailwind v4 @import + @theme
 
