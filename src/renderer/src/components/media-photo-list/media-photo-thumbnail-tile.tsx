@@ -1,8 +1,8 @@
 import { useDraggable } from '@dnd-kit/react';
-import { cn } from 'cn';
 import { useState } from 'react';
 
 import { THUMBNAIL_ASPECT_RATIO } from '#/constants/media';
+import { cn } from '#/lib/utils';
 import { type PhotoItem, type PhotoRating } from '#/types';
 import { toMediaFileUrl } from '#/utils';
 
@@ -75,7 +75,9 @@ export const MediaPhotoThumbnailTile = ({
             onChange={(next) => onRatePhoto(photo.id, next)}
           />
         </span>
-      ) : null}
+      ) : (
+        <div className="h-1" />
+      )}
       <span
         className={cn(
           'w-full truncate text-center text-tiny leading-none',
