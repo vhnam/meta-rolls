@@ -5,6 +5,36 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-09-15
+
+Second public release. Browse the library in Media, then cull and rate album photos in a dedicated workspace.
+
+### Added
+
+- **Cull workspace** (title-bar tab, `/cull`): album sidebar, photo preview, details list or thumbnail strip, and a resizable metadata pane for the selected photo.
+- **Star ratings** (0–5) on album photos. Cull list shows a Rating column; thumbnails show stars under the preview when a photo is selected or already rated.
+- Folder icons on album sidebar rows that fill when the album is selected.
+- Metadata overview **exposure and file cards** (aperture, shutter, white balance, ISO, size, color space, resolution).
+- Album details thumbnails scroll as a **horizontal, zoomable strip**.
+- Drag photos onto albums from Cull as well as Media; arrow keys move the photo selection in Cull the same way they do in Media.
+
+### Changed
+
+- The dedicated albums screen is now **Cull**. The title-bar tab and route are `Cull` / `/cull` (replaces `/albums`). Album data, IPC, and the Media albums panel are unchanged.
+- Album details put more height on the preview and keep the photo list in a shorter pane; the thumbnail-size slider is separate from the list/thumbnail view toggles.
+- The Media album name sits on the photo pane header; file-list and thumbnail chrome is shared across Media and Cull.
+
+### Fixed
+
+- Trackpad pinch zoom follows pinch distance without remounting the preview image.
+- File-list column headers stay pinned while rows scroll.
+- Any folder in the media browser tree can collapse, including the selected one, without closing nested folders that were already expanded.
+- Long album names truncate with an ellipsis; unrated thumbnails keep a spacer so filenames line up.
+
+### Removed
+
+- The `/albums` route. Open Cull instead.
+
 ## [1.7.21] - 2026-09-15
 
 ### Changed
