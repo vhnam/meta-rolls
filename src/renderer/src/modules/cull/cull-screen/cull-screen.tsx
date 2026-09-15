@@ -14,7 +14,7 @@ import { toPhotoItem } from '#/utils/album-photo';
 
 import { CullDetails } from '../cull-details';
 
-export const CullScreen = () => {
+export function CullScreen() {
   const albums = useAlbumStore((state) => state.albums);
   const selectedId = useAlbumStore((state) => state.activeAlbumId);
   const onSelect = useAlbumStore((state) => state.setActiveAlbumId);
@@ -122,4 +122,4 @@ export const CullScreen = () => {
       />
     </>
   );
-};
+}

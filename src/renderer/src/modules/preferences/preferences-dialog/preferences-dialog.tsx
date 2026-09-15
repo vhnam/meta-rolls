@@ -9,7 +9,7 @@ const NAV_ITEMS = [{ id: 'appearance', label: 'Appearance' }] as const;
 
 type PreferencesSection = (typeof NAV_ITEMS)[number]['id'];
 
-const PreferencesDialog = () => {
+export default function PreferencesDialog() {
   const [open, setOpen] = useState(false);
 
   const [section, setSection] = useState<PreferencesSection>('appearance');
@@ -59,6 +59,4 @@ const PreferencesDialog = () => {
       </DialogContent>
     </Dialog>
   );
-};
-
-export default PreferencesDialog;
+}

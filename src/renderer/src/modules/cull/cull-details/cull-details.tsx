@@ -4,7 +4,7 @@ import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoRating } from '#/types';
 
-export const CullDetails = () => {
+export function CullDetails() {
   const store = useMediaPoolStore();
   const albums = useAlbumStore((state) => state.albums);
   const selectedId = useAlbumStore((state) => state.activeAlbumId);
@@ -64,4 +64,4 @@ export const CullDetails = () => {
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{albumContent}</div>
     </div>
   );
-};
+}

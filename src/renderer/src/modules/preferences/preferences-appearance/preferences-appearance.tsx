@@ -25,7 +25,7 @@ const LANGUAGE_OPTIONS = [
   { value: LANGUAGE_PREFERENCE.vi, label: 'Tiếng Việt' }
 ] as const;
 
-const PreferencesAppearance = () => {
+export default function PreferencesAppearance() {
   const theme = useSettingsStore((state) => state.theme);
   const setTheme = useSettingsStore((state) => state.setTheme);
   const language = useSettingsStore((state) => state.language);
@@ -91,6 +91,4 @@ const PreferencesAppearance = () => {
       </CardContent>
     </Card>
   );
-};
-
-export default PreferencesAppearance;
+}

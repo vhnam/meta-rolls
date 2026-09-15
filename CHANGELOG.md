@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.11] - 2026-09-15
+
+### Changed
+
+- `AppLayout`, `CullDetails`, `CullScreen`, `PreferencesAppearance`, and `PreferencesDialog` now use `function` declarations instead of arrow function expressions, completing the codebase-wide conversion for React components.
+
 ## [1.7.10] - 2026-09-15
 
 ### Changed
