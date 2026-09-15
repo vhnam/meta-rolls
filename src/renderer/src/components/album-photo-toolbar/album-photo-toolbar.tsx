@@ -21,7 +21,7 @@ type AlbumPhotoToolbarProps = {
   zoomSeparator?: boolean;
 };
 
-export const AlbumPhotoToolbar = ({
+export function AlbumPhotoToolbar({
   title,
   view,
   zoom,
@@ -29,7 +29,7 @@ export const AlbumPhotoToolbar = ({
   onZoomChange,
   leading,
   zoomSeparator = false
-}: AlbumPhotoToolbarProps) => {
+}: AlbumPhotoToolbarProps) {
   return (
     <div className="flex h-7 shrink-0 items-center gap-0.5 border-b border-border bg-muted px-1 text-muted-foreground">
       {leading}
@@ -90,4 +90,4 @@ export const AlbumPhotoToolbar = ({
       </div>
     </div>
   );
-};
+}

@@ -18,13 +18,13 @@ type AlbumSidebarRowProps = {
   onRemoveAlbum: (id: string) => void;
 };
 
-export const AlbumSidebarRow = ({
+export function AlbumSidebarRow({
   album,
   selected,
   onSelect,
   onRenameAlbum,
   onRemoveAlbum
-}: AlbumSidebarRowProps) => {
+}: AlbumSidebarRowProps) {
   const { ref, isDropTarget } = useDroppable({
     id: `album-sidebar:${album.id}`,
     data: { albumId: album.id }
@@ -70,4 +70,4 @@ export const AlbumSidebarRow = ({
       </ContextMenu>
     </div>
   );
-};
+}

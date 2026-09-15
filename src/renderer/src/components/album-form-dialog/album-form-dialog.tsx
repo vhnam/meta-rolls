@@ -23,12 +23,7 @@ type AlbumFormDialogProps = {
   onSaveAlbum: (album: AlbumSchema) => void | Promise<void>;
 };
 
-export const AlbumFormDialog = ({
-  open,
-  album,
-  onOpenChange,
-  onSaveAlbum
-}: AlbumFormDialogProps) => {
+export function AlbumFormDialog({ open, album, onOpenChange, onSaveAlbum }: AlbumFormDialogProps) {
   const isEditing = album !== null;
   const form = useForm({
     schema: albumSchema,
@@ -99,4 +94,4 @@ export const AlbumFormDialog = ({
       </DialogContent>
     </Dialog>
   );
-};
+}

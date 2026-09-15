@@ -17,7 +17,7 @@ type AlbumSidebarShellProps = {
   onRemoveAlbum: (id: string) => void;
 };
 
-export const AlbumSidebarShell = ({
+export function AlbumSidebarShell({
   albums,
   selectedId,
   collapsed = false,
@@ -25,7 +25,7 @@ export const AlbumSidebarShell = ({
   onAddAlbum,
   onRenameAlbum,
   onRemoveAlbum
-}: AlbumSidebarShellProps) => {
+}: AlbumSidebarShellProps) {
   return (
     <aside
       className={cn(
@@ -67,4 +67,4 @@ export const AlbumSidebarShell = ({
       )}
     </aside>
   );
-};
+}

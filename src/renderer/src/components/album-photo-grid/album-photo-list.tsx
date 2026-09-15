@@ -14,13 +14,13 @@ type AlbumPhotoListProps = {
   onRatePhoto?: (photoId: string, rating: PhotoRating) => void;
 };
 
-export const AlbumPhotoList = ({
+export function AlbumPhotoList({
   album,
   photos,
   selectedPhotoId,
   onSelectPhoto,
   onRatePhoto
-}: AlbumPhotoListProps) => {
+}: AlbumPhotoListProps) {
   const { ref, isDropTarget } = useDroppable({
     id: album.id,
     data: { albumId: album.id }
@@ -48,4 +48,4 @@ export const AlbumPhotoList = ({
       )}
     />
   );
-};
+}

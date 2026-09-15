@@ -16,7 +16,7 @@ type AlbumPhotoThumbnailsProps = {
   onRatePhoto?: (photoId: string, rating: PhotoRating) => void;
 };
 
-export const AlbumPhotoThumbnails = ({
+export function AlbumPhotoThumbnails({
   album,
   photos,
   selectedPhotoId,
@@ -24,7 +24,7 @@ export const AlbumPhotoThumbnails = ({
   layout = 'grid',
   onSelectPhoto,
   onRatePhoto
-}: AlbumPhotoThumbnailsProps) => {
+}: AlbumPhotoThumbnailsProps) {
   const isRow = layout === 'row';
   const columns = isRow ? undefined : getThumbnailColumnCount(zoom);
   const itemWidth = isRow ? getThumbnailStripWidth(zoom) : undefined;
@@ -78,4 +78,4 @@ export const AlbumPhotoThumbnails = ({
       </PhotoThumbnailShell>
     </section>
   );
-};
+}

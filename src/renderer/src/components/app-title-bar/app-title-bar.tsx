@@ -11,7 +11,7 @@ const TAB_ROUTES = {
 
 type TabValue = keyof typeof TAB_ROUTES;
 
-const AppTitleBar = () => {
+export default function AppTitleBar() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const value: TabValue = pathname.startsWith('/cull') ? 'cull' : 'media';
@@ -47,6 +47,4 @@ const AppTitleBar = () => {
       </div>
     </div>
   );
-};
-
-export default AppTitleBar;
+}
