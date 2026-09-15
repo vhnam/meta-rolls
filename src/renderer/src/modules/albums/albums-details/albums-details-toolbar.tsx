@@ -6,6 +6,7 @@ import {
 } from '@tabler/icons-react';
 
 import { Button } from '#/components/ui/button';
+import { Separator } from '#/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
 import { Album, type MediaView } from '#/types';
 
@@ -42,6 +43,8 @@ export const AlbumsDetailsToolbar = ({
               className="h-1 w-24 cursor-pointer accent-muted-foreground"
               aria-label="Thumbnail size"
             />
+
+            <Separator orientation="vertical" className="h-6" />
           </div>
         )}
 
