@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.13] - 2026-09-15
+
+### Changed
+
+- Grouped the rest of `utils/` by area of work: `utils/folder/` (`find-folder.ts`, `folder-tree.ts`), `utils/photo/` (`album-photo.ts`, `format-file-size.ts`, `format-resolution.ts`, `media-file-url.ts`), and `utils/preview/` (`preview-zoom.ts`, `thumbnail-columns.ts`), each with a barrel `index.ts`. `is-editable-keyboard-target.ts` stays at the root — it's a generic DOM helper, not photo-domain. The root `utils/index.ts` barrel re-exports everything, so existing `#/utils` imports are unaffected.
+
 ## [1.7.12] - 2026-09-15
 
 ### Changed

@@ -10,7 +10,7 @@ import { AlbumSchema } from '#/schemas/album.schema';
 import { useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { Album } from '#/types';
-import { toPhotoItem } from '#/utils/album-photo';
+import { toPhotoItem } from '#/utils/photo/album-photo';
 
 import { CullDetails } from '../cull-details';
 

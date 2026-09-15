@@ -5,7 +5,7 @@ import {
   panzoomScaleForPreviewZoom,
   PREVIEW_ZOOM_FIT,
   previewZoomFromPanzoomScale
-} from '#/utils/preview-zoom';
+} from '#/utils/preview/preview-zoom';
 
 const MAX_SCALE = 64;
 const MIN_SCALE = 0.125;
