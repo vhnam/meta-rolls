@@ -9,15 +9,7 @@ import { MediaAlbums } from '#/modules/media/media-albums';
 import { MediaBrowser } from '#/modules/media/media-browser';
 import { useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
-import { toPhotoItem } from '#/utils';
-
-function readDragString(value: unknown, key: string) {
-  if (value === null || typeof value !== 'object') {
-    return undefined;
-  }
-  const record = value as Record<string, unknown>;
-  return typeof record[key] === 'string' ? record[key] : undefined;
-}
+import { readDragString, toPhotoItem } from '#/utils';
 
 export default function MediaScreen() {
   const store = useMediaPoolStore();

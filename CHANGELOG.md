@@ -5,6 +5,13 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.17] - 2026-09-15
+
+### Fixed
+
+- Dragging a photo onto an album in the Cull sidebar now actually moves it — `CullScreen` never had a `DragDropProvider` ancestor, so the drag/drop affordances rendered but silently did nothing.
+- Arrow-key photo navigation now works in Cull, not just Media — `CullScreen` sets the shared `photoPane` state on mount and calls `useMediaPhotoArrowSelection()`.
+
 ## [1.7.16] - 2026-09-15
 
 ### Changed
