@@ -1,6 +1,5 @@
 import { useDroppable } from '@dnd-kit/react';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
-import { cn } from 'cn';
+import { IconEdit, IconFolder, IconFolderOpenFilled, IconTrash } from '@tabler/icons-react';
 
 import {
   ContextMenu,
@@ -8,6 +7,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger
 } from '#/components/ui/context-menu';
+import { cn } from '#/lib/utils';
 import { type Album } from '#/types';
 
 type AlbumsSidebarAlbumProps = {
@@ -41,7 +41,7 @@ export const AlbumsSidebarAlbum = ({
             <button
               type="button"
               className={cn(
-                'flex h-6 w-full items-center px-3 text-left text-tiny text-sidebar-foreground hover:bg-sidebar-accent',
+                'flex h-6 w-full items-center gap-1.5 px-3 text-left text-tiny text-sidebar-foreground hover:bg-sidebar-accent',
                 selected
                   ? 'bg-sidebar-accent text-sidebar-accent-foreground'
                   : 'text-muted-foreground hover:text-sidebar-foreground'
@@ -50,6 +50,11 @@ export const AlbumsSidebarAlbum = ({
             />
           }
         >
+          {selected ? (
+            <IconFolderOpenFilled className="size-3" />
+          ) : (
+            <IconFolder className="size-3" />
+          )}{' '}
           <span className="truncate">{album.name}</span>
         </ContextMenuTrigger>
         <ContextMenuContent>

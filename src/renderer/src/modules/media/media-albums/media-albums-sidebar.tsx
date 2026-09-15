@@ -1,8 +1,9 @@
 import { IconPlus } from '@tabler/icons-react';
-import { cn } from 'cn';
+import { Fragment } from 'react';
 
 import { Button } from '#/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
+import { cn } from '#/lib/utils';
 import { type Album } from '#/types';
 
 import { MediaAlbumsSidebarAlbum } from './media-albums-sidebar-album';
@@ -50,14 +51,15 @@ export const MediaAlbumsSidebar = ({
       {albums.length > 0 ? (
         <div className="min-h-0 flex-1 scroll-fade overflow-auto py-1">
           {albums.map((item) => (
-            <MediaAlbumsSidebarAlbum
-              key={item.id}
-              album={item}
-              selected={selectedId === item.id}
-              onSelect={onSelect}
-              onRenameAlbum={onRenameAlbum}
-              onRemoveAlbum={onRemoveAlbum}
-            />
+            <Fragment key={item.id}>
+              <MediaAlbumsSidebarAlbum
+                album={item}
+                selected={selectedId === item.id}
+                onSelect={onSelect}
+                onRenameAlbum={onRenameAlbum}
+                onRemoveAlbum={onRemoveAlbum}
+              />
+            </Fragment>
           ))}
         </div>
       ) : (
