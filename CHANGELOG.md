@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.16] - 2026-09-15
+
+### Changed
+
+- Rewrote AGENTS.md's "Place files" tree to match the real current file structure (`modules/media`, `modules/cull`, `modules/preferences`, the shared `components/` set, `utils/{common,folder,metadata,photo,preview}`, `layouts/`, `schemas/`, `styles/`) instead of the stale pre-implementation scaffold (nonexistent `select-photos`/`manage-albums` components, `routes/photos.tsx`, camelCase hooks, `shared/types.ts`, `lib/`). Corrected the cross-process types description to match `shared/album.ts` and `shared/media.ts`, and noted that `src/main/index.ts` still defines `createWindow()` inline pending extraction into `windows/`.
+
 ## [1.7.15] - 2026-09-15
 
 ### Changed
