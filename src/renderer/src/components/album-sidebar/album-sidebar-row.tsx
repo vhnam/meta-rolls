@@ -7,8 +7,8 @@ import {
   ContextMenuItem,
   ContextMenuTrigger
 } from '#/components/ui/context-menu';
-import { cn } from '#/lib/utils';
 import { type Album } from '#/types';
+import { cn } from '#/utils/common';
 
 type AlbumSidebarRowProps = {
   album: Album;

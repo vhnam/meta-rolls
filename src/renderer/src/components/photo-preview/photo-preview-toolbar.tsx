@@ -6,8 +6,8 @@ import {
   SelectTrigger,
   SelectValue
 } from '#/components/ui/select';
-import { cn } from '#/lib/utils';
 import { formatPreviewZoomLabel, PREVIEW_ZOOM_FIT, PREVIEW_ZOOM_OPTIONS } from '#/utils';
+import { cn } from '#/utils/common';
 
 type PhotoPreviewToolbarProps = {
   photoName?: string;

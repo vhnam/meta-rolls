@@ -1,7 +1,7 @@
 import type { CSSProperties, PropsWithChildren } from 'react';
 
 import { THUMBNAIL_GRID_CLASS, THUMBNAIL_STRIP_CLASS } from '#/constants/media';
-import { cn } from '#/lib/utils';
+import { cn } from '#/utils/common';
 
 type PhotoThumbnailDroppable = {
   ref: (node: Element | null) => void;

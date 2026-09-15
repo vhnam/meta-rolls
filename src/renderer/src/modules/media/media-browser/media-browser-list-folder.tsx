@@ -1,8 +1,8 @@
 import { IconFolder, IconFolderFilled } from '@tabler/icons-react';
 
 import { FILE_LIST_CELL_CLASS, FILE_LIST_ROW_CLASS } from '#/constants/media';
-import { cn } from '#/lib/utils';
 import { PhotoFolder } from '#/types';
+import { cn } from '#/utils/common';
 
 type MediaBrowserListFolderProps = {
   folder: PhotoFolder;

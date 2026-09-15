@@ -9,9 +9,9 @@ import {
 import { createContext, useContext, type CSSProperties, type MouseEvent } from 'react';
 import { type NodeApi, type NodeRendererProps } from 'react-arborist';
 
-import { cn } from '#/lib/utils';
 import { type PhotoFolder } from '#/types';
 import { folderTreePaddingLeft } from '#/utils';
+import { cn } from '#/utils/common';
 
 export type MediaBrowserFolderTreeUi = {
   loadingIds: ReadonlySet<string>;

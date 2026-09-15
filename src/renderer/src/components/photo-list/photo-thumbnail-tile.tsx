@@ -2,9 +2,9 @@ import { useDraggable } from '@dnd-kit/react';
 import { useState } from 'react';
 
 import { THUMBNAIL_ASPECT_RATIO } from '#/constants/media';
-import { cn } from '#/lib/utils';
 import { type PhotoItem, type PhotoRating } from '#/types';
 import { toMediaFileUrl } from '#/utils';
+import { cn } from '#/utils/common';
 
 import { PhotoRatingStars } from './photo-rating-stars';
 

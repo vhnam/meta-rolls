@@ -2,8 +2,8 @@ import { IconPlus } from '@tabler/icons-react';
 
 import { Button } from '#/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
-import { cn } from '#/lib/utils';
 import { type Album } from '#/types';
+import { cn } from '#/utils/common';
 
 import { AlbumSidebarRow } from './album-sidebar-row';
 
