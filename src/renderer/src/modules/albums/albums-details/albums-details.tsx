@@ -1,10 +1,8 @@
+import { AlbumPhotoList, AlbumPhotoThumbnails } from '#/components/album-photo-grid';
+import { AlbumPhotoToolbar } from '#/components/album-photo-toolbar';
 import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoRating } from '#/types';
-
-import { AlbumsDetailsList } from './albums-details-list';
-import { AlbumsDetailsThumbnails } from './albums-details-thumbnails';
-import { AlbumsDetailsToolbar } from './albums-details-toolbar';
 
 export const AlbumsDetails = () => {
   const store = useMediaPoolStore();
@@ -31,17 +29,18 @@ export const AlbumsDetails = () => {
   const albumContent = (
     <>
       {view === 'thumbnail' && currentAlbum && (
-        <AlbumsDetailsThumbnails
+        <AlbumPhotoThumbnails
           album={currentAlbum}
           photos={albumPhotos}
           selectedPhotoId={activePhotoId}
           onSelectPhoto={store.setSelectedPhotoId}
           onRatePhoto={handleRatePhoto}
+          layout="row"
           zoom={zoom}
         />
       )}
       {view === 'list' && currentAlbum && (
-        <AlbumsDetailsList
+        <AlbumPhotoList
           album={currentAlbum}
           photos={albumPhotos}
           selectedPhotoId={activePhotoId}
@@ -54,12 +53,13 @@ export const AlbumsDetails = () => {
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
-      <AlbumsDetailsToolbar
+      <AlbumPhotoToolbar
+        title={currentAlbum?.name ?? 'Albums'}
         view={view}
         zoom={zoom}
-        album={currentAlbum}
         onViewChange={onViewChange}
         onZoomChange={onZoomChange}
+        zoomSeparator
       />
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{albumContent}</div>
     </div>

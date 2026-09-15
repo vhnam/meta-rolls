@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.4] - 2026-09-15
+
+### Changed
+
+- Extracted `components/album-photo-toolbar/` (`AlbumPhotoToolbar`) and `components/album-photo-grid/` (`AlbumPhotoList`, `AlbumPhotoThumbnails`), replacing the duplicated per-module list/thumbnail/toolbar components. The toolbar's leading slot and zoom separator, and the grid's layout and rating column, are now props instead of forked components.
+
 ## [1.7.3] - 2026-09-15
 
 ### Changed

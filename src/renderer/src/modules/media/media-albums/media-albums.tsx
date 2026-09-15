@@ -1,17 +1,18 @@
+import { IconLayoutSidebar, IconLayoutSidebarFilled } from '@tabler/icons-react';
 import { useState } from 'react';
 
 import { AlbumFormDialog } from '#/components/album-form-dialog';
+import { AlbumPhotoList, AlbumPhotoThumbnails } from '#/components/album-photo-grid';
+import { AlbumPhotoToolbar } from '#/components/album-photo-toolbar';
 import { AlbumSidebarShell } from '#/components/album-sidebar';
+import { Button } from '#/components/ui/button';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
+import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
 import { PHOTO_PANE } from '#/constants/media';
 import { type AlbumSchema } from '#/schemas/album.schema';
 import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type Album } from '#/types';
-
-import { MediaAlbumsList } from './media-albums-list';
-import { MediaAlbumsThumbnails } from './media-albums-thumbnails';
-import { MediaAlbumsToolbar } from './media-albums-toolbar';
 
 export const MediaAlbums = () => {
   const store = useMediaPoolStore();
@@ -62,7 +63,7 @@ export const MediaAlbums = () => {
   const albumContent = (
     <>
       {view === 'thumbnail' && currentAlbum && (
-        <MediaAlbumsThumbnails
+        <AlbumPhotoThumbnails
           album={currentAlbum}
           photos={albumPhotos}
           selectedPhotoId={activePhotoId}
@@ -71,7 +72,7 @@ export const MediaAlbums = () => {
         />
       )}
       {view === 'list' && currentAlbum && (
-        <MediaAlbumsList
+        <AlbumPhotoList
           album={currentAlbum}
           photos={albumPhotos}
           selectedPhotoId={activePhotoId}
@@ -86,13 +87,29 @@ export const MediaAlbums = () => {
       className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border"
       onPointerDownCapture={() => store.setPhotoPane(PHOTO_PANE.albums)}
     >
-      <MediaAlbumsToolbar
+      <AlbumPhotoToolbar
+        title="Albums"
         view={view}
         zoom={zoom}
-        folderTreeCollapsed={albumListCollapsed}
         onViewChange={onViewChange}
         onZoomChange={onZoomChange}
-        onToggleFolderTree={onToggleAlbumList}
+        leading={
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant={albumListCollapsed ? 'ghost' : 'secondary'}
+                  size="icon-xs"
+                  aria-pressed={!albumListCollapsed}
+                  onClick={onToggleAlbumList}
+                />
+              }
+            >
+              {albumListCollapsed ? <IconLayoutSidebar /> : <IconLayoutSidebarFilled />}
+            </TooltipTrigger>
+            <TooltipContent>{albumListCollapsed ? 'Show panel' : 'Hide panel'}</TooltipContent>
+          </Tooltip>
+        }
       />
       {albumListCollapsed ? (
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{albumContent}</div>

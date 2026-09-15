@@ -4,31 +4,37 @@ import {
   IconLayoutList,
   IconLayoutListFilled
 } from '@tabler/icons-react';
+import { type ReactNode } from 'react';
 
 import { Button } from '#/components/ui/button';
 import { Separator } from '#/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
-import { Album, type MediaView } from '#/types';
+import { type MediaView } from '#/types';
 
-type AlbumsDetailsToolbarProps = {
+type AlbumPhotoToolbarProps = {
+  title: string;
   view: MediaView;
   zoom: number;
-  album: Album | undefined;
   onViewChange: (view: MediaView) => void;
   onZoomChange: (value: number) => void;
+  leading?: ReactNode;
+  zoomSeparator?: boolean;
 };
 
-export const AlbumsDetailsToolbar = ({
+export const AlbumPhotoToolbar = ({
+  title,
   view,
   zoom,
-  album,
   onViewChange,
-  onZoomChange
-}: AlbumsDetailsToolbarProps) => {
+  onZoomChange,
+  leading,
+  zoomSeparator = false
+}: AlbumPhotoToolbarProps) => {
   return (
     <div className="flex h-7 shrink-0 items-center gap-0.5 border-b border-border bg-muted px-1 text-muted-foreground">
+      {leading}
       <span className="min-w-0 flex-1 truncate px-2 text-tiny font-medium text-foreground">
-        {album?.name ?? 'Albums'}
+        {title}
       </span>
 
       <div className="ml-auto flex items-center gap-1">
@@ -44,7 +50,7 @@ export const AlbumsDetailsToolbar = ({
               aria-label="Thumbnail size"
             />
 
-            <Separator orientation="vertical" className="h-6" />
+            {zoomSeparator && <Separator orientation="vertical" className="h-6" />}
           </div>
         )}
 
