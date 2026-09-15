@@ -1,8 +1,8 @@
 import { IconFolder, IconFolderFilled } from '@tabler/icons-react';
-import { cn } from 'cn';
 
 import { THUMBNAIL_ASPECT_RATIO } from '#/constants/media';
 import { type PhotoFolder } from '#/types';
+import { cn } from '#/utils/common';
 
 type MediaBrowserThumbnailFolderProps = {
   folder: PhotoFolder;
@@ -11,12 +11,12 @@ type MediaBrowserThumbnailFolderProps = {
   onOpenFolder: (id: string) => void;
 };
 
-export const MediaBrowserThumbnailFolder = ({
+export function MediaBrowserThumbnailFolder({
   folder,
   selected,
   onHighlightFolder,
   onOpenFolder
-}: MediaBrowserThumbnailFolderProps) => {
+}: MediaBrowserThumbnailFolderProps) {
   return (
     <button
       type="button"
@@ -42,4 +42,4 @@ export const MediaBrowserThumbnailFolder = ({
       </span>
     </button>
   );
-};
+}

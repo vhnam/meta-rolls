@@ -1,19 +1,20 @@
+import { IconLayoutSidebar, IconLayoutSidebarFilled } from '@tabler/icons-react';
 import { useState } from 'react';
 
+import { AlbumFormDialog } from '#/components/album-form-dialog';
+import { AlbumPhotoList, AlbumPhotoThumbnails } from '#/components/album-photo-grid';
+import { AlbumPhotoToolbar } from '#/components/album-photo-toolbar';
+import { AlbumSidebarShell } from '#/components/album-sidebar';
+import { Button } from '#/components/ui/button';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
+import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
 import { PHOTO_PANE } from '#/constants/media';
 import { type AlbumSchema } from '#/schemas/album.schema';
 import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type Album } from '#/types';
 
-import { MediaAlbumsAlbumDialog } from './media-albums-album-dialog';
-import { MediaAlbumsList } from './media-albums-list';
-import { MediaAlbumsSidebar } from './media-albums-sidebar';
-import { MediaAlbumsThumbnails } from './media-albums-thumbnails';
-import { MediaAlbumsToolbar } from './media-albums-toolbar';
-
-export const MediaAlbums = () => {
+export function MediaAlbums() {
   const store = useMediaPoolStore();
   const albums = useAlbumStore((state) => state.albums);
   const selectedId = useAlbumStore((state) => state.activeAlbumId);
@@ -62,7 +63,7 @@ export const MediaAlbums = () => {
   const albumContent = (
     <>
       {view === 'thumbnail' && currentAlbum && (
-        <MediaAlbumsThumbnails
+        <AlbumPhotoThumbnails
           album={currentAlbum}
           photos={albumPhotos}
           selectedPhotoId={activePhotoId}
@@ -71,7 +72,7 @@ export const MediaAlbums = () => {
         />
       )}
       {view === 'list' && currentAlbum && (
-        <MediaAlbumsList
+        <AlbumPhotoList
           album={currentAlbum}
           photos={albumPhotos}
           selectedPhotoId={activePhotoId}
@@ -86,20 +87,36 @@ export const MediaAlbums = () => {
       className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border"
       onPointerDownCapture={() => store.setPhotoPane(PHOTO_PANE.albums)}
     >
-      <MediaAlbumsToolbar
+      <AlbumPhotoToolbar
+        title="Albums"
         view={view}
         zoom={zoom}
-        folderTreeCollapsed={albumListCollapsed}
         onViewChange={onViewChange}
         onZoomChange={onZoomChange}
-        onToggleFolderTree={onToggleAlbumList}
+        leading={
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant={albumListCollapsed ? 'ghost' : 'secondary'}
+                  size="icon-xs"
+                  aria-pressed={!albumListCollapsed}
+                  onClick={onToggleAlbumList}
+                />
+              }
+            >
+              {albumListCollapsed ? <IconLayoutSidebar /> : <IconLayoutSidebarFilled />}
+            </TooltipTrigger>
+            <TooltipContent>{albumListCollapsed ? 'Show panel' : 'Hide panel'}</TooltipContent>
+          </Tooltip>
+        }
       />
       {albumListCollapsed ? (
-        <div className="flex min-h-0 min-w-0 flex-1">{albumContent}</div>
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{albumContent}</div>
       ) : (
         <ResizablePanelGroup orientation="horizontal" className="min-h-0 min-w-0 flex-1">
           <ResizablePanel defaultSize="13rem" minSize="8rem" maxSize="50%" className="min-h-0">
-            <MediaAlbumsSidebar
+            <AlbumSidebarShell
               albums={albums}
               selectedId={selectedId}
               onSelect={onSelect}
@@ -116,12 +133,17 @@ export const MediaAlbums = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize="70%" minSize="30%" className="min-h-0 min-w-0">
-            {albumContent}
+            <div className="flex h-full min-h-0 flex-col overflow-hidden">
+              <div className="flex h-7 shrink-0 items-center border-b border-border bg-muted px-2">
+                <span className="text-tiny font-medium">{currentAlbum?.name ?? 'Albums'}</span>
+              </div>
+              <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{albumContent}</div>
+            </div>
           </ResizablePanel>
         </ResizablePanelGroup>
       )}
 
-      <MediaAlbumsAlbumDialog
+      <AlbumFormDialog
         open={albumDialogOpen}
         album={editingAlbum}
         onOpenChange={handleAlbumDialogOpenChange}
@@ -129,4 +151,4 @@ export const MediaAlbums = () => {
       />
     </div>
   );
-};
+}

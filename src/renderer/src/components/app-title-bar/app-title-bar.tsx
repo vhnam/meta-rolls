@@ -1,21 +1,23 @@
-import { IconPhotoAlt } from '@tabler/icons-react';
-import { useNavigate } from '@tanstack/react-router';
+import { IconPhotoAlt, IconPhotoCheck } from '@tabler/icons-react';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
 
 import { Tabs, TabsList, TabsTrigger } from '#/components/ui/tabs';
 import appIcon from '@/resources/icon.png';
 
 const TAB_ROUTES = {
-  media: '/media'
+  media: '/media',
+  cull: '/cull'
 } as const;
 
 type TabValue = keyof typeof TAB_ROUTES;
 
-const AppTitleBar = () => {
+export default function AppTitleBar() {
   const navigate = useNavigate();
-  const value: TabValue = 'media';
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const value: TabValue = pathname.startsWith('/cull') ? 'cull' : 'media';
 
   const handleValueChange = (next: TabValue) => {
-    if (!['media'].includes(next)) {
+    if (!['media', 'cull'].includes(next)) {
       return;
     }
 
@@ -35,12 +37,14 @@ const AppTitleBar = () => {
               <IconPhotoAlt className="size-4" />
               Media
             </TabsTrigger>
+            <TabsTrigger value="cull">
+              <IconPhotoCheck className="size-4" />
+              Cull
+            </TabsTrigger>
           </TabsList>
         </Tabs>
         <div>&nbsp;</div>
       </div>
     </div>
   );
-};
-
-export default AppTitleBar;
+}

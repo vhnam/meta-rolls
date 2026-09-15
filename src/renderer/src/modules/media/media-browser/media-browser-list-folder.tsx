@@ -1,8 +1,8 @@
 import { IconFolder, IconFolderFilled } from '@tabler/icons-react';
-import { cn } from 'cn';
 
 import { FILE_LIST_CELL_CLASS, FILE_LIST_ROW_CLASS } from '#/constants/media';
 import { PhotoFolder } from '#/types';
+import { cn } from '#/utils/common';
 
 type MediaBrowserListFolderProps = {
   folder: PhotoFolder;
@@ -11,12 +11,12 @@ type MediaBrowserListFolderProps = {
   onOpenFolder: (id: string) => void;
 };
 
-export const MediaBrowserListFolder = ({
+export function MediaBrowserListFolder({
   folder,
   selected,
   onHighlightFolder,
   onOpenFolder
-}: MediaBrowserListFolderProps) => {
+}: MediaBrowserListFolderProps) {
   return (
     <button
       type="button"
@@ -41,4 +41,4 @@ export const MediaBrowserListFolder = ({
       <span />
     </button>
   );
-};
+}

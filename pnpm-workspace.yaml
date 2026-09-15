@@ -1,13 +1,23 @@
 shamefullyHoist: true
 allowBuilds:
-  electron: true
+  '@ladybugdb/core': true
+  '@scarf/scarf': false
+  '@tree-sitter-grammars/tree-sitter-zig': false
   electron-winstaller: true
+  electron: true
   esbuild: true
-onlyBuiltDependencies:
-  - '@ladybugdb/core'
-  - onnxruntime-node
-  - protobufjs
-  - sharp
-  - tree-sitter
-  - tree-sitter-javascript
-  - tree-sitter-typescript
+  gitnexus: true
+  onnxruntime-node: true
+  protobufjs: true
+  sharp: true
+  tree-sitter-c-sharp: false
+  tree-sitter-cpp: false
+  tree-sitter-go: false
+  tree-sitter-java: false
+  tree-sitter-javascript: true
+  tree-sitter-php: false
+  tree-sitter-python: false
+  tree-sitter-ruby: false
+  tree-sitter-rust: false
+  tree-sitter-typescript: true
+  tree-sitter: true

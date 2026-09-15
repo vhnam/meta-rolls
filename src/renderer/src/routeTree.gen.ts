@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CullRouteImport } from './routes/cull'
 import { Route as MediaRouteImport } from './routes/media'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CullRoute = CullRouteImport.update({
+  id: '/cull',
+  path: '/cull',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MediaRoute = MediaRouteImport.update({
@@ -25,27 +31,31 @@ const MediaRoute = MediaRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cull': typeof CullRoute
   '/media': typeof MediaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cull': typeof CullRoute
   '/media': typeof MediaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cull': typeof CullRoute
   '/media': typeof MediaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/media'
+  fullPaths: '/' | '/cull' | '/media'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/media'
-  id: '__root__' | '/' | '/media'
+  to: '/' | '/cull' | '/media'
+  id: '__root__' | '/' | '/cull' | '/media'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CullRoute: typeof CullRoute
   MediaRoute: typeof MediaRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cull': {
+      id: '/cull'
+      path: '/cull'
+      fullPath: '/cull'
+      preLoaderRoute: typeof CullRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/media': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CullRoute: CullRoute,
   MediaRoute: MediaRoute,
 }
 export const routeTree = rootRouteImport

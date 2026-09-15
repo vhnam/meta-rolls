@@ -1,15 +1,15 @@
-import { cn } from 'cn';
 import { useEffect, useState } from 'react';
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '#/components/ui/dialog';
 import { getApi } from '#/hooks/use-ipc';
 import { PreferencesAppearance } from '#/modules/preferences/preferences-appearance';
+import { cn } from '#/utils/common';
 
 const NAV_ITEMS = [{ id: 'appearance', label: 'Appearance' }] as const;
 
 type PreferencesSection = (typeof NAV_ITEMS)[number]['id'];
 
-const PreferencesDialog = () => {
+export default function PreferencesDialog() {
   const [open, setOpen] = useState(false);
 
   const [section, setSection] = useState<PreferencesSection>('appearance');
@@ -59,6 +59,4 @@ const PreferencesDialog = () => {
       </DialogContent>
     </Dialog>
   );
-};
-
-export default PreferencesDialog;
+}

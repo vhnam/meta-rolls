@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { MediaPhotoListRow, MediaPhotoListShell } from '#/components/media-photo-list';
+import { PhotoListRow, PhotoListShell } from '#/components/photo-list';
 import { type PhotoFolder, type PhotoItem } from '#/types';
 
 import { MediaBrowserListFolder } from './media-browser-list-folder';
@@ -19,7 +19,7 @@ type MediaBrowserListRow =
   | { type: 'folder'; id: string; folder: PhotoFolder }
   | { type: 'photo'; id: string; photo: PhotoItem };
 
-export const MediaBrowserList = ({
+export function MediaBrowserList({
   folders,
   photos,
   selectedPhotoId,
@@ -27,7 +27,7 @@ export const MediaBrowserList = ({
   onSelectPhoto,
   onHighlightFolder,
   onOpenFolder
-}: MediaBrowserListProps) => {
+}: MediaBrowserListProps) {
   const rows = useMemo<MediaBrowserListRow[]>(
     () => [
       ...folders.map((folder) => ({ type: 'folder' as const, id: folder.id, folder })),
@@ -37,7 +37,7 @@ export const MediaBrowserList = ({
   );
 
   return (
-    <MediaPhotoListShell
+    <PhotoListShell
       rows={rows}
       getRowKey={(row) => row.id}
       emptyMessage="No files in this folder."
@@ -50,7 +50,7 @@ export const MediaBrowserList = ({
             onOpenFolder={onOpenFolder}
           />
         ) : (
-          <MediaPhotoListRow
+          <PhotoListRow
             photo={row.photo}
             selected={row.photo.id === selectedPhotoId}
             dragId={row.photo.id}
@@ -61,4 +61,4 @@ export const MediaBrowserList = ({
       }
     />
   );
-};
+}

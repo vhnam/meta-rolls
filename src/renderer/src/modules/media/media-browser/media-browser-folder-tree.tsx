@@ -1,4 +1,3 @@
-import { cn } from 'cn';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Tree, type TreeApi } from 'react-arborist';
 
@@ -9,7 +8,8 @@ import {
 } from '#/constants/media';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoFolder } from '#/types';
-import { findFolder, folderTreeChildren, isFolderInPath } from '#/utils';
+import { findFolder, folderTreeChildren } from '#/utils';
+import { cn } from '#/utils/common';
 
 import {
   MediaBrowserFolderItem,
@@ -28,16 +28,17 @@ type Size = {
   height: number;
 };
 
-export const MediaBrowserFolderTree = ({
+export function MediaBrowserFolderTree({
   folders,
   selectedFolderId,
   onSelectFolder,
   collapsed = false
-}: MediaBrowserFolderTreeProps) => {
+}: MediaBrowserFolderTreeProps) {
   const loadFolderChildren = useMediaPoolStore((state) => state.loadFolderChildren);
   const treeRef = useRef<TreeApi<PhotoFolder> | undefined>(undefined);
   const measureRef = useRef<HTMLDivElement>(null);
   const pendingLoads = useRef(new Map<string, Promise<void>>());
+  const lastExpandedSelection = useRef<string | null>(null);
   const [size, setSize] = useState<Size>({ width: 0, height: 0 });
   const [loadingIds, setLoadingIds] = useState<ReadonlySet<string>>(() => new Set());
 
@@ -99,6 +100,7 @@ export const MediaBrowserFolderTree = ({
 
   useEffect(() => {
     if (size.width === 0 || size.height === 0) {
+      lastExpandedSelection.current = null;
       return;
     }
     const tree = treeRef.current;
@@ -106,15 +108,16 @@ export const MediaBrowserFolderTree = ({
     if (!tree || !folder) {
       return;
     }
+    if (lastExpandedSelection.current === selectedFolderId) {
+      return;
+    }
     const node = tree.get(folder.id);
     node?.openParents();
     node?.open();
+    lastExpandedSelection.current = selectedFolderId;
   }, [folders, selectedFolderId, size]);
 
-  const treeUi = useMemo(
-    () => ({ selectedFolderId, loadingIds, loadWithSpinner }),
-    [selectedFolderId, loadingIds, loadWithSpinner]
-  );
+  const treeUi = useMemo(() => ({ loadingIds, loadWithSpinner }), [loadingIds, loadWithSpinner]);
 
   return (
     <aside
@@ -146,15 +149,13 @@ export const MediaBrowserFolderTree = ({
               onActivate={(node) => {
                 onSelectFolder(node.id);
                 node.open();
-                void loadWithSpinner(node.data);
+                if (node.data.children === undefined) {
+                  void loadWithSpinner(node.data);
+                }
               }}
               onToggle={(id) => {
-                if (isFolderInPath(id, selectedFolderId)) {
-                  treeRef.current?.open(id);
-                  return;
-                }
                 const node = treeRef.current?.get(id);
-                if (node?.isOpen) {
+                if (node?.isOpen && node.data.children === undefined) {
                   void loadWithSpinner(node.data);
                 }
               }}
@@ -166,4 +167,4 @@ export const MediaBrowserFolderTree = ({
       </div>
     </aside>
   );
-};
+}

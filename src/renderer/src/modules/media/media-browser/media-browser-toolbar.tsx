@@ -40,7 +40,7 @@ type MediaBrowserToolbarProps = {
   onRefresh: () => void;
 };
 
-export const MediaBrowserToolbar = ({
+export function MediaBrowserToolbar({
   view,
   zoom,
   folderTreeCollapsed,
@@ -53,7 +53,7 @@ export const MediaBrowserToolbar = ({
   onBack,
   onForward,
   onRefresh
-}: MediaBrowserToolbarProps) => {
+}: MediaBrowserToolbarProps) {
   return (
     <div className="flex h-7 shrink-0 items-center gap-0.5 border-b border-border bg-muted px-1 text-muted-foreground">
       <Tooltip>
@@ -92,7 +92,7 @@ export const MediaBrowserToolbar = ({
 
       <Separator orientation="vertical" className="mx-1 h-8 self-center" />
 
-      <span className="min-w-0 flex-1 truncate px-2 text-[11px] font-medium text-foreground">
+      <span className="min-w-0 flex-1 truncate px-2 text-tiny font-medium text-foreground">
         {currentFolderName}
       </span>
 
@@ -160,4 +160,4 @@ export const MediaBrowserToolbar = ({
       </div>
     </div>
   );
-};
+}

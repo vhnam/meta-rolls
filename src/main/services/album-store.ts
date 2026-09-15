@@ -1,7 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import { type DatabaseSync } from 'node:sqlite';
 
-import { type Album, type AlbumPhoto } from '../../../shared/album';
+import {
+  type Album,
+  type AlbumPhoto,
+  type PhotoRating,
+  parseAlbumPhoto
+} from '../../../shared/album';
 import { getAppDatabase } from './app-database';
 
 type AlbumRow = {
@@ -10,29 +15,16 @@ type AlbumRow = {
   photos: string;
 };
 
-const isAlbumPhoto = (value: unknown): value is AlbumPhoto => {
-  if (value === null || typeof value !== 'object') {
-    return false;
-  }
-  const photo = value as Record<string, unknown>;
-  return (
-    typeof photo.id === 'string' &&
-    typeof photo.name === 'string' &&
-    typeof photo.path === 'string' &&
-    typeof photo.size === 'number' &&
-    typeof photo.width === 'number' &&
-    typeof photo.height === 'number' &&
-    typeof photo.createdAt === 'string'
-  );
-};
-
 const parseAlbumPhotos = (value: string): AlbumPhoto[] => {
   try {
     const parsed: unknown = JSON.parse(value);
     if (!Array.isArray(parsed)) {
       return [];
     }
-    return parsed.filter(isAlbumPhoto);
+    return parsed.flatMap((item) => {
+      const photo = parseAlbumPhoto(item);
+      return photo ? [photo] : [];
+    });
   } catch {
     return [];
   }
@@ -202,6 +194,28 @@ export const removePhotoFromAlbum = (
   }
 
   const photos = album.photos.filter((item) => item.id !== photoId);
+  writeAlbumPhotos(db, albumId, photos);
+
+  return { ...album, photos };
+};
+
+export const ratePhotoInAlbum = (
+  filePath: string,
+  albumId: string,
+  photoId: string,
+  rating: PhotoRating
+): Album | null => {
+  const db = getAppDatabase(filePath);
+  const album = readAlbum(db, albumId);
+  if (!album) {
+    return null;
+  }
+
+  if (!album.photos.some((item) => item.id === photoId)) {
+    return album;
+  }
+
+  const photos = album.photos.map((item) => (item.id === photoId ? { ...item, rating } : item));
   writeAlbumPhotos(db, albumId, photos);
 
   return { ...album, photos };

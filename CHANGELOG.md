@@ -5,6 +5,283 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-09-15
+
+Second public release. Browse the library in Media, then cull and rate album photos in a dedicated workspace.
+
+### Added
+
+- **Cull workspace** (title-bar tab, `/cull`): album sidebar, photo preview, details list or thumbnail strip, and a resizable metadata pane for the selected photo.
+- **Star ratings** (0–5) on album photos. Cull list shows a Rating column; thumbnails show stars under the preview when a photo is selected or already rated.
+- Folder icons on album sidebar rows that fill when the album is selected.
+- Metadata overview **exposure and file cards** (aperture, shutter, white balance, ISO, size, color space, resolution).
+- Album details thumbnails scroll as a **horizontal, zoomable strip**.
+- Drag photos onto albums from Cull as well as Media; arrow keys move the photo selection in Cull the same way they do in Media.
+
+### Changed
+
+- The dedicated albums screen is now **Cull**. The title-bar tab and route are `Cull` / `/cull` (replaces `/albums`). Album data, IPC, and the Media albums panel are unchanged.
+- Album details put more height on the preview and keep the photo list in a shorter pane; the thumbnail-size slider is separate from the list/thumbnail view toggles.
+- The Media album name sits on the photo pane header; file-list and thumbnail chrome is shared across Media and Cull.
+
+### Fixed
+
+- Trackpad pinch zoom follows pinch distance without remounting the preview image.
+- File-list column headers stay pinned while rows scroll.
+- Any folder in the media browser tree can collapse, including the selected one, without closing nested folders that were already expanded.
+- Long album names truncate with an ellipsis; unrated thumbnails keep a spacer so filenames line up.
+
+### Removed
+
+- The `/albums` route. Open Cull instead.
+
+## [1.7.21] - 2026-09-15
+
+### Changed
+
+- `components/ui/{select,separator,sheet,sidebar,skeleton,tabs,toast,toggle-group,toggle,tooltip}.tsx` now import `cn` from `#/utils/common` instead of the bare `cn` package specifier. Completes the alias-to-explicit-import migration — verified with a clean dev server restart (no `cn` resolution errors).
+
+## [1.7.20] - 2026-09-15
+
+### Changed
+
+- `components/ui/{button,card,context-menu,dialog,dropdown-menu,field,input,label,resizable}.tsx` now import `cn` from `#/utils/common` instead of the bare `cn` package specifier.
+
+## [1.7.19] - 2026-09-15
+
+### Changed
+
+- Replaced the `vite.config.mts` alias that silently redirected the bare `cn` package specifier to the project's `cn()` wrapper with explicit `import { cn } from '#/utils/common'` in every consumer (shadcn's `components/ui/*` plus `components/photo-list/*`). No more magic import-rewriting — the wrapper is just an ordinary import now. Updated `components.json`'s `utils` alias to match, and fixed its stale `tailwind.css` path (`assets/main.css` → `styles/global.css`).
+
+## [1.7.18] - 2026-09-15
+
+### Fixed
+
+- The entire app failed to start in dev (`Failed to resolve import "cn" from ...`, hitting every `components/ui/*` file) because `vite.config.mts` aliased the bare `cn` package specifier to `src/renderer/src/lib/utils.ts`, a path deleted when `lib/utils.ts` was merged into `utils/common/cn.ts`. Repointed the alias.
+
+## [1.7.17] - 2026-09-15
+
+### Fixed
+
+- Dragging a photo onto an album in the Cull sidebar now actually moves it — `CullScreen` never had a `DragDropProvider` ancestor, so the drag/drop affordances rendered but silently did nothing.
+- Arrow-key photo navigation now works in Cull, not just Media — `CullScreen` sets the shared `photoPane` state on mount and calls `useMediaPhotoArrowSelection()`.
+
+## [1.7.16] - 2026-09-15
+
+### Changed
+
+- Rewrote AGENTS.md's "Place files" tree to match the real current file structure (`modules/media`, `modules/cull`, `modules/preferences`, the shared `components/` set, `utils/{common,folder,metadata,photo,preview}`, `layouts/`, `schemas/`, `styles/`) instead of the stale pre-implementation scaffold (nonexistent `select-photos`/`manage-albums` components, `routes/photos.tsx`, camelCase hooks, `shared/types.ts`, `lib/`). Corrected the cross-process types description to match `shared/album.ts` and `shared/media.ts`, and noted that `src/main/index.ts` still defines `createWindow()` inline pending extraction into `windows/`.
+
+## [1.7.15] - 2026-09-15
+
+### Changed
+
+- Repointed the 10 consumers of `cn` from `#/lib/utils` to `#/utils/common`.
+
+## [1.7.14] - 2026-09-15
+
+### Changed
+
+- Merged `lib/utils.ts` (shadcn's `cn()`) into `utils/common/` alongside `is-editable-keyboard-target.ts`, removing the confusing split between `src/lib/utils` and `src/utils`. Updated `components.json`'s shadcn aliases (`utils`, `lib`) to point at the new location so future `shadcn add` scaffolds generate correct imports.
+
+## [1.7.13] - 2026-09-15
+
+### Changed
+
+- Grouped the rest of `utils/` by area of work: `utils/folder/` (`find-folder.ts`, `folder-tree.ts`), `utils/photo/` (`album-photo.ts`, `format-file-size.ts`, `format-resolution.ts`, `media-file-url.ts`), and `utils/preview/` (`preview-zoom.ts`, `thumbnail-columns.ts`), each with a barrel `index.ts`. `is-editable-keyboard-target.ts` stays at the root — it's a generic DOM helper, not photo-domain. The root `utils/index.ts` barrel re-exports everything, so existing `#/utils` imports are unaffected.
+
+## [1.7.12] - 2026-09-15
+
+### Changed
+
+- Grouped `utils/format-metadata-value.ts`, `utils/group-metadata.ts`, and `utils/photo-overview.ts` into `utils/metadata/` with a barrel export, part of splitting the flat `utils/` directory by area of work.
+
+## [1.7.11] - 2026-09-15
+
+### Changed
+
+- `AppLayout`, `CullDetails`, `CullScreen`, `PreferencesAppearance`, and `PreferencesDialog` now use `function` declarations instead of arrow function expressions, completing the codebase-wide conversion for React components.
+
+## [1.7.10] - 2026-09-15
+
+### Changed
+
+- Media screen and folder browser components (`MediaScreen`, `MediaAlbums`, `MediaBrowser`, `MediaBrowserFolderItem`, `MediaBrowserFolderTree`, `MediaBrowserListFolder`, `MediaBrowserList`, `MediaBrowserThumbnailFolder`, `MediaBrowserThumbnails`, `MediaBrowserToolbar`) now use `function` declarations instead of arrow function expressions.
+
+## [1.7.9] - 2026-09-15
+
+### Changed
+
+- Photo shared components (`PhotoContextMenu`, `PhotoListHeader`, `PhotoListRow`, `PhotoListShell`, `PhotoRatingStars`, `PhotoThumbnailShell`, `PhotoThumbnailTile`, `PhotoMetadata`, `PhotoMetadataOverview`, `PhotoPreview`, `PhotoPreviewToolbar`, `PhotoPreviewFullscreen`) now use `function` declarations instead of arrow function expressions.
+
+## [1.7.8] - 2026-09-15
+
+### Changed
+
+- Album/title-bar shared components (`AlbumFormDialog`, `AlbumPhotoList`, `AlbumPhotoThumbnails`, `AlbumPhotoToolbar`, `AlbumSidebarRow`, `AlbumSidebarShell`, `AppTitleBar`) now use `function` declarations instead of arrow function expressions, matching the codebase convention.
+
+## [1.7.7] - 2026-09-15
+
+### Changed
+
+- Renamed `components/media-photo-list/` to `components/photo-list/` (`MediaPhotoListHeader` → `PhotoListHeader`, `MediaPhotoListRow` → `PhotoListRow`, `MediaPhotoListShell` → `PhotoListShell`, `MediaPhotoThumbnailShell` → `PhotoThumbnailShell`, `MediaPhotoThumbnailTile` → `PhotoThumbnailTile`). It's a generic photo grid/list primitive consumed by the folder browser and both album grids, not Media-specific — the leftover "Media" prefix was inconsistent with its sibling shared components (`photo-preview`, `photo-metadata`, `photo-context-menu`).
+
+## [1.7.6] - 2026-09-15
+
+### Changed
+
+- Moved `modules/media/media-metadata/` to `components/photo-metadata/` (`PhotoMetadata`, `PhotoMetadataOverview`), since it's shared between the Cull and Media screens rather than Media-specific.
+
+## [1.7.5] - 2026-09-15
+
+### Changed
+
+- Renamed the Albums workspace module to Cull: `modules/albums/` → `modules/cull/` (`AlbumsScreen` → `CullScreen`, `AlbumsDetails` → `CullDetails`), route `/albums` → `/cull`, and the title bar tab label. The Album domain (`shared/album.ts`, `stores/album.store.ts`, `types/album.ts`, `main/ipc/albums.ts`) and the Media screen's album panel are unchanged.
+
+## [1.7.4] - 2026-09-15
+
+### Changed
+
+- Extracted `components/album-photo-toolbar/` (`AlbumPhotoToolbar`) and `components/album-photo-grid/` (`AlbumPhotoList`, `AlbumPhotoThumbnails`), replacing the duplicated per-module list/thumbnail/toolbar components. The toolbar's leading slot and zoom separator, and the grid's layout and rating column, are now props instead of forked components.
+
+## [1.7.3] - 2026-09-15
+
+### Changed
+
+- Extracted `components/album-sidebar/` (`AlbumSidebarShell`, `AlbumSidebarRow`), replacing the duplicated per-module album sidebar and row components.
+
+## [1.7.2] - 2026-09-15
+
+### Changed
+
+- Extracted `components/photo-context-menu/` (`PhotoContextMenu`) and `components/album-form-dialog/` (`AlbumFormDialog`), replacing the duplicated per-module context menu and add/rename-album dialog components.
+
+## [1.7.1] - 2026-09-15
+
+### Changed
+
+- Extracted `components/photo-preview/` (`PhotoPreview`, `PhotoPreviewToolbar`, `PhotoPreviewFullscreen`) shared between the Media and Albums screens, replacing the duplicated `media-preview` / `albums-preview` module pairs.
+
+## [1.7.0] - 2026-09-15
+
+### Added
+
+- Albums workspace shows the selected photo's metadata under the album list, in a resizable pane.
+
+## [1.6.0] - 2026-09-15
+
+### Changed
+
+- Metadata overview shows exposure and file cards (aperture, shutter, white balance, ISO, size, color space, resolution) instead of a labeled grid.
+- Compact `WxH` metadata values format with spaces around `x`.
+
+## [1.5.1] - 2026-09-15
+
+### Fixed
+
+- Unrated album thumbnails keep a spacer so filenames still line up with rated tiles.
+
+## [1.5.0] - 2026-09-15
+
+### Added
+
+- Album lists in Media and Albums show a folder icon that fills when the album is selected.
+
+## [1.4.1] - 2026-09-15
+
+### Changed
+
+- Remaining renderer views import `cn` from the local helper instead of the `cn` package.
+
+## [1.4.0] - 2026-09-15
+
+### Added
+
+- Album photos store a 0–5 star rating; the Albums workspace list adds a Rating column and thumbnails show stars under the preview when a photo is selected or already rated (Media albums pane stays unrated).
+
+### Fixed
+
+- Long album names in the albums sidebar truncate with an ellipsis.
+- Album thumbnail strips top-align tiles so filenames line up when some photos show rating controls.
+
+## [1.3.3] - 2026-09-15
+
+### Changed
+
+- GitNexus CLI is 1.6.12.
+
+## [1.3.2] - 2026-09-15
+
+### Changed
+
+- Album details toolbar separates the thumbnail size slider from the list and thumbnail view toggles.
+
+## [1.3.1] - 2026-09-15
+
+### Changed
+
+- Album photo context menus type their trigger children through `PropsWithChildren`.
+
+## [1.3.0] - 2026-09-15
+
+### Changed
+
+- Album details thumbnails scroll horizontally as a sized strip instead of wrapping in a grid.
+- The albums workspace gives more height to the preview and keeps the photo list in a shorter pane.
+
+## [1.2.6] - 2026-09-14
+
+### Fixed
+
+- Preview zoom follows trackpad pinch distance, and the preview image is isolated so panzoom updates do not remount it.
+
+## [1.2.5] - 2026-09-14
+
+### Fixed
+
+- File-list column headers stay pinned while the photo rows scroll in the media browser, albums pane, and albums workspace.
+
+## [1.2.4] - 2026-09-14
+
+### Fixed
+
+- Any folder in the media browser tree can collapse, including the selected one, without closing nested folders that were already expanded.
+
+## [1.2.3] - 2026-09-14
+
+### Changed
+
+- Tiny type uses a 24px line height, and file-list rows match that size.
+- Vite resolves `cn` through the renderer helper so `text-tiny` merges with other font-size classes.
+
+### Fixed
+
+- Selected thumbnail names use the foreground color.
+
+## [1.2.2] - 2026-09-14
+
+### Fixed
+
+- GitNexus analyze installs locally so pnpm can run its native build scripts.
+
+## [1.2.1] - 2026-09-14
+
+### Changed
+
+- The media album name sits on the photo pane header, and toolbars use the shared tiny type size.
+
+## [1.2.0] - 2026-09-14
+
+### Added
+
+- Albums tab in the title bar opens a dedicated albums workspace.
+
+## [1.1.0] - 2026-09-14
+
+### Added
+
+- Album sidebar, details, and preview panes for a dedicated albums workspace.
+
 ## [1.0.1] - 2026-09-14
 
 ### Added

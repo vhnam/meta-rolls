@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 import { MEDIA_VIEW, THUMBNAIL_ZOOM_STEP } from '#/constants/media';
 import { getApi } from '#/hooks/use-ipc';
-import { type Album, type AlbumPhoto, type MediaView } from '#/types';
+import { type Album, type AlbumPhoto, type MediaView, type PhotoRating } from '#/types';
 
 type AlbumState = {
   albums: Album[];
@@ -26,6 +26,7 @@ type AlbumActions = {
   addPhotoToAlbum: (albumId: string, photo: AlbumPhoto) => Promise<void>;
   movePhotoToAlbum: (fromAlbumId: string, toAlbumId: string, photoId: string) => Promise<void>;
   removePhotoFromAlbum: (albumId: string, photoId: string) => Promise<void>;
+  rateAlbumPhoto: (albumId: string, photoId: string, rating: PhotoRating) => Promise<void>;
 };
 
 export type AlbumStore = AlbumState & AlbumActions;
@@ -116,6 +117,15 @@ export const useAlbumStore = create<AlbumStore>((set, get) => ({
   },
   removePhotoFromAlbum: async (albumId, photoId) => {
     const album = await getApi().albums.removePhoto(albumId, photoId);
+    if (!album) {
+      return;
+    }
+    set((state) => ({
+      albums: state.albums.map((item) => (item.id === albumId ? album : item))
+    }));
+  },
+  rateAlbumPhoto: async (albumId, photoId, rating) => {
+    const album = await getApi().albums.ratePhoto(albumId, photoId, rating);
     if (!album) {
       return;
     }

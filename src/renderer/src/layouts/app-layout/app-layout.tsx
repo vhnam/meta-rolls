@@ -6,7 +6,7 @@ import { TooltipProvider } from '#/components/ui/tooltip';
 import { useThemeSync } from '#/hooks/use-theme';
 import { PreferencesDialog } from '#/modules/preferences/preferences-dialog';
 
-const AppLayout = () => {
+export default function AppLayout() {
   useThemeSync();
 
   return (
@@ -21,6 +21,4 @@ const AppLayout = () => {
       <Toaster />
     </TooltipProvider>
   );
-};
-
-export default AppLayout;
+}
