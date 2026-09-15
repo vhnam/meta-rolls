@@ -1,4 +1,4 @@
-export type { Album, AlbumPhoto } from './album';
+export type { Album, AlbumPhoto, PhotoRating } from './album';
 export type { SlotFit, SlotSettings } from './canvas';
 export type {
   FolderKind,

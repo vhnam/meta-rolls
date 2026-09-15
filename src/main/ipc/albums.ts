@@ -2,13 +2,14 @@ import { join } from 'node:path';
 
 import { app, ipcMain } from 'electron';
 
-import { type AlbumPhoto } from '../../../shared/album';
+import { isPhotoRating, parseAlbumPhoto } from '../../../shared/album';
 import { IpcChannel } from '../../../shared/ipc';
 import {
   addPhotoToAlbum,
   createAlbum,
   listAlbums,
   movePhotoToAlbum,
+  ratePhotoInAlbum,
   removeAlbum,
   removePhotoFromAlbum,
   renameAlbum
@@ -33,31 +34,19 @@ const assertOptionalName = (value: unknown): string | undefined => {
   return value;
 };
 
-const assertAlbumPhoto = (value: unknown): AlbumPhoto => {
-  if (value === null || typeof value !== 'object') {
-    throw new Error('Album photo must be an object');
-  }
-  const photo = value as Record<string, unknown>;
-  if (
-    typeof photo.id !== 'string' ||
-    typeof photo.name !== 'string' ||
-    typeof photo.path !== 'string' ||
-    typeof photo.size !== 'number' ||
-    typeof photo.width !== 'number' ||
-    typeof photo.height !== 'number' ||
-    typeof photo.createdAt !== 'string'
-  ) {
+const assertAlbumPhoto = (value: unknown) => {
+  const photo = parseAlbumPhoto(value);
+  if (!photo) {
     throw new Error('Album photo is missing required fields');
   }
-  return {
-    id: photo.id,
-    name: photo.name,
-    path: photo.path,
-    size: photo.size,
-    width: photo.width,
-    height: photo.height,
-    createdAt: photo.createdAt
-  };
+  return photo;
+};
+
+const assertPhotoRating = (value: unknown) => {
+  if (!isPhotoRating(value)) {
+    throw new Error('Photo rating must be an integer from 0 to 5');
+  }
+  return value;
 };
 
 export const registerAlbumsIpc = () => {
@@ -95,5 +84,16 @@ export const registerAlbumsIpc = () => {
 
   ipcMain.handle(IpcChannel.albumsRemovePhoto, (_event, albumId: unknown, photoId: unknown) =>
     removePhotoFromAlbum(albumsFilePath(), assertId(albumId), assertId(photoId))
+  );
+
+  ipcMain.handle(
+    IpcChannel.albumsRatePhoto,
+    (_event, albumId: unknown, photoId: unknown, rating: unknown) =>
+      ratePhotoInAlbum(
+        albumsFilePath(),
+        assertId(albumId),
+        assertId(photoId),
+        assertPhotoRating(rating)
+      )
   );
 };

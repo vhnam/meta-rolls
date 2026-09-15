@@ -62,7 +62,8 @@ const MediaScreen = () => {
       size: photo.size,
       width: photo.width,
       height: photo.height,
-      createdAt: photo.createdAt
+      createdAt: photo.createdAt,
+      rating: 0
     });
   };
 
