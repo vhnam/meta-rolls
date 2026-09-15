@@ -17,8 +17,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: '#', replacement: resolve('src/renderer/src') },
-      { find: '@/resources', replacement: resolve('resources') },
-      { find: /^cn$/, replacement: resolve('src/renderer/src/utils/common/cn.ts') }
+      { find: '@/resources', replacement: resolve('resources') }
     ]
   },
   server: {

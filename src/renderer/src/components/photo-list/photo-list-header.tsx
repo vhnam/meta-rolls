@@ -1,5 +1,4 @@
 import { IconChevronDown } from '@tabler/icons-react';
-import { cn } from 'cn';
 import { useRef } from 'react';
 
 import {
@@ -9,6 +8,7 @@ import {
   type FileListColumn,
   type FileListColumnId
 } from '#/constants/media';
+import { cn } from '#/utils/common';
 
 type PhotoListHeaderProps = {
   columns?: readonly FileListColumn[];

@@ -1,10 +1,10 @@
 import { useDraggable } from '@dnd-kit/react';
 import { IconPhoto, IconPhotoFilled } from '@tabler/icons-react';
-import { cn } from 'cn';
 
 import { FILE_LIST_CELL_CLASS, FILE_LIST_ROW_CLASS } from '#/constants/media';
 import { type PhotoItem, type PhotoRating } from '#/types';
 import { formatCreatedAt, formatFileSize, formatResolution } from '#/utils';
+import { cn } from '#/utils/common';
 
 import { PhotoRatingStars } from './photo-rating-stars';
 

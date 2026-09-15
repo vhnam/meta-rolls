@@ -1,5 +1,4 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { cn } from 'cn';
 import { type CSSProperties, type ReactNode, useRef, useState } from 'react';
 
 import {
@@ -10,6 +9,7 @@ import {
   type FileListColumn,
   type FileListColumnId
 } from '#/constants/media';
+import { cn } from '#/utils/common';
 
 import { PhotoListHeader } from './photo-list-header';
 

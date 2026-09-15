@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.19] - 2026-09-15
+
+### Changed
+
+- Replaced the `vite.config.mts` alias that silently redirected the bare `cn` package specifier to the project's `cn()` wrapper with explicit `import { cn } from '#/utils/common'` in every consumer (shadcn's `components/ui/*` plus `components/photo-list/*`). No more magic import-rewriting — the wrapper is just an ordinary import now. Updated `components.json`'s `utils` alias to match, and fixed its stale `tailwind.css` path (`assets/main.css` → `styles/global.css`).
+
 ## [1.7.18] - 2026-09-15
 
 ### Fixed

@@ -1,8 +1,8 @@
 import { IconBan, IconStar, IconStarFilled } from '@tabler/icons-react';
-import { cn } from 'cn';
 import { useState } from 'react';
 
 import { type PhotoRating } from '#/types';
+import { cn } from '#/utils/common';
 
 const STARS = [1, 2, 3, 4, 5] as const;
 
