@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import { useMediaPreviewFullscreen } from '#/hooks/use-media-preview-fullscreen';
+import { MediaMetadata } from '#/modules/media/media-metadata';
 import { AlbumSchema } from '#/schemas/album.schema';
 import { useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
@@ -60,21 +61,29 @@ export const AlbumsScreen = () => {
         orientation="horizontal"
         className="min-h-0 flex-1 bg-background text-foreground"
       >
-        <ResizablePanel defaultSize="15%" minSize="10%" className="min-h-0 min-w-0">
-          <AlbumsSidebar
-            albums={albums}
-            selectedId={selectedId}
-            onSelect={onSelect}
-            onAddAlbum={() => {
-              setEditingAlbum(null);
-              setAlbumDialogOpen(true);
-            }}
-            onRenameAlbum={(album) => {
-              setEditingAlbum(album);
-              setAlbumDialogOpen(true);
-            }}
-            onRemoveAlbum={removeAlbum}
-          />
+        <ResizablePanel defaultSize="15%" minSize="10%" maxSize="30%" className="min-h-0 min-w-0">
+          <ResizablePanelGroup orientation="vertical" className="min-h-0">
+            <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
+              <AlbumsSidebar
+                albums={albums}
+                selectedId={selectedId}
+                onSelect={onSelect}
+                onAddAlbum={() => {
+                  setEditingAlbum(null);
+                  setAlbumDialogOpen(true);
+                }}
+                onRenameAlbum={(album) => {
+                  setEditingAlbum(album);
+                  setAlbumDialogOpen(true);
+                }}
+                onRemoveAlbum={removeAlbum}
+              />
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
+              <MediaMetadata photo={selectedPhoto} />
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize="85%" minSize="10%" className="min-h-0 min-w-0">
