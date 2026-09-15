@@ -2,10 +2,10 @@ import { useState } from 'react';
 
 import { AlbumFormDialog } from '#/components/album-form-dialog';
 import { AlbumSidebarShell } from '#/components/album-sidebar';
+import { PhotoMetadata } from '#/components/photo-metadata';
 import { PhotoPreview, PhotoPreviewFullscreen } from '#/components/photo-preview';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import { useMediaPreviewFullscreen } from '#/hooks/use-media-preview-fullscreen';
-import { MediaMetadata } from '#/modules/media/media-metadata';
 import { AlbumSchema } from '#/schemas/album.schema';
 import { useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
@@ -81,7 +81,7 @@ export const CullScreen = () => {
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
-              <MediaMetadata photo={selectedPhoto} />
+              <PhotoMetadata photo={selectedPhoto} />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>

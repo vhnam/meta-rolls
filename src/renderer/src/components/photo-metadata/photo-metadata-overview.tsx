@@ -5,7 +5,7 @@ import {
 } from '#/constants/media';
 import { type PhotoOverviewCell, type PhotoOverviewCards } from '#/utils/photo-overview';
 
-type MediaMetadataOverviewProps = {
+type PhotoMetadataOverviewProps = {
   cards: PhotoOverviewCards;
 };
 
@@ -57,7 +57,7 @@ const OverviewCard = ({ rows }: { rows: PhotoOverviewCards['exposure'] }) => (
   </div>
 );
 
-const MediaMetadataOverview = ({ cards }: MediaMetadataOverviewProps) => {
+export const PhotoMetadataOverview = ({ cards }: PhotoMetadataOverviewProps) => {
   return (
     <header className="sticky top-0 z-20 shrink-0 border-b border-sidebar-border bg-sidebar px-3 py-2">
       <div className={METADATA_OVERVIEW_LAYOUT_CLASS}>
@@ -67,5 +67,3 @@ const MediaMetadataOverview = ({ cards }: MediaMetadataOverviewProps) => {
     </header>
   );
 };
-
-export default MediaMetadataOverview;

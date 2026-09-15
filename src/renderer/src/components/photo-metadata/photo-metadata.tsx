@@ -10,13 +10,13 @@ import { usePhotoExif } from '#/hooks/use-photo-exif';
 import { type PhotoItem } from '#/types';
 import { buildMetadataRows, getPhotoOverviewCards, groupMetadataRows } from '#/utils';
 
-import MediaMetadataOverview from './media-metadata-overview';
+import { PhotoMetadataOverview } from './photo-metadata-overview';
 
-type MediaMetadataProps = {
+type PhotoMetadataProps = {
   photo: PhotoItem | null;
 };
 
-const MediaMetadata = ({ photo }: MediaMetadataProps) => {
+export const PhotoMetadata = ({ photo }: PhotoMetadataProps) => {
   const filePath = photo?.path ?? null;
   const { exif, loading } = usePhotoExif(filePath);
   const overviewCards = photo ? getPhotoOverviewCards(photo, exif?.fields) : null;
@@ -37,7 +37,7 @@ const MediaMetadata = ({ photo }: MediaMetadataProps) => {
         </div>
       ) : (
         <>
-          {overviewCards ? <MediaMetadataOverview cards={overviewCards} /> : null}
+          {overviewCards ? <PhotoMetadataOverview cards={overviewCards} /> : null}
           <div className="min-h-0 flex-1 scroll-fade overflow-auto px-3 py-2">
             {groups.map((group) => (
               <section key={group.name} className="mb-2 last:mb-0">
@@ -63,5 +63,3 @@ const MediaMetadata = ({ photo }: MediaMetadataProps) => {
     </div>
   );
 };
-
-export default MediaMetadata;
