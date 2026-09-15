@@ -53,11 +53,11 @@ const ColumnResizeHandle = ({ label, minWidth, width, onResize }: ColumnResizeHa
   );
 };
 
-export const PhotoListHeader = ({
+export function PhotoListHeader({
   columns = FILE_LIST_COLUMNS,
   widths,
   onResizeColumn
-}: PhotoListHeaderProps) => {
+}: PhotoListHeaderProps) {
   return (
     <div className={cn(FILE_LIST_ROW_CLASS, 'sticky top-0 z-20 bg-muted select-none')}>
       {columns.map((column, index) => (
@@ -85,4 +85,4 @@ export const PhotoListHeader = ({
       ))}
     </div>
   );
-};
+}

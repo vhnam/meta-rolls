@@ -18,7 +18,7 @@ type PhotoListRowProps = {
   onRatePhoto?: (id: string, rating: PhotoRating) => void;
 };
 
-export const PhotoListRow = ({
+export function PhotoListRow({
   photo,
   selected,
   dragId,
@@ -26,7 +26,7 @@ export const PhotoListRow = ({
   onSelectPhoto,
   rating,
   onRatePhoto
-}: PhotoListRowProps) => {
+}: PhotoListRowProps) {
   const { ref, isDragging } = useDraggable({ id: dragId, data: dragData });
   const showRating = onRatePhoto !== undefined;
 
@@ -77,4 +77,4 @@ export const PhotoListRow = ({
       </span>
     </div>
   );
-};
+}

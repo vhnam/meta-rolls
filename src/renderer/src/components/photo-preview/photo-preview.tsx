@@ -39,7 +39,7 @@ const PhotoPreviewImage = memo(function PhotoPreviewImage({
   );
 });
 
-export const PhotoPreview = ({ photo, toolbarClassName }: PhotoPreviewProps) => {
+export function PhotoPreview({ photo, toolbarClassName }: PhotoPreviewProps) {
   const [viewport, setViewport] = useState<HTMLDivElement | null>(null);
   const [imageEl, setImageEl] = useState<HTMLImageElement | null>(null);
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
@@ -86,4 +86,4 @@ export const PhotoPreview = ({ photo, toolbarClassName }: PhotoPreviewProps) => 
       </div>
     </section>
   );
-};
+}

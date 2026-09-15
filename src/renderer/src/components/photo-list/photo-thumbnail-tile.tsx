@@ -18,7 +18,7 @@ type PhotoThumbnailTileProps = {
   onRatePhoto?: (id: string, rating: PhotoRating) => void;
 };
 
-export const PhotoThumbnailTile = ({
+export function PhotoThumbnailTile({
   photo,
   selected,
   dragId,
@@ -26,7 +26,7 @@ export const PhotoThumbnailTile = ({
   onSelectPhoto,
   rating,
   onRatePhoto
-}: PhotoThumbnailTileProps) => {
+}: PhotoThumbnailTileProps) {
   const [failed, setFailed] = useState(false);
   const src = photo.path ? toMediaFileUrl(photo.path) : null;
   const { ref, isDragging } = useDraggable({ id: dragId, data: dragData });
@@ -88,4 +88,4 @@ export const PhotoThumbnailTile = ({
       </span>
     </div>
   );
-};
+}

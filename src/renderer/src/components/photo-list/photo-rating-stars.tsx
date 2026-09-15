@@ -14,13 +14,13 @@ type PhotoRatingStarsProps = {
   className?: string;
 };
 
-export const PhotoRatingStars = ({
+export function PhotoRatingStars({
   rating,
   interactive,
   onChange,
   showClear = false,
   className
-}: PhotoRatingStarsProps) => {
+}: PhotoRatingStarsProps) {
   const [hover, setHover] = useState<number | null>(null);
   const displayed = hover ?? rating;
 
@@ -81,4 +81,4 @@ export const PhotoRatingStars = ({
       })}
     </span>
   );
-};
+}

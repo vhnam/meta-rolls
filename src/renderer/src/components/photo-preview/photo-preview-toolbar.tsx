@@ -17,13 +17,13 @@ type PhotoPreviewToolbarProps = {
   className?: string;
 };
 
-export const PhotoPreviewToolbar = ({
+export function PhotoPreviewToolbar({
   photoName,
   zoomDisabled,
   zoomValue,
   onZoomChange,
   className
-}: PhotoPreviewToolbarProps) => {
+}: PhotoPreviewToolbarProps) {
   const zoomLabel = formatPreviewZoomLabel(zoomValue);
   const isPresetZoom =
     !zoomValue || PREVIEW_ZOOM_OPTIONS.some((option) => option.value === zoomValue);
@@ -58,4 +58,4 @@ export const PhotoPreviewToolbar = ({
       <div>&nbsp;</div>
     </div>
   );
-};
+}

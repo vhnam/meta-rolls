@@ -17,7 +17,7 @@ type PhotoThumbnailShellProps = PropsWithChildren & {
   droppable?: PhotoThumbnailDroppable;
 };
 
-export const PhotoThumbnailShell = ({
+export function PhotoThumbnailShell({
   isEmpty,
   emptyMessage,
   columns = 1,
@@ -25,7 +25,7 @@ export const PhotoThumbnailShell = ({
   layout = 'grid',
   droppable,
   children
-}: PhotoThumbnailShellProps) => {
+}: PhotoThumbnailShellProps) {
   if (isEmpty) {
     return (
       <div
@@ -74,4 +74,4 @@ export const PhotoThumbnailShell = ({
       )}
     </div>
   );
-};
+}

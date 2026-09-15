@@ -33,14 +33,14 @@ const columnWidthsFrom = (columns: readonly FileListColumn[]) =>
     number
   >;
 
-export const PhotoListShell = <T,>({
+export function PhotoListShell<T>({
   rows,
   getRowKey,
   renderRow,
   emptyMessage,
   droppable,
   columns = FILE_LIST_COLUMNS
-}: PhotoListShellProps<T>) => {
+}: PhotoListShellProps<T>) {
   'use no memo';
   const scrollRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -136,4 +136,4 @@ export const PhotoListShell = <T,>({
       </div>
     </section>
   );
-};
+}

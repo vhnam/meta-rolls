@@ -15,12 +15,12 @@ type PhotoContextMenuProps = PropsWithChildren & {
   onSelectPhoto: (id: string) => void;
 };
 
-export const PhotoContextMenu = ({
+export function PhotoContextMenu({
   albumId,
   photoId,
   onSelectPhoto,
   children
-}: PhotoContextMenuProps) => {
+}: PhotoContextMenuProps) {
   const removePhotoFromAlbum = useAlbumStore((state) => state.removePhotoFromAlbum);
 
   return (
@@ -43,4 +43,4 @@ export const PhotoContextMenu = ({
       </ContextMenuContent>
     </ContextMenu>
   );
-};
+}

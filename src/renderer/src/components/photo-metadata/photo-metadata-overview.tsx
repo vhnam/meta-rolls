@@ -57,7 +57,7 @@ const OverviewCard = ({ rows }: { rows: PhotoOverviewCards['exposure'] }) => (
   </div>
 );
 
-export const PhotoMetadataOverview = ({ cards }: PhotoMetadataOverviewProps) => {
+export function PhotoMetadataOverview({ cards }: PhotoMetadataOverviewProps) {
   return (
     <header className="sticky top-0 z-20 shrink-0 border-b border-sidebar-border bg-sidebar px-3 py-2">
       <div className={METADATA_OVERVIEW_LAYOUT_CLASS}>
@@ -66,4 +66,4 @@ export const PhotoMetadataOverview = ({ cards }: PhotoMetadataOverviewProps) => 
       </div>
     </header>
   );
-};
+}

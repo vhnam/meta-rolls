@@ -11,11 +11,7 @@ type PhotoPreviewFullscreenProps = {
   onOpenChange: (open: boolean) => void;
 };
 
-export const PhotoPreviewFullscreen = ({
-  photo,
-  open,
-  onOpenChange
-}: PhotoPreviewFullscreenProps) => {
+export function PhotoPreviewFullscreen({ photo, open, onOpenChange }: PhotoPreviewFullscreenProps) {
   const src = photo?.path ? toMediaFileUrl(photo.path) : null;
 
   useEffect(() => {
@@ -73,4 +69,4 @@ export const PhotoPreviewFullscreen = ({
     </div>,
     document.body
   );
-};
+}

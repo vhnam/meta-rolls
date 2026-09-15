@@ -16,7 +16,7 @@ type PhotoMetadataProps = {
   photo: PhotoItem | null;
 };
 
-export const PhotoMetadata = ({ photo }: PhotoMetadataProps) => {
+export function PhotoMetadata({ photo }: PhotoMetadataProps) {
   const filePath = photo?.path ?? null;
   const { exif, loading } = usePhotoExif(filePath);
   const overviewCards = photo ? getPhotoOverviewCards(photo, exif?.fields) : null;
@@ -62,4 +62,4 @@ export const PhotoMetadata = ({ photo }: PhotoMetadataProps) => {
       )}
     </div>
   );
-};
+}
