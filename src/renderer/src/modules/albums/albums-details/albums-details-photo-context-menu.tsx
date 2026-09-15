@@ -1,5 +1,5 @@
 import { IconTrash } from '@tabler/icons-react';
-import { type ReactNode } from 'react';
+import { type PropsWithChildren } from 'react';
 
 import {
   ContextMenu,
@@ -9,11 +9,10 @@ import {
 } from '#/components/ui/context-menu';
 import { useAlbumStore } from '#/stores/album.store';
 
-type AlbumsDetailsPhotoContextMenuProps = {
+type AlbumsDetailsPhotoContextMenuProps = PropsWithChildren & {
   albumId: string;
   photoId: string;
   onSelectPhoto: (id: string) => void;
-  children: ReactNode;
 };
 
 export const AlbumsDetailsPhotoContextMenu = ({
