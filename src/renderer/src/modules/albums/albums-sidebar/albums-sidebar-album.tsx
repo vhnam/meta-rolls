@@ -50,7 +50,7 @@ export const AlbumsSidebarAlbum = ({
             />
           }
         >
-          {album.name}
+          <span className="truncate">{album.name}</span>
         </ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuItem onClick={() => onRenameAlbum(album)}>

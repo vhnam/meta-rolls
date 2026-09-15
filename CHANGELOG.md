@@ -5,6 +5,17 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-09-15
+
+### Added
+
+- Album photos store a 0–5 star rating; the Albums workspace list adds a Rating column and thumbnails show stars under the preview when a photo is selected or already rated (Media albums pane stays unrated).
+
+### Fixed
+
+- Long album names in the albums sidebar truncate with an ellipsis.
+- Album thumbnail strips top-align tiles so filenames line up when some photos show rating controls.
+
 ## [1.3.3] - 2026-09-15
 
 ### Changed
