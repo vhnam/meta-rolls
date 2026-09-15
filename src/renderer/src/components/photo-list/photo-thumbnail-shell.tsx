@@ -3,21 +3,21 @@ import type { CSSProperties, PropsWithChildren } from 'react';
 import { THUMBNAIL_GRID_CLASS, THUMBNAIL_STRIP_CLASS } from '#/constants/media';
 import { cn } from '#/lib/utils';
 
-type MediaPhotoThumbnailDroppable = {
+type PhotoThumbnailDroppable = {
   ref: (node: Element | null) => void;
   isDropTarget: boolean;
 };
 
-type MediaPhotoThumbnailShellProps = PropsWithChildren & {
+type PhotoThumbnailShellProps = PropsWithChildren & {
   isEmpty: boolean;
   emptyMessage: string;
   columns?: number;
   itemWidth?: number;
   layout?: 'grid' | 'row';
-  droppable?: MediaPhotoThumbnailDroppable;
+  droppable?: PhotoThumbnailDroppable;
 };
 
-export const MediaPhotoThumbnailShell = ({
+export const PhotoThumbnailShell = ({
   isEmpty,
   emptyMessage,
   columns = 1,
@@ -25,7 +25,7 @@ export const MediaPhotoThumbnailShell = ({
   layout = 'grid',
   droppable,
   children
-}: MediaPhotoThumbnailShellProps) => {
+}: PhotoThumbnailShellProps) => {
   if (isEmpty) {
     return (
       <div

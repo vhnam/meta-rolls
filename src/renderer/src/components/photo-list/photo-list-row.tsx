@@ -8,7 +8,7 @@ import { formatCreatedAt, formatFileSize, formatResolution } from '#/utils';
 
 import { PhotoRatingStars } from './photo-rating-stars';
 
-type MediaPhotoListRowProps = {
+type PhotoListRowProps = {
   photo: PhotoItem;
   selected: boolean;
   dragId: string;
@@ -18,7 +18,7 @@ type MediaPhotoListRowProps = {
   onRatePhoto?: (id: string, rating: PhotoRating) => void;
 };
 
-export const MediaPhotoListRow = ({
+export const PhotoListRow = ({
   photo,
   selected,
   dragId,
@@ -26,7 +26,7 @@ export const MediaPhotoListRow = ({
   onSelectPhoto,
   rating,
   onRatePhoto
-}: MediaPhotoListRowProps) => {
+}: PhotoListRowProps) => {
   const { ref, isDragging } = useDraggable({ id: dragId, data: dragData });
   const showRating = onRatePhoto !== undefined;
 

@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/react';
 
-import { MediaPhotoListRow, MediaPhotoListShell } from '#/components/media-photo-list';
 import { PhotoContextMenu } from '#/components/photo-context-menu';
+import { PhotoListRow, PhotoListShell } from '#/components/photo-list';
 import { ALBUM_FILE_LIST_COLUMNS } from '#/constants/media';
 import { type Album, type AlbumPhoto, type PhotoRating } from '#/types';
 import { toPhotoItem } from '#/utils';
@@ -27,7 +27,7 @@ export const AlbumPhotoList = ({
   });
 
   return (
-    <MediaPhotoListShell
+    <PhotoListShell
       rows={photos}
       getRowKey={(photo) => photo.id}
       emptyMessage="No photos in this album."
@@ -35,7 +35,7 @@ export const AlbumPhotoList = ({
       columns={onRatePhoto ? ALBUM_FILE_LIST_COLUMNS : undefined}
       renderRow={(photo) => (
         <PhotoContextMenu albumId={album.id} photoId={photo.id} onSelectPhoto={onSelectPhoto}>
-          <MediaPhotoListRow
+          <PhotoListRow
             photo={toPhotoItem(photo)}
             selected={photo.id === selectedPhotoId}
             dragId={`album-photo:${album.id}:${photo.id}`}

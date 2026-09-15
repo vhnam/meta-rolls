@@ -8,7 +8,7 @@ import { toMediaFileUrl } from '#/utils';
 
 import { PhotoRatingStars } from './photo-rating-stars';
 
-type MediaPhotoThumbnailTileProps = {
+type PhotoThumbnailTileProps = {
   photo: PhotoItem;
   selected: boolean;
   dragId: string;
@@ -18,7 +18,7 @@ type MediaPhotoThumbnailTileProps = {
   onRatePhoto?: (id: string, rating: PhotoRating) => void;
 };
 
-export const MediaPhotoThumbnailTile = ({
+export const PhotoThumbnailTile = ({
   photo,
   selected,
   dragId,
@@ -26,7 +26,7 @@ export const MediaPhotoThumbnailTile = ({
   onSelectPhoto,
   rating,
   onRatePhoto
-}: MediaPhotoThumbnailTileProps) => {
+}: PhotoThumbnailTileProps) => {
   const [failed, setFailed] = useState(false);
   const src = photo.path ? toMediaFileUrl(photo.path) : null;
   const { ref, isDragging } = useDraggable({ id: dragId, data: dragData });

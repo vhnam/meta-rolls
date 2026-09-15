@@ -10,7 +10,7 @@ import {
   type FileListColumnId
 } from '#/constants/media';
 
-type MediaPhotoListHeaderProps = {
+type PhotoListHeaderProps = {
   columns?: readonly FileListColumn[];
   widths: Record<FileListColumnId, number>;
   onResizeColumn: (id: FileListColumnId, width: number) => void;
@@ -53,11 +53,11 @@ const ColumnResizeHandle = ({ label, minWidth, width, onResize }: ColumnResizeHa
   );
 };
 
-export const MediaPhotoListHeader = ({
+export const PhotoListHeader = ({
   columns = FILE_LIST_COLUMNS,
   widths,
   onResizeColumn
-}: MediaPhotoListHeaderProps) => {
+}: PhotoListHeaderProps) => {
   return (
     <div className={cn(FILE_LIST_ROW_CLASS, 'sticky top-0 z-20 bg-muted select-none')}>
       {columns.map((column, index) => (

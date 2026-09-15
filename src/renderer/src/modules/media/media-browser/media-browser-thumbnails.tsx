@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { MediaPhotoThumbnailShell, MediaPhotoThumbnailTile } from '#/components/media-photo-list';
+import { PhotoThumbnailShell, PhotoThumbnailTile } from '#/components/photo-list';
 import { THUMBNAIL_PANE_CLASS } from '#/constants/media';
 import { type PhotoFolder, type PhotoItem } from '#/types';
 import { getThumbnailColumnCount } from '#/utils';
@@ -43,7 +43,7 @@ export const MediaBrowserThumbnails = ({
 
   return (
     <section className={THUMBNAIL_PANE_CLASS}>
-      <MediaPhotoThumbnailShell
+      <PhotoThumbnailShell
         isEmpty={items.length === 0}
         emptyMessage="No files in this folder."
         columns={columns}
@@ -58,7 +58,7 @@ export const MediaBrowserThumbnails = ({
               onOpenFolder={onOpenFolder}
             />
           ) : (
-            <MediaPhotoThumbnailTile
+            <PhotoThumbnailTile
               key={item.id}
               photo={item.photo}
               selected={item.photo.id === selectedPhotoId}
@@ -68,7 +68,7 @@ export const MediaBrowserThumbnails = ({
             />
           )
         )}
-      </MediaPhotoThumbnailShell>
+      </PhotoThumbnailShell>
     </section>
   );
 };

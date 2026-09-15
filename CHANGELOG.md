@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.7] - 2026-09-15
+
+### Changed
+
+- Renamed `components/media-photo-list/` to `components/photo-list/` (`MediaPhotoListHeader` → `PhotoListHeader`, `MediaPhotoListRow` → `PhotoListRow`, `MediaPhotoListShell` → `PhotoListShell`, `MediaPhotoThumbnailShell` → `PhotoThumbnailShell`, `MediaPhotoThumbnailTile` → `PhotoThumbnailTile`). It's a generic photo grid/list primitive consumed by the folder browser and both album grids, not Media-specific — the leftover "Media" prefix was inconsistent with its sibling shared components (`photo-preview`, `photo-metadata`, `photo-context-menu`).
+
 ## [1.7.6] - 2026-09-15
 
 ### Changed

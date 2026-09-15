@@ -11,19 +11,19 @@ import {
   type FileListColumnId
 } from '#/constants/media';
 
-import { MediaPhotoListHeader } from './media-photo-list-header';
+import { PhotoListHeader } from './photo-list-header';
 
-type MediaPhotoListDroppable = {
+type PhotoListDroppable = {
   ref: (node: Element | null) => void;
   isDropTarget: boolean;
 };
 
-type MediaPhotoListShellProps<T> = {
+type PhotoListShellProps<T> = {
   rows: T[];
   getRowKey: (row: T, index: number) => string | number;
   renderRow: (row: T, index: number) => ReactNode;
   emptyMessage: string;
-  droppable?: MediaPhotoListDroppable;
+  droppable?: PhotoListDroppable;
   columns?: readonly FileListColumn[];
 };
 
@@ -33,14 +33,14 @@ const columnWidthsFrom = (columns: readonly FileListColumn[]) =>
     number
   >;
 
-export const MediaPhotoListShell = <T,>({
+export const PhotoListShell = <T,>({
   rows,
   getRowKey,
   renderRow,
   emptyMessage,
   droppable,
   columns = FILE_LIST_COLUMNS
-}: MediaPhotoListShellProps<T>) => {
+}: PhotoListShellProps<T>) => {
   'use no memo';
   const scrollRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -75,7 +75,7 @@ export const MediaPhotoListShell = <T,>({
         ref={headerRef}
         className="relative z-10 shrink-0 overflow-x-auto border-b border-border bg-muted scrollbar-none [&::-webkit-scrollbar]:hidden"
       >
-        <MediaPhotoListHeader
+        <PhotoListHeader
           columns={columns}
           widths={columnWidths}
           onResizeColumn={(id, width) =>
