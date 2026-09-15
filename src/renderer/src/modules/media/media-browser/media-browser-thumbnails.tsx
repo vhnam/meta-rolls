@@ -22,7 +22,7 @@ type MediaBrowserThumbnailItem =
   | { type: 'folder'; id: string; folder: PhotoFolder }
   | { type: 'photo'; id: string; photo: PhotoItem };
 
-export const MediaBrowserThumbnails = ({
+export function MediaBrowserThumbnails({
   folders,
   photos,
   selectedPhotoId,
@@ -31,7 +31,7 @@ export const MediaBrowserThumbnails = ({
   onSelectPhoto,
   onHighlightFolder,
   onOpenFolder
-}: MediaBrowserThumbnailsProps) => {
+}: MediaBrowserThumbnailsProps) {
   const columns = getThumbnailColumnCount(zoom);
   const items = useMemo<MediaBrowserThumbnailItem[]>(
     () => [
@@ -71,4 +71,4 @@ export const MediaBrowserThumbnails = ({
       </PhotoThumbnailShell>
     </section>
   );
-};
+}

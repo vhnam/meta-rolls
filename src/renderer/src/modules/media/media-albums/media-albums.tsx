@@ -14,7 +14,7 @@ import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type Album } from '#/types';
 
-export const MediaAlbums = () => {
+export function MediaAlbums() {
   const store = useMediaPoolStore();
   const albums = useAlbumStore((state) => state.albums);
   const selectedId = useAlbumStore((state) => state.activeAlbumId);
@@ -151,4 +151,4 @@ export const MediaAlbums = () => {
       />
     </div>
   );
-};
+}

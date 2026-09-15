@@ -11,12 +11,12 @@ type MediaBrowserListFolderProps = {
   onOpenFolder: (id: string) => void;
 };
 
-export const MediaBrowserListFolder = ({
+export function MediaBrowserListFolder({
   folder,
   selected,
   onHighlightFolder,
   onOpenFolder
-}: MediaBrowserListFolderProps) => {
+}: MediaBrowserListFolderProps) {
   return (
     <button
       type="button"
@@ -41,4 +41,4 @@ export const MediaBrowserListFolder = ({
       <span />
     </button>
   );
-};
+}

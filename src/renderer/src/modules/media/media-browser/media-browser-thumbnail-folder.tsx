@@ -11,12 +11,12 @@ type MediaBrowserThumbnailFolderProps = {
   onOpenFolder: (id: string) => void;
 };
 
-export const MediaBrowserThumbnailFolder = ({
+export function MediaBrowserThumbnailFolder({
   folder,
   selected,
   onHighlightFolder,
   onOpenFolder
-}: MediaBrowserThumbnailFolderProps) => {
+}: MediaBrowserThumbnailFolderProps) {
   return (
     <button
       type="button"
@@ -42,4 +42,4 @@ export const MediaBrowserThumbnailFolder = ({
       </span>
     </button>
   );
-};
+}

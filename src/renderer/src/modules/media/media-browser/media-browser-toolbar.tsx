@@ -40,7 +40,7 @@ type MediaBrowserToolbarProps = {
   onRefresh: () => void;
 };
 
-export const MediaBrowserToolbar = ({
+export function MediaBrowserToolbar({
   view,
   zoom,
   folderTreeCollapsed,
@@ -53,7 +53,7 @@ export const MediaBrowserToolbar = ({
   onBack,
   onForward,
   onRefresh
-}: MediaBrowserToolbarProps) => {
+}: MediaBrowserToolbarProps) {
   return (
     <div className="flex h-7 shrink-0 items-center gap-0.5 border-b border-border bg-muted px-1 text-muted-foreground">
       <Tooltip>
@@ -160,4 +160,4 @@ export const MediaBrowserToolbar = ({
       </div>
     </div>
   );
-};
+}

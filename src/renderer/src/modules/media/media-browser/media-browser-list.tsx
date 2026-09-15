@@ -19,7 +19,7 @@ type MediaBrowserListRow =
   | { type: 'folder'; id: string; folder: PhotoFolder }
   | { type: 'photo'; id: string; photo: PhotoItem };
 
-export const MediaBrowserList = ({
+export function MediaBrowserList({
   folders,
   photos,
   selectedPhotoId,
@@ -27,7 +27,7 @@ export const MediaBrowserList = ({
   onSelectPhoto,
   onHighlightFolder,
   onOpenFolder
-}: MediaBrowserListProps) => {
+}: MediaBrowserListProps) {
   const rows = useMemo<MediaBrowserListRow[]>(
     () => [
       ...folders.map((folder) => ({ type: 'folder' as const, id: folder.id, folder })),
@@ -61,4 +61,4 @@ export const MediaBrowserList = ({
       }
     />
   );
-};
+}

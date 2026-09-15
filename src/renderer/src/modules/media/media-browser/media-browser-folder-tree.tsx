@@ -28,12 +28,12 @@ type Size = {
   height: number;
 };
 
-export const MediaBrowserFolderTree = ({
+export function MediaBrowserFolderTree({
   folders,
   selectedFolderId,
   onSelectFolder,
   collapsed = false
-}: MediaBrowserFolderTreeProps) => {
+}: MediaBrowserFolderTreeProps) {
   const loadFolderChildren = useMediaPoolStore((state) => state.loadFolderChildren);
   const treeRef = useRef<TreeApi<PhotoFolder> | undefined>(undefined);
   const measureRef = useRef<HTMLDivElement>(null);
@@ -167,4 +167,4 @@ export const MediaBrowserFolderTree = ({
       </div>
     </aside>
   );
-};
+}

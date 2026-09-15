@@ -11,15 +11,15 @@ import { useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { toPhotoItem } from '#/utils';
 
-const readDragString = (value: unknown, key: string) => {
+function readDragString(value: unknown, key: string) {
   if (value === null || typeof value !== 'object') {
     return undefined;
   }
   const record = value as Record<string, unknown>;
   return typeof record[key] === 'string' ? record[key] : undefined;
-};
+}
 
-const MediaScreen = () => {
+export default function MediaScreen() {
   const store = useMediaPoolStore();
   const activeAlbumId = useAlbumStore((state) => state.activeAlbumId);
   const activeAlbumPhotos = useAlbumStore(
@@ -107,6 +107,4 @@ const MediaScreen = () => {
       />
     </DragDropProvider>
   );
-};
-
-export default MediaScreen;
+}

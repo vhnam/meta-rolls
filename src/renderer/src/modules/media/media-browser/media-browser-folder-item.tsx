@@ -34,7 +34,7 @@ const collectOpenDescendantIds = (node: NodeApi<PhotoFolder>): string[] => {
   return ids;
 };
 
-export const MediaBrowserFolderItem = ({ node, style }: NodeRendererProps<PhotoFolder>) => {
+export function MediaBrowserFolderItem({ node, style }: NodeRendererProps<PhotoFolder>) {
   const ui = useContext(MediaBrowserFolderTreeUiContext);
   const folder = node.data;
   const selected = node.isSelected;
@@ -103,4 +103,4 @@ export const MediaBrowserFolderItem = ({ node, style }: NodeRendererProps<PhotoF
       <span className="truncate font-mono text-tiny">{folder.name}</span>
     </div>
   );
-};
+}

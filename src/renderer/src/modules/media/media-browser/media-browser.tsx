@@ -16,7 +16,7 @@ import { MediaBrowserList } from './media-browser-list';
 import { MediaBrowserThumbnails } from './media-browser-thumbnails';
 import { MediaBrowserToolbar } from './media-browser-toolbar';
 
-export const MediaBrowser = () => {
+export function MediaBrowser() {
   const store = useMediaPoolStore();
   const selectedFolder = getSelectedFolder(store);
   const listPhotos = getListPhotos(store);
@@ -101,4 +101,4 @@ export const MediaBrowser = () => {
       )}
     </div>
   );
-};
+}
