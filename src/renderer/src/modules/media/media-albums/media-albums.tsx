@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { AlbumFormDialog } from '#/components/album-form-dialog';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import { PHOTO_PANE } from '#/constants/media';
 import { type AlbumSchema } from '#/schemas/album.schema';
@@ -7,7 +8,6 @@ import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type Album } from '#/types';
 
-import { MediaAlbumsAlbumDialog } from './media-albums-album-dialog';
 import { MediaAlbumsList } from './media-albums-list';
 import { MediaAlbumsSidebar } from './media-albums-sidebar';
 import { MediaAlbumsThumbnails } from './media-albums-thumbnails';
@@ -126,7 +126,7 @@ export const MediaAlbums = () => {
         </ResizablePanelGroup>
       )}
 
-      <MediaAlbumsAlbumDialog
+      <AlbumFormDialog
         open={albumDialogOpen}
         album={editingAlbum}
         onOpenChange={handleAlbumDialogOpenChange}

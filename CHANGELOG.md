@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2] - 2026-09-15
+
+### Changed
+
+- Extracted `components/photo-context-menu/` (`PhotoContextMenu`) and `components/album-form-dialog/` (`AlbumFormDialog`), replacing the duplicated per-module context menu and add/rename-album dialog components.
+
 ## [1.7.1] - 2026-09-15
 
 ### Changed

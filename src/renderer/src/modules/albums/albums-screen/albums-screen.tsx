@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { AlbumFormDialog } from '#/components/album-form-dialog';
 import { PhotoPreview, PhotoPreviewFullscreen } from '#/components/photo-preview';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import { useMediaPreviewFullscreen } from '#/hooks/use-media-preview-fullscreen';
@@ -12,7 +13,6 @@ import { toPhotoItem } from '#/utils/album-photo';
 
 import { AlbumsDetails } from '../albums-details';
 import { AlbumsSidebar } from '../albums-sidebar';
-import { AlbumsScreenAlbumDialog } from './albums-screen-album-dialog';
 
 export const AlbumsScreen = () => {
   const albums = useAlbumStore((state) => state.albums);
@@ -108,7 +108,7 @@ export const AlbumsScreen = () => {
         </ResizablePanel>
       </ResizablePanelGroup>
 
-      <AlbumsScreenAlbumDialog
+      <AlbumFormDialog
         open={albumDialogOpen}
         album={editingAlbum}
         onOpenChange={handleAlbumDialogOpenChange}

@@ -9,18 +9,18 @@ import {
 } from '#/components/ui/context-menu';
 import { useAlbumStore } from '#/stores/album.store';
 
-type AlbumsDetailsPhotoContextMenuProps = PropsWithChildren & {
+type PhotoContextMenuProps = PropsWithChildren & {
   albumId: string;
   photoId: string;
   onSelectPhoto: (id: string) => void;
 };
 
-export const AlbumsDetailsPhotoContextMenu = ({
+export const PhotoContextMenu = ({
   albumId,
   photoId,
   onSelectPhoto,
   children
-}: AlbumsDetailsPhotoContextMenuProps) => {
+}: PhotoContextMenuProps) => {
   const removePhotoFromAlbum = useAlbumStore((state) => state.removePhotoFromAlbum);
 
   return (

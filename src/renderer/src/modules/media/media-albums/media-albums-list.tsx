@@ -1,10 +1,9 @@
 import { useDroppable } from '@dnd-kit/react';
 
 import { MediaPhotoListRow, MediaPhotoListShell } from '#/components/media-photo-list';
+import { PhotoContextMenu } from '#/components/photo-context-menu';
 import { type Album, type AlbumPhoto } from '#/types';
 import { toPhotoItem } from '#/utils';
-
-import { MediaAlbumsPhotoContextMenu } from './media-albums-photo-context-menu';
 
 type MediaAlbumsListProps = {
   album: Album;
@@ -31,11 +30,7 @@ export const MediaAlbumsList = ({
       emptyMessage="No photos in this album."
       droppable={{ ref, isDropTarget }}
       renderRow={(photo) => (
-        <MediaAlbumsPhotoContextMenu
-          albumId={album.id}
-          photoId={photo.id}
-          onSelectPhoto={onSelectPhoto}
-        >
+        <PhotoContextMenu albumId={album.id} photoId={photo.id} onSelectPhoto={onSelectPhoto}>
           <MediaPhotoListRow
             photo={toPhotoItem(photo)}
             selected={photo.id === selectedPhotoId}
@@ -43,7 +38,7 @@ export const MediaAlbumsList = ({
             dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
             onSelectPhoto={onSelectPhoto}
           />
-        </MediaAlbumsPhotoContextMenu>
+        </PhotoContextMenu>
       )}
     />
   );

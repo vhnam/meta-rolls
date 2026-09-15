@@ -1,11 +1,10 @@
 import { useDroppable } from '@dnd-kit/react';
 
 import { MediaPhotoThumbnailShell, MediaPhotoThumbnailTile } from '#/components/media-photo-list';
+import { PhotoContextMenu } from '#/components/photo-context-menu';
 import { THUMBNAIL_PANE_CLASS } from '#/constants/media';
 import { Album, type AlbumPhoto } from '#/types';
 import { getThumbnailColumnCount, toPhotoItem } from '#/utils';
-
-import { MediaAlbumsPhotoContextMenu } from './media-albums-photo-context-menu';
 
 type MediaAlbumsThumbnailsProps = {
   album: Album;
@@ -37,7 +36,7 @@ export const MediaAlbumsThumbnails = ({
         droppable={{ ref, isDropTarget }}
       >
         {photos.map((photo) => (
-          <MediaAlbumsPhotoContextMenu
+          <PhotoContextMenu
             key={photo.id}
             albumId={album.id}
             photoId={photo.id}
@@ -50,7 +49,7 @@ export const MediaAlbumsThumbnails = ({
               dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
               onSelectPhoto={onSelectPhoto}
             />
-          </MediaAlbumsPhotoContextMenu>
+          </PhotoContextMenu>
         ))}
       </MediaPhotoThumbnailShell>
     </section>

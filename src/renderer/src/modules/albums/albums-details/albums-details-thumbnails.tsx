@@ -1,11 +1,10 @@
 import { useDroppable } from '@dnd-kit/react';
 
 import { MediaPhotoThumbnailShell, MediaPhotoThumbnailTile } from '#/components/media-photo-list';
+import { PhotoContextMenu } from '#/components/photo-context-menu';
 import { THUMBNAIL_PANE_CLASS } from '#/constants/media';
 import { Album, type AlbumPhoto, type PhotoRating } from '#/types';
 import { getThumbnailStripWidth, toPhotoItem } from '#/utils';
-
-import { AlbumsDetailsPhotoContextMenu } from './albums-details-photo-context-menu';
 
 type AlbumsDetailsThumbnailsProps = {
   album: Album;
@@ -40,7 +39,7 @@ export const AlbumsDetailsThumbnails = ({
         droppable={{ ref, isDropTarget }}
       >
         {photos.map((photo) => (
-          <AlbumsDetailsPhotoContextMenu
+          <PhotoContextMenu
             key={photo.id}
             albumId={album.id}
             photoId={photo.id}
@@ -57,7 +56,7 @@ export const AlbumsDetailsThumbnails = ({
                 onRatePhoto={onRatePhoto}
               />
             </div>
-          </AlbumsDetailsPhotoContextMenu>
+          </PhotoContextMenu>
         ))}
       </MediaPhotoThumbnailShell>
     </section>

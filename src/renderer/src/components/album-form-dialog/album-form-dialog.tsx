@@ -16,19 +16,19 @@ import { Input } from '#/components/ui/input';
 import { type AlbumSchema, albumSchema } from '#/schemas/album.schema';
 import { type Album } from '#/types';
 
-type AlbumsScreenAlbumDialogProps = {
+type AlbumFormDialogProps = {
   open: boolean;
   album: Album | null;
   onOpenChange: (open: boolean) => void;
   onSaveAlbum: (album: AlbumSchema) => void | Promise<void>;
 };
 
-export const AlbumsScreenAlbumDialog = ({
+export const AlbumFormDialog = ({
   open,
   album,
   onOpenChange,
   onSaveAlbum
-}: AlbumsScreenAlbumDialogProps) => {
+}: AlbumFormDialogProps) => {
   const isEditing = album !== null;
   const form = useForm({
     schema: albumSchema,

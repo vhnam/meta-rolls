@@ -1,11 +1,10 @@
 import { useDroppable } from '@dnd-kit/react';
 
 import { MediaPhotoListRow, MediaPhotoListShell } from '#/components/media-photo-list';
+import { PhotoContextMenu } from '#/components/photo-context-menu';
 import { ALBUM_FILE_LIST_COLUMNS } from '#/constants/media';
 import { type Album, type AlbumPhoto, type PhotoRating } from '#/types';
 import { toPhotoItem } from '#/utils';
-
-import { AlbumsDetailsPhotoContextMenu } from './albums-details-photo-context-menu';
 
 type AlbumsDetailsListProps = {
   album: Album;
@@ -36,11 +35,7 @@ export const AlbumsDetailsList = ({
         droppable={{ ref, isDropTarget }}
         columns={ALBUM_FILE_LIST_COLUMNS}
         renderRow={(photo) => (
-          <AlbumsDetailsPhotoContextMenu
-            albumId={album.id}
-            photoId={photo.id}
-            onSelectPhoto={onSelectPhoto}
-          >
+          <PhotoContextMenu albumId={album.id} photoId={photo.id} onSelectPhoto={onSelectPhoto}>
             <MediaPhotoListRow
               photo={toPhotoItem(photo)}
               selected={photo.id === selectedPhotoId}
@@ -50,7 +45,7 @@ export const AlbumsDetailsList = ({
               rating={photo.rating}
               onRatePhoto={onRatePhoto}
             />
-          </AlbumsDetailsPhotoContextMenu>
+          </PhotoContextMenu>
         )}
       />
     </div>
