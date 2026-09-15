@@ -1,8 +1,8 @@
-import { cn } from 'cn';
 import { useEffect, useState } from 'react';
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '#/components/ui/dialog';
 import { getApi } from '#/hooks/use-ipc';
+import { cn } from '#/lib/utils';
 import { PreferencesAppearance } from '#/modules/preferences/preferences-appearance';
 
 const NAV_ITEMS = [{ id: 'appearance', label: 'Appearance' }] as const;

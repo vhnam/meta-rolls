@@ -6,10 +6,10 @@ import {
   IconFolderFilled,
   IconLoader2
 } from '@tabler/icons-react';
-import { cn } from 'cn';
 import { createContext, useContext, type CSSProperties, type MouseEvent } from 'react';
 import { type NodeApi, type NodeRendererProps } from 'react-arborist';
 
+import { cn } from '#/lib/utils';
 import { type PhotoFolder } from '#/types';
 import { folderTreePaddingLeft } from '#/utils';
 

@@ -1,4 +1,3 @@
-import { cn } from 'cn';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Tree, type TreeApi } from 'react-arborist';
 
@@ -7,6 +6,7 @@ import {
   FOLDER_TREE_DEPTH_STEP,
   FOLDER_TREE_ROW_HEIGHT
 } from '#/constants/media';
+import { cn } from '#/lib/utils';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoFolder } from '#/types';
 import { findFolder, folderTreeChildren } from '#/utils';

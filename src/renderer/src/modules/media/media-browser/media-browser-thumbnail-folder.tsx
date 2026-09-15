@@ -1,7 +1,7 @@
 import { IconFolder, IconFolderFilled } from '@tabler/icons-react';
-import { cn } from 'cn';
 
 import { THUMBNAIL_ASPECT_RATIO } from '#/constants/media';
+import { cn } from '#/lib/utils';
 import { type PhotoFolder } from '#/types';
 
 type MediaBrowserThumbnailFolderProps = {
