@@ -64,6 +64,18 @@ export const THUMBNAIL_STRIP_CLASS = 'inline-flex h-full items-start gap-3';
 
 export const METADATA_PANE_CLASS =
   '@container/metadata flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border bg-sidebar';
+export const METADATA_OVERVIEW_LAYOUT_CLASS =
+  'flex min-w-0 flex-col gap-2 @min-[18rem]/metadata:flex-row';
+export const METADATA_OVERVIEW_CARD_CLASS =
+  'min-w-0 flex-1 overflow-hidden rounded-sm border border-border bg-muted/40';
+export const METADATA_OVERVIEW_CELL_CLASS =
+  'flex min-h-9 min-w-0 items-center justify-center overflow-hidden px-1.5 text-center text-tiny text-sidebar-foreground';
+export const METADATA_ROW_CLASS =
+  'grid grid-cols-1 gap-x-3 gap-y-0.5 py-0.5 @min-[14rem]/metadata:grid-cols-[minmax(0,42%)_minmax(0,1fr)] @min-[14rem]/metadata:items-start';
+export const METADATA_LABEL_CLASS =
+  'min-w-0 text-tiny text-muted-foreground @min-[14rem]/metadata:truncate';
+export const METADATA_VALUE_CLASS =
+  'min-w-0 text-tiny text-sidebar-foreground break-words @min-[14rem]/metadata:text-right';
 export const METADATA_OVERVIEW_GRID_CLASS =
   'grid grid-cols-1 gap-x-4 gap-y-2 @min-[12rem]/metadata:grid-cols-2 @min-[20rem]/metadata:grid-cols-3 @min-[28rem]/metadata:grid-cols-4';
 

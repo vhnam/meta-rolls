@@ -1,9 +1,14 @@
 import { useMemo } from 'react';
 
-import { METADATA_PANE_CLASS } from '#/constants/media';
+import {
+  METADATA_LABEL_CLASS,
+  METADATA_PANE_CLASS,
+  METADATA_ROW_CLASS,
+  METADATA_VALUE_CLASS
+} from '#/constants/media';
 import { usePhotoExif } from '#/hooks/use-photo-exif';
 import { type PhotoItem } from '#/types';
-import { buildMetadataRows, getPhotoOverview, groupMetadataRows } from '#/utils';
+import { buildMetadataRows, getPhotoOverviewCards, groupMetadataRows } from '#/utils';
 
 import MediaMetadataOverview from './media-metadata-overview';
 
@@ -14,7 +19,7 @@ type MediaMetadataProps = {
 const MediaMetadata = ({ photo }: MediaMetadataProps) => {
   const filePath = photo?.path ?? null;
   const { exif, loading } = usePhotoExif(filePath);
-  const overview = getPhotoOverview(exif?.fields);
+  const overviewCards = photo ? getPhotoOverviewCards(photo, exif?.fields) : null;
 
   const groups = useMemo(
     () => (photo ? groupMetadataRows(buildMetadataRows(photo, exif?.fields)) : []),
@@ -28,12 +33,12 @@ const MediaMetadata = ({ photo }: MediaMetadataProps) => {
       </div>
       {!photo ? (
         <div className="flex flex-1 items-center justify-center px-3">
-          <p className="text-xs text-muted-foreground">Select a photo to view metadata</p>
+          <p className="text-xs text-muted-foreground">Select a photo</p>
         </div>
       ) : (
         <>
-          <MediaMetadataOverview items={overview} />
-          <div className="min-h-0 flex-1 overflow-auto px-3 py-2">
+          {overviewCards ? <MediaMetadataOverview cards={overviewCards} /> : null}
+          <div className="min-h-0 flex-1 scroll-fade overflow-auto px-3 py-2">
             {groups.map((group) => (
               <section key={group.name} className="mb-2 last:mb-0">
                 <h3 className="bg-sidebar py-1 text-tiny font-medium text-sidebar-foreground">
@@ -41,12 +46,11 @@ const MediaMetadata = ({ photo }: MediaMetadataProps) => {
                 </h3>
                 <dl>
                   {group.rows.map((row) => (
-                    <div
-                      key={`${group.name}:${row.label}`}
-                      className="grid grid-cols-[minmax(0,11rem)_minmax(0,1fr)] gap-x-2 gap-y-0.5 py-0.5"
-                    >
-                      <dt className="break-all text-tiny text-muted-foreground">{row.label}</dt>
-                      <dd className="break-all text-tiny text-sidebar-foreground">{row.value}</dd>
+                    <div key={`${group.name}:${row.label}`} className={METADATA_ROW_CLASS}>
+                      <dt className={METADATA_LABEL_CLASS}>{row.label}</dt>
+                      <dd className={METADATA_VALUE_CLASS} title={row.value}>
+                        {row.value}
+                      </dd>
                     </div>
                   ))}
                 </dl>

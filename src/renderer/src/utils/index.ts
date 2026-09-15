@@ -6,7 +6,13 @@ export { formatResolution } from './format-resolution';
 export { formatCreatedAt, formatMetadataValue } from './format-metadata-value';
 export { getThumbnailColumnCount, getThumbnailStripWidth } from './thumbnail-columns';
 export { buildMetadataRows, groupMetadataRows, type MetadataGroup } from './group-metadata';
-export { getPhotoOverview, type PhotoOverviewItem } from './photo-overview';
+export {
+  getPhotoOverview,
+  getPhotoOverviewCards,
+  type PhotoOverviewCards,
+  type PhotoOverviewCell,
+  type PhotoOverviewItem
+} from './photo-overview';
 export { toMediaFileUrl } from './media-file-url';
 export { isEditableKeyboardTarget } from './is-editable-keyboard-target';
 export {

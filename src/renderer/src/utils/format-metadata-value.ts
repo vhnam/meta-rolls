@@ -9,6 +9,7 @@ const ISO_DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const EXIF_DATE_TIME = /^\d{4}:\d{2}:\d{2} \d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[+-]\d{2}:\d{2})?$/;
 const EXIF_DATE = /^\d{4}:\d{2}:\d{2}$/;
+const COMPACT_DIMENSION = /^(\d+)x(\d+)$/i;
 
 const formatIfValid = (value: string, parsed: dayjs.Dayjs, template: string): string =>
   parsed.isValid() ? parsed.format(template) : value;
@@ -37,6 +38,10 @@ export const formatMetadataValue = (value: string): string => {
   }
   if (EXIF_DATE.test(value)) {
     return formatIfValid(value, dayjs(value, 'YYYY:MM:DD', true), METADATA_DATE_FORMAT);
+  }
+  const dimension = COMPACT_DIMENSION.exec(value.replace(/\s+/g, ''));
+  if (dimension) {
+    return `${dimension[1]} x ${dimension[2]}`;
   }
   return value;
 };
