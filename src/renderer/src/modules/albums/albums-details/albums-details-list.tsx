@@ -1,7 +1,8 @@
 import { useDroppable } from '@dnd-kit/react';
 
 import { MediaPhotoListRow, MediaPhotoListShell } from '#/components/media-photo-list';
-import { type Album, type AlbumPhoto } from '#/types';
+import { ALBUM_FILE_LIST_COLUMNS } from '#/constants/media';
+import { type Album, type AlbumPhoto, type PhotoRating } from '#/types';
 import { toPhotoItem } from '#/utils';
 
 import { AlbumsDetailsPhotoContextMenu } from './albums-details-photo-context-menu';
@@ -11,13 +12,15 @@ type AlbumsDetailsListProps = {
   photos: AlbumPhoto[];
   selectedPhotoId: string | null;
   onSelectPhoto: (id: string) => void;
+  onRatePhoto: (photoId: string, rating: PhotoRating) => void;
 };
 
 export const AlbumsDetailsList = ({
   album,
   photos,
   selectedPhotoId,
-  onSelectPhoto
+  onSelectPhoto,
+  onRatePhoto
 }: AlbumsDetailsListProps) => {
   const { ref, isDropTarget } = useDroppable({
     id: album.id,
@@ -31,6 +34,7 @@ export const AlbumsDetailsList = ({
         getRowKey={(photo) => photo.id}
         emptyMessage="No photos in this album."
         droppable={{ ref, isDropTarget }}
+        columns={ALBUM_FILE_LIST_COLUMNS}
         renderRow={(photo) => (
           <AlbumsDetailsPhotoContextMenu
             albumId={album.id}
@@ -43,6 +47,8 @@ export const AlbumsDetailsList = ({
               dragId={`album-photo:${album.id}:${photo.id}`}
               dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
               onSelectPhoto={onSelectPhoto}
+              rating={photo.rating}
+              onRatePhoto={onRatePhoto}
             />
           </AlbumsDetailsPhotoContextMenu>
         )}

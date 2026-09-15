@@ -20,7 +20,23 @@ export const FILE_LIST_COLUMNS = [
   { id: 'resolution', label: 'Resolution', defaultWidth: 108, minWidth: 80 }
 ] as const;
 
-export type FileListColumnId = (typeof FILE_LIST_COLUMNS)[number]['id'];
+export const FILE_LIST_RATING_COLUMN = {
+  id: 'rating',
+  label: 'Rating',
+  defaultWidth: 96,
+  minWidth: 80
+} as const;
+
+export const ALBUM_FILE_LIST_COLUMNS = [
+  FILE_LIST_COLUMNS[0],
+  FILE_LIST_RATING_COLUMN,
+  FILE_LIST_COLUMNS[1],
+  FILE_LIST_COLUMNS[2],
+  FILE_LIST_COLUMNS[3]
+] as const;
+
+export type FileListColumn = (typeof FILE_LIST_COLUMNS)[number] | typeof FILE_LIST_RATING_COLUMN;
+export type FileListColumnId = FileListColumn['id'];
 
 export const FILE_LIST_GRID_CLASS =
   'grid w-full min-w-[var(--file-list-min-width)] [grid-template-columns:var(--file-list-cols)]';
@@ -39,12 +55,12 @@ export const THUMBNAIL_MAX_COLUMNS = 6;
 export const THUMBNAIL_STRIP_MIN_WIDTH = 120;
 export const THUMBNAIL_STRIP_MAX_WIDTH = 280;
 export const THUMBNAIL_ASPECT_RATIO = '16 / 9';
-export const THUMBNAIL_ZOOM_STEP = 25;
+export const THUMBNAIL_ZOOM_STEP = 0;
 export const THUMBNAIL_PANE_CLASS =
   '@container/thumbnail flex min-h-0 min-w-0 flex-[1.2] flex-col overflow-hidden bg-background';
 export const THUMBNAIL_GRID_CLASS =
   'grid w-full gap-3 [--thumb-fit-cols:1] @min-[12rem]/thumbnail:[--thumb-fit-cols:2] @min-[18rem]/thumbnail:[--thumb-fit-cols:3] @min-[24rem]/thumbnail:[--thumb-fit-cols:4] @min-[32rem]/thumbnail:[--thumb-fit-cols:5] @min-[40rem]/thumbnail:[--thumb-fit-cols:6]';
-export const THUMBNAIL_STRIP_CLASS = 'inline-flex h-full items-center gap-3';
+export const THUMBNAIL_STRIP_CLASS = 'inline-flex h-full items-start gap-3';
 
 export const METADATA_PANE_CLASS =
   '@container/metadata flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border bg-sidebar';

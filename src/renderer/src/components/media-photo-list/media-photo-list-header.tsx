@@ -6,10 +6,12 @@ import {
   FILE_LIST_CELL_CLASS,
   FILE_LIST_COLUMNS,
   FILE_LIST_ROW_CLASS,
+  type FileListColumn,
   type FileListColumnId
 } from '#/constants/media';
 
 type MediaPhotoListHeaderProps = {
+  columns?: readonly FileListColumn[];
   widths: Record<FileListColumnId, number>;
   onResizeColumn: (id: FileListColumnId, width: number) => void;
 };
@@ -51,16 +53,20 @@ const ColumnResizeHandle = ({ label, minWidth, width, onResize }: ColumnResizeHa
   );
 };
 
-export const MediaPhotoListHeader = ({ widths, onResizeColumn }: MediaPhotoListHeaderProps) => {
+export const MediaPhotoListHeader = ({
+  columns = FILE_LIST_COLUMNS,
+  widths,
+  onResizeColumn
+}: MediaPhotoListHeaderProps) => {
   return (
     <div className={cn(FILE_LIST_ROW_CLASS, 'sticky top-0 z-20 bg-muted select-none')}>
-      {FILE_LIST_COLUMNS.map((column, index) => (
+      {columns.map((column, index) => (
         <div
           key={column.id}
           className={cn(
             FILE_LIST_CELL_CLASS,
             'relative',
-            index < FILE_LIST_COLUMNS.length - 1 && 'border-e border-border'
+            index < columns.length - 1 && 'border-e border-border'
           )}
         >
           <span className="truncate text-tiny font-medium text-muted-foreground">

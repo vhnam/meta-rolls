@@ -31,7 +31,7 @@ export const MediaPhotoThumbnailShell = ({
       <div
         ref={droppable?.ref}
         className={cn(
-          'flex-1 flex items-center justify-center text-sidebar-foreground',
+          'flex-1 flex items-start justify-center text-sidebar-foreground',
           droppable?.isDropTarget && 'bg-accent/40 outline outline-primary -outline-offset-2'
         )}
       >

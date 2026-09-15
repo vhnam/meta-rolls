@@ -3,8 +3,10 @@ import { cn } from 'cn';
 import { useState } from 'react';
 
 import { THUMBNAIL_ASPECT_RATIO } from '#/constants/media';
-import { type PhotoItem } from '#/types';
+import { type PhotoItem, type PhotoRating } from '#/types';
 import { toMediaFileUrl } from '#/utils';
+
+import { PhotoRatingStars } from './photo-rating-stars';
 
 type MediaPhotoThumbnailTileProps = {
   photo: PhotoItem;
@@ -12,6 +14,8 @@ type MediaPhotoThumbnailTileProps = {
   dragId: string;
   dragData?: Record<string, unknown>;
   onSelectPhoto: (id: string) => void;
+  rating?: number;
+  onRatePhoto?: (id: string, rating: PhotoRating) => void;
 };
 
 export const MediaPhotoThumbnailTile = ({
@@ -19,18 +23,31 @@ export const MediaPhotoThumbnailTile = ({
   selected,
   dragId,
   dragData,
-  onSelectPhoto
+  onSelectPhoto,
+  rating,
+  onRatePhoto
 }: MediaPhotoThumbnailTileProps) => {
   const [failed, setFailed] = useState(false);
   const src = photo.path ? toMediaFileUrl(photo.path) : null;
   const { ref, isDragging } = useDraggable({ id: dragId, data: dragData });
+  const showRating = onRatePhoto !== undefined && (selected || (rating ?? 0) > 0);
 
   return (
-    <button
+    <div
       ref={ref}
-      type="button"
-      className={cn('flex w-full min-w-0 flex-col items-center gap-1', isDragging && 'opacity-50')}
+      role="button"
+      tabIndex={0}
+      className={cn(
+        'flex w-full min-w-0 cursor-pointer flex-col items-center gap-0.5',
+        isDragging && 'opacity-50'
+      )}
       onClick={() => onSelectPhoto(photo.id)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onSelectPhoto(photo.id);
+        }
+      }}
     >
       <span
         className={cn(
@@ -49,14 +66,24 @@ export const MediaPhotoThumbnailTile = ({
           />
         )}
       </span>
+      {onRatePhoto ? (
+        <span className={showRating ? 'visible' : 'invisible'}>
+          <PhotoRatingStars
+            rating={rating ?? 0}
+            interactive={selected}
+            showClear
+            onChange={(next) => onRatePhoto(photo.id, next)}
+          />
+        </span>
+      ) : null}
       <span
         className={cn(
-          'w-full truncate text-center text-tiny',
+          'w-full truncate text-center text-tiny leading-none',
           selected ? 'text-foreground' : 'text-muted-foreground'
         )}
       >
         {photo.name}
       </span>
-    </button>
+    </div>
   );
 };

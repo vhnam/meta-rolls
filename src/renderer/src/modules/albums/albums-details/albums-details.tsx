@@ -1,5 +1,6 @@
 import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
+import { type PhotoRating } from '#/types';
 
 import { AlbumsDetailsList } from './albums-details-list';
 import { AlbumsDetailsThumbnails } from './albums-details-thumbnails';
@@ -13,11 +14,19 @@ export const AlbumsDetails = () => {
   const zoom = useAlbumStore((state) => state.zoom);
   const onViewChange = useAlbumStore((state) => state.setView);
   const onZoomChange = useAlbumStore((state) => state.setZoom);
+  const rateAlbumPhoto = useAlbumStore((state) => state.rateAlbumPhoto);
   const currentAlbum = albums.find((album) => album.id === selectedId);
   const albumPhotos = currentAlbum?.photos ?? [];
   const activePhotoId = albumPhotos.some((photo) => photo.id === store.selectedPhotoId)
     ? store.selectedPhotoId
     : null;
+
+  const handleRatePhoto = (photoId: string, rating: PhotoRating) => {
+    if (!currentAlbum) {
+      return;
+    }
+    void rateAlbumPhoto(currentAlbum.id, photoId, rating);
+  };
 
   const albumContent = (
     <>
@@ -27,6 +36,7 @@ export const AlbumsDetails = () => {
           photos={albumPhotos}
           selectedPhotoId={activePhotoId}
           onSelectPhoto={store.setSelectedPhotoId}
+          onRatePhoto={handleRatePhoto}
           zoom={zoom}
         />
       )}
@@ -36,6 +46,7 @@ export const AlbumsDetails = () => {
           photos={albumPhotos}
           selectedPhotoId={activePhotoId}
           onSelectPhoto={store.setSelectedPhotoId}
+          onRatePhoto={handleRatePhoto}
         />
       )}
     </>

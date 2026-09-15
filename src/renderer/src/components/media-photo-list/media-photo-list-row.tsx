@@ -3,8 +3,10 @@ import { IconPhoto, IconPhotoFilled } from '@tabler/icons-react';
 import { cn } from 'cn';
 
 import { FILE_LIST_CELL_CLASS, FILE_LIST_ROW_CLASS } from '#/constants/media';
-import { type PhotoItem } from '#/types';
+import { type PhotoItem, type PhotoRating } from '#/types';
 import { formatCreatedAt, formatFileSize, formatResolution } from '#/utils';
+
+import { PhotoRatingStars } from './photo-rating-stars';
 
 type MediaPhotoListRowProps = {
   photo: PhotoItem;
@@ -12,6 +14,8 @@ type MediaPhotoListRowProps = {
   dragId: string;
   dragData?: Record<string, unknown>;
   onSelectPhoto: (id: string) => void;
+  rating?: number;
+  onRatePhoto?: (id: string, rating: PhotoRating) => void;
 };
 
 export const MediaPhotoListRow = ({
@@ -19,21 +23,31 @@ export const MediaPhotoListRow = ({
   selected,
   dragId,
   dragData,
-  onSelectPhoto
+  onSelectPhoto,
+  rating,
+  onRatePhoto
 }: MediaPhotoListRowProps) => {
   const { ref, isDragging } = useDraggable({ id: dragId, data: dragData });
+  const showRating = onRatePhoto !== undefined;
 
   return (
-    <button
+    <div
       ref={ref}
-      type="button"
+      role="button"
+      tabIndex={0}
       className={cn(
         FILE_LIST_ROW_CLASS,
-        'text-left',
+        'cursor-pointer text-left',
         selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground',
         isDragging && 'opacity-50'
       )}
       onClick={() => onSelectPhoto(photo.id)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onSelectPhoto(photo.id);
+        }
+      }}
     >
       <span className={cn(FILE_LIST_CELL_CLASS, 'gap-1')}>
         {selected ? (
@@ -43,6 +57,15 @@ export const MediaPhotoListRow = ({
         )}
         <span className="truncate text-tiny">{photo.name}</span>
       </span>
+      {showRating ? (
+        <span className={FILE_LIST_CELL_CLASS}>
+          <PhotoRatingStars
+            rating={rating ?? 0}
+            interactive={selected}
+            onChange={(next) => onRatePhoto(photo.id, next)}
+          />
+        </span>
+      ) : null}
       <span className={cn(FILE_LIST_CELL_CLASS, 'truncate text-tiny')}>
         {formatCreatedAt(photo.createdAt)}
       </span>
@@ -52,6 +75,6 @@ export const MediaPhotoListRow = ({
       <span className={cn(FILE_LIST_CELL_CLASS, 'truncate text-tiny tabular-nums')}>
         {formatResolution(photo.width, photo.height)}
       </span>
-    </button>
+    </div>
   );
 };

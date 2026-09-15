@@ -7,6 +7,7 @@ import {
   FILE_LIST_ROW_CLASS,
   FILE_LIST_ROW_HEIGHT,
   FILE_LIST_ROW_X_PADDING,
+  type FileListColumn,
   type FileListColumnId
 } from '#/constants/media';
 
@@ -23,29 +24,35 @@ type MediaPhotoListShellProps<T> = {
   renderRow: (row: T, index: number) => ReactNode;
   emptyMessage: string;
   droppable?: MediaPhotoListDroppable;
+  columns?: readonly FileListColumn[];
 };
 
-const INITIAL_COLUMN_WIDTHS = Object.fromEntries(
-  FILE_LIST_COLUMNS.map((column) => [column.id, column.defaultWidth])
-) as Record<FileListColumnId, number>;
+const columnWidthsFrom = (columns: readonly FileListColumn[]) =>
+  Object.fromEntries(columns.map((column) => [column.id, column.defaultWidth])) as Record<
+    FileListColumnId,
+    number
+  >;
 
 export const MediaPhotoListShell = <T,>({
   rows,
   getRowKey,
   renderRow,
   emptyMessage,
-  droppable
+  droppable,
+  columns = FILE_LIST_COLUMNS
 }: MediaPhotoListShellProps<T>) => {
   'use no memo';
   const scrollRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  const [columnWidths, setColumnWidths] = useState(INITIAL_COLUMN_WIDTHS);
-  const columnSum = FILE_LIST_COLUMNS.reduce((sum, column) => sum + columnWidths[column.id], 0);
-  const columnTemplate = FILE_LIST_COLUMNS.map((column) =>
-    column.id === 'name'
-      ? `minmax(${columnWidths[column.id]}px, 1fr)`
-      : `${columnWidths[column.id]}px`
-  ).join(' ');
+  const [columnWidths, setColumnWidths] = useState(() => columnWidthsFrom(columns));
+  const columnSum = columns.reduce((sum, column) => sum + columnWidths[column.id], 0);
+  const columnTemplate = columns
+    .map((column) =>
+      column.id === 'name'
+        ? `minmax(${columnWidths[column.id]}px, 1fr)`
+        : `${columnWidths[column.id]}px`
+    )
+    .join(' ');
   const columnStyle = {
     '--file-list-cols': columnTemplate,
     '--file-list-min-width': `${columnSum + FILE_LIST_ROW_X_PADDING}px`
@@ -69,6 +76,7 @@ export const MediaPhotoListShell = <T,>({
         className="relative z-10 shrink-0 overflow-x-auto border-b border-border bg-muted scrollbar-none [&::-webkit-scrollbar]:hidden"
       >
         <MediaPhotoListHeader
+          columns={columns}
           widths={columnWidths}
           onResizeColumn={(id, width) =>
             setColumnWidths((current) => ({ ...current, [id]: width }))
