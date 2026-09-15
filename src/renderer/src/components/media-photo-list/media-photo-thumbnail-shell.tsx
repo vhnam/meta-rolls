@@ -1,25 +1,28 @@
-import { cn } from 'cn';
-import { type CSSProperties, type ReactNode } from 'react';
+import type { CSSProperties, PropsWithChildren } from 'react';
 
-import { THUMBNAIL_GRID_CLASS } from '#/constants/media';
+import { THUMBNAIL_GRID_CLASS, THUMBNAIL_STRIP_CLASS } from '#/constants/media';
+import { cn } from '#/lib/utils';
 
 type MediaPhotoThumbnailDroppable = {
   ref: (node: Element | null) => void;
   isDropTarget: boolean;
 };
 
-type MediaPhotoThumbnailShellProps = {
+type MediaPhotoThumbnailShellProps = PropsWithChildren & {
   isEmpty: boolean;
   emptyMessage: string;
-  columns: number;
+  columns?: number;
+  itemWidth?: number;
+  layout?: 'grid' | 'row';
   droppable?: MediaPhotoThumbnailDroppable;
-  children: ReactNode;
 };
 
 export const MediaPhotoThumbnailShell = ({
   isEmpty,
   emptyMessage,
-  columns,
+  columns = 1,
+  itemWidth,
+  layout = 'grid',
   droppable,
   children
 }: MediaPhotoThumbnailShellProps) => {
@@ -37,26 +40,38 @@ export const MediaPhotoThumbnailShell = ({
     );
   }
 
+  const isRow = layout === 'row';
+
   return (
     <div
       ref={droppable?.ref}
       className={cn(
-        'min-h-0 flex-1 scroll-fade overflow-auto p-3',
+        'min-h-0 flex-1 scroll-fade p-3',
+        isRow ? 'overflow-x-auto overflow-y-hidden' : 'overflow-auto',
         droppable?.isDropTarget && 'bg-accent/40 outline outline-primary -outline-offset-2'
       )}
     >
-      <div
-        className={THUMBNAIL_GRID_CLASS}
-        style={
-          {
-            '--zoom-cols': columns,
-            gridTemplateColumns:
-              'repeat(min(var(--thumb-fit-cols), var(--zoom-cols)), minmax(0, 1fr))'
-          } as CSSProperties
-        }
-      >
-        {children}
-      </div>
+      {isRow ? (
+        <div
+          className={THUMBNAIL_STRIP_CLASS}
+          style={{ '--thumb-width': `${itemWidth ?? 0}px` } as CSSProperties}
+        >
+          {children}
+        </div>
+      ) : (
+        <div
+          className={THUMBNAIL_GRID_CLASS}
+          style={
+            {
+              '--zoom-cols': columns,
+              gridTemplateColumns:
+                'repeat(min(var(--thumb-fit-cols), var(--zoom-cols)), minmax(0, 1fr))'
+            } as CSSProperties
+          }
+        >
+          {children}
+        </div>
+      )}
     </div>
   );
 };

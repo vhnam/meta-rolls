@@ -79,10 +79,15 @@ export const AlbumsScreen = () => {
         <ResizableHandle />
         <ResizablePanel defaultSize="85%" minSize="10%" className="min-h-0 min-w-0">
           <ResizablePanelGroup orientation="vertical" className="min-h-0">
-            <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
+            <ResizablePanel defaultSize="80%" minSize="20%" className="min-h-0 min-w-0">
               <AlbumsPreview photo={selectedPhoto} />
             </ResizablePanel>
-            <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
+            <ResizablePanel
+              defaultSize="20%"
+              minSize="15%"
+              maxSize="30%"
+              className="min-h-0 min-w-0"
+            >
               <div className="h-full min-h-0 overflow-hidden">
                 <AlbumsDetails />
               </div>

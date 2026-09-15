@@ -36,12 +36,15 @@ export const FOLDER_TREE_ROW_HEIGHT = 24;
 
 export const THUMBNAIL_MIN_COLUMNS = 3;
 export const THUMBNAIL_MAX_COLUMNS = 6;
+export const THUMBNAIL_STRIP_MIN_WIDTH = 120;
+export const THUMBNAIL_STRIP_MAX_WIDTH = 280;
 export const THUMBNAIL_ASPECT_RATIO = '16 / 9';
 export const THUMBNAIL_ZOOM_STEP = 25;
 export const THUMBNAIL_PANE_CLASS =
   '@container/thumbnail flex min-h-0 min-w-0 flex-[1.2] flex-col overflow-hidden bg-background';
 export const THUMBNAIL_GRID_CLASS =
   'grid w-full gap-3 [--thumb-fit-cols:1] @min-[12rem]/thumbnail:[--thumb-fit-cols:2] @min-[18rem]/thumbnail:[--thumb-fit-cols:3] @min-[24rem]/thumbnail:[--thumb-fit-cols:4] @min-[32rem]/thumbnail:[--thumb-fit-cols:5] @min-[40rem]/thumbnail:[--thumb-fit-cols:6]';
+export const THUMBNAIL_STRIP_CLASS = 'inline-flex h-full items-center gap-3';
 
 export const METADATA_PANE_CLASS =
   '@container/metadata flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border bg-sidebar';
