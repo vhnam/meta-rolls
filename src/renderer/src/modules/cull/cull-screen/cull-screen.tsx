@@ -12,9 +12,9 @@ import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { Album } from '#/types';
 import { toPhotoItem } from '#/utils/album-photo';
 
-import { AlbumsDetails } from '../albums-details';
+import { CullDetails } from '../cull-details';
 
-export const AlbumsScreen = () => {
+export const CullScreen = () => {
   const albums = useAlbumStore((state) => state.albums);
   const selectedId = useAlbumStore((state) => state.activeAlbumId);
   const onSelect = useAlbumStore((state) => state.setActiveAlbumId);
@@ -101,7 +101,7 @@ export const AlbumsScreen = () => {
               className="min-h-0 min-w-0"
             >
               <div className="h-full min-h-0 overflow-hidden">
-                <AlbumsDetails />
+                <CullDetails />
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>

@@ -1,4 +1,4 @@
-import { IconLibraryPhoto, IconPhotoAlt } from '@tabler/icons-react';
+import { IconPhotoAlt, IconPhotoCheck } from '@tabler/icons-react';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 
 import { Tabs, TabsList, TabsTrigger } from '#/components/ui/tabs';
@@ -6,7 +6,7 @@ import appIcon from '@/resources/icon.png';
 
 const TAB_ROUTES = {
   media: '/media',
-  albums: '/albums'
+  cull: '/cull'
 } as const;
 
 type TabValue = keyof typeof TAB_ROUTES;
@@ -14,10 +14,10 @@ type TabValue = keyof typeof TAB_ROUTES;
 const AppTitleBar = () => {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const value: TabValue = pathname.startsWith('/albums') ? 'albums' : 'media';
+  const value: TabValue = pathname.startsWith('/cull') ? 'cull' : 'media';
 
   const handleValueChange = (next: TabValue) => {
-    if (!['media', 'albums'].includes(next)) {
+    if (!['media', 'cull'].includes(next)) {
       return;
     }
 
@@ -37,9 +37,9 @@ const AppTitleBar = () => {
               <IconPhotoAlt className="size-4" />
               Media
             </TabsTrigger>
-            <TabsTrigger value="albums">
-              <IconLibraryPhoto className="size-4" />
-              Albums
+            <TabsTrigger value="cull">
+              <IconPhotoCheck className="size-4" />
+              Cull
             </TabsTrigger>
           </TabsList>
         </Tabs>

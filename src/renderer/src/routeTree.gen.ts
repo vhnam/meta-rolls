@@ -10,7 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AlbumsRouteImport } from './routes/albums'
+import { Route as CullRouteImport } from './routes/cull'
 import { Route as MediaRouteImport } from './routes/media'
 
 const IndexRoute = IndexRouteImport.update({
@@ -18,9 +18,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AlbumsRoute = AlbumsRouteImport.update({
-  id: '/albums',
-  path: '/albums',
+const CullRoute = CullRouteImport.update({
+  id: '/cull',
+  path: '/cull',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MediaRoute = MediaRouteImport.update({
@@ -31,31 +31,31 @@ const MediaRoute = MediaRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/albums': typeof AlbumsRoute
+  '/cull': typeof CullRoute
   '/media': typeof MediaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/albums': typeof AlbumsRoute
+  '/cull': typeof CullRoute
   '/media': typeof MediaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/albums': typeof AlbumsRoute
+  '/cull': typeof CullRoute
   '/media': typeof MediaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/albums' | '/media'
+  fullPaths: '/' | '/cull' | '/media'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/albums' | '/media'
-  id: '__root__' | '/' | '/albums' | '/media'
+  to: '/' | '/cull' | '/media'
+  id: '__root__' | '/' | '/cull' | '/media'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AlbumsRoute: typeof AlbumsRoute
+  CullRoute: typeof CullRoute
   MediaRoute: typeof MediaRoute
 }
 
@@ -68,11 +68,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/albums': {
-      id: '/albums'
-      path: '/albums'
-      fullPath: '/albums'
-      preLoaderRoute: typeof AlbumsRouteImport
+    '/cull': {
+      id: '/cull'
+      path: '/cull'
+      fullPath: '/cull'
+      preLoaderRoute: typeof CullRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/media': {
@@ -87,7 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AlbumsRoute: AlbumsRoute,
+  CullRoute: CullRoute,
   MediaRoute: MediaRoute,
 }
 export const routeTree = rootRouteImport

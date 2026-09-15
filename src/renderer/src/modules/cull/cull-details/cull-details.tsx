@@ -4,7 +4,7 @@ import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoRating } from '#/types';
 
-export const AlbumsDetails = () => {
+export const CullDetails = () => {
   const store = useMediaPoolStore();
   const albums = useAlbumStore((state) => state.albums);
   const selectedId = useAlbumStore((state) => state.activeAlbumId);
