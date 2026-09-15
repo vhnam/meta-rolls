@@ -1,12 +1,12 @@
 import { DragDropProvider, type DragEndEvent } from '@dnd-kit/react';
 
+import { PhotoPreview, PhotoPreviewFullscreen } from '#/components/photo-preview';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import { useMediaPhotoArrowSelection } from '#/hooks/use-media-photo-arrow-selection';
 import { useMediaPreviewFullscreen } from '#/hooks/use-media-preview-fullscreen';
 import { MediaAlbums } from '#/modules/media/media-albums';
 import { MediaBrowser } from '#/modules/media/media-browser';
 import { MediaMetadata } from '#/modules/media/media-metadata';
-import { MediaPreview, MediaPreviewFullscreen } from '#/modules/media/media-preview';
 import { useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { toPhotoItem } from '#/utils';
@@ -80,7 +80,10 @@ const MediaScreen = () => {
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize="35%" minSize="20%" className="min-h-0 min-w-0">
-              <MediaPreview photo={selectedPhoto} />
+              <PhotoPreview
+                photo={selectedPhoto}
+                toolbarClassName="justify-between border-sidebar-border bg-muted"
+              />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>
@@ -97,7 +100,7 @@ const MediaScreen = () => {
           </ResizablePanelGroup>
         </ResizablePanel>
       </ResizablePanelGroup>
-      <MediaPreviewFullscreen
+      <PhotoPreviewFullscreen
         photo={selectedPhoto}
         open={fullscreenOpen}
         onOpenChange={setFullscreenOpen}

@@ -4,13 +4,14 @@ import { useMediaPanzoom } from '#/hooks/use-media-panzoom';
 import { type PhotoItem } from '#/types';
 import { toMediaFileUrl } from '#/utils';
 
-import { AlbumsPreviewToolbar } from './albums-preview-toolbar';
+import { PhotoPreviewToolbar } from './photo-preview-toolbar';
 
-type AlbumsPreviewProps = {
+type PhotoPreviewProps = {
   photo: PhotoItem | null;
+  toolbarClassName?: string;
 };
 
-type AlbumsPreviewImageProps = {
+type PhotoPreviewImageProps = {
   src: string;
   name: string;
   onImage: (node: HTMLImageElement | null) => void;
@@ -18,13 +19,13 @@ type AlbumsPreviewImageProps = {
   onError: (src: string) => void;
 };
 
-const AlbumsPreviewImage = memo(function AlbumsPreviewImage({
+const PhotoPreviewImage = memo(function PhotoPreviewImage({
   src,
   name,
   onImage,
   onLoad,
   onError
-}: AlbumsPreviewImageProps) {
+}: PhotoPreviewImageProps) {
   return (
     <img
       ref={onImage}
@@ -38,7 +39,7 @@ const AlbumsPreviewImage = memo(function AlbumsPreviewImage({
   );
 });
 
-export const AlbumsPreview = ({ photo }: AlbumsPreviewProps) => {
+export const PhotoPreview = ({ photo, toolbarClassName }: PhotoPreviewProps) => {
   const [viewport, setViewport] = useState<HTMLDivElement | null>(null);
   const [imageEl, setImageEl] = useState<HTMLImageElement | null>(null);
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
@@ -55,18 +56,19 @@ export const AlbumsPreview = ({ photo }: AlbumsPreviewProps) => {
 
   return (
     <section className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border bg-card">
-      <AlbumsPreviewToolbar
+      <PhotoPreviewToolbar
         photoName={photo?.name}
         zoomDisabled={!canPanzoom}
         zoomValue={zoomValue}
         onZoomChange={applyZoom}
+        className={toolbarClassName}
       />
       <div
         ref={setViewport}
         className="flex min-h-0 flex-1 touch-none items-center justify-center overflow-hidden overscroll-none bg-card p-2"
       >
         {photo && src && !failed ? (
-          <AlbumsPreviewImage
+          <PhotoPreviewImage
             key={src}
             src={src}
             name={photo.name}

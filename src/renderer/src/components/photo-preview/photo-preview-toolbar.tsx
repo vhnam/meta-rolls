@@ -6,21 +6,24 @@ import {
   SelectTrigger,
   SelectValue
 } from '#/components/ui/select';
+import { cn } from '#/lib/utils';
 import { formatPreviewZoomLabel, PREVIEW_ZOOM_FIT, PREVIEW_ZOOM_OPTIONS } from '#/utils';
 
-type AlbumsPreviewToolbarProps = {
+type PhotoPreviewToolbarProps = {
   photoName?: string;
   zoomDisabled: boolean;
   zoomValue: string | null;
   onZoomChange: (value: string | null) => void;
+  className?: string;
 };
 
-export const AlbumsPreviewToolbar = ({
+export const PhotoPreviewToolbar = ({
   photoName,
   zoomDisabled,
   zoomValue,
-  onZoomChange
-}: AlbumsPreviewToolbarProps) => {
+  onZoomChange,
+  className
+}: PhotoPreviewToolbarProps) => {
   const zoomLabel = formatPreviewZoomLabel(zoomValue);
   const isPresetZoom =
     !zoomValue || PREVIEW_ZOOM_OPTIONS.some((option) => option.value === zoomValue);
@@ -29,7 +32,7 @@ export const AlbumsPreviewToolbar = ({
     : [...PREVIEW_ZOOM_OPTIONS, { value: zoomValue, label: zoomLabel }];
 
   return (
-    <div className="flex h-7 shrink-0 items-center  border-b border-border bg-sidebar-accent px-1">
+    <div className={cn('flex h-7 items-center border-b', className)}>
       <Select
         disabled={zoomDisabled}
         items={selectItems}

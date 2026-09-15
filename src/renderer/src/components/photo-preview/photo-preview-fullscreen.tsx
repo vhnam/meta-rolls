@@ -5,13 +5,17 @@ import { getApi } from '#/hooks/use-ipc';
 import { type PhotoItem } from '#/types';
 import { toMediaFileUrl } from '#/utils';
 
-type MediaPreviewFullscreenProps = {
+type PhotoPreviewFullscreenProps = {
   photo: PhotoItem | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
 
-const MediaPreviewFullscreen = ({ photo, open, onOpenChange }: MediaPreviewFullscreenProps) => {
+export const PhotoPreviewFullscreen = ({
+  photo,
+  open,
+  onOpenChange
+}: PhotoPreviewFullscreenProps) => {
   const src = photo?.path ? toMediaFileUrl(photo.path) : null;
 
   useEffect(() => {
@@ -70,5 +74,3 @@ const MediaPreviewFullscreen = ({ photo, open, onOpenChange }: MediaPreviewFulls
     document.body
   );
 };
-
-export default MediaPreviewFullscreen;

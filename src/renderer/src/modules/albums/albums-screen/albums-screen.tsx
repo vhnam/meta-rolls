@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { PhotoPreview, PhotoPreviewFullscreen } from '#/components/photo-preview';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import { useMediaPreviewFullscreen } from '#/hooks/use-media-preview-fullscreen';
 import { MediaMetadata } from '#/modules/media/media-metadata';
@@ -10,7 +11,6 @@ import { Album } from '#/types';
 import { toPhotoItem } from '#/utils/album-photo';
 
 import { AlbumsDetails } from '../albums-details';
-import { AlbumsPreview, AlbumsPreviewFullscreen } from '../albums-preview';
 import { AlbumsSidebar } from '../albums-sidebar';
 import { AlbumsScreenAlbumDialog } from './albums-screen-album-dialog';
 
@@ -89,7 +89,10 @@ export const AlbumsScreen = () => {
         <ResizablePanel defaultSize="85%" minSize="10%" className="min-h-0 min-w-0">
           <ResizablePanelGroup orientation="vertical" className="min-h-0">
             <ResizablePanel defaultSize="80%" minSize="20%" className="min-h-0 min-w-0">
-              <AlbumsPreview photo={selectedPhoto} />
+              <PhotoPreview
+                photo={selectedPhoto}
+                toolbarClassName="shrink-0 border-border bg-sidebar-accent px-1"
+              />
             </ResizablePanel>
             <ResizablePanel
               defaultSize="20%"
@@ -112,7 +115,7 @@ export const AlbumsScreen = () => {
         onSaveAlbum={handleSaveAlbum}
       />
 
-      <AlbumsPreviewFullscreen
+      <PhotoPreviewFullscreen
         photo={selectedPhoto}
         open={fullscreenOpen}
         onOpenChange={setFullscreenOpen}
