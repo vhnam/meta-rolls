@@ -3,7 +3,7 @@ import {
   METADATA_OVERVIEW_CARD_CLASS,
   METADATA_OVERVIEW_LAYOUT_CLASS
 } from '#/constants/media';
-import { type PhotoOverviewCell, type PhotoOverviewCards } from '#/utils/photo-overview';
+import { type PhotoOverviewCell, type PhotoOverviewCards } from '#/utils/metadata/photo-overview';
 
 type PhotoMetadataOverviewProps = {
   cards: PhotoOverviewCards;

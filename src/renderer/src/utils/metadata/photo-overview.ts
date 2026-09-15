@@ -1,7 +1,7 @@
 import { PHOTO_OVERVIEW_FIELDS } from '#/constants/media';
 import { type PhotoExifField, type PhotoItem } from '#/types';
 
-import { formatFileSize } from './format-file-size';
+import { formatFileSize } from '../photo/format-file-size';
 
 export type PhotoOverviewItem = {
   id: string;

@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.12] - 2026-09-15
+
+### Changed
+
+- Grouped `utils/format-metadata-value.ts`, `utils/group-metadata.ts`, and `utils/photo-overview.ts` into `utils/metadata/` with a barrel export, part of splitting the flat `utils/` directory by area of work.
+
 ## [1.7.11] - 2026-09-15
 
 ### Changed
