@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.18] - 2026-09-15
+
+### Fixed
+
+- The entire app failed to start in dev (`Failed to resolve import "cn" from ...`, hitting every `components/ui/*` file) because `vite.config.mts` aliased the bare `cn` package specifier to `src/renderer/src/lib/utils.ts`, a path deleted when `lib/utils.ts` was merged into `utils/common/cn.ts`. Repointed the alias.
+
 ## [1.7.17] - 2026-09-15
 
 ### Fixed
