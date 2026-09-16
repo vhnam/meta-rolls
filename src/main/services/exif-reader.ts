@@ -2,7 +2,11 @@ import { stat } from 'node:fs/promises';
 
 import { BinaryField, ExifDate, ExifDateTime, ExifTime, ExifTool } from 'exiftool-vendored';
 
-import { type PhotoExif, type PhotoExifField } from '../../../shared/media';
+import {
+  type PhotoExif,
+  type PhotoExifField,
+  type PhotoRotateDirection
+} from '../../../shared/media';
 
 const exiftool = new ExifTool({ maxProcs: 2 });
 const PREVIEW_TAGS = ['PreviewImage', 'JpgFromRaw', 'OtherImage', 'ThumbnailImage'] as const;
@@ -149,6 +153,50 @@ export const readPhotoExif = async (filePath: string): Promise<PhotoExif | null>
   } catch {
     return null;
   }
+};
+
+const EXIF_ORIENTATION = {
+  1: { cw: 6, ccw: 8 },
+  2: { cw: 5, ccw: 7 },
+  3: { cw: 8, ccw: 6 },
+  4: { cw: 7, ccw: 5 },
+  5: { cw: 4, ccw: 2 },
+  6: { cw: 3, ccw: 1 },
+  7: { cw: 2, ccw: 4 },
+  8: { cw: 1, ccw: 3 }
+} as const;
+
+export type RotatedImage = {
+  mtimeMs: number;
+};
+
+export const readImageOrientation = async (filePath: string) => {
+  try {
+    const tags = await exiftool.read(filePath, ['-n', '-Orientation']);
+    const current = toPositiveInt(tags.Orientation);
+    return current >= 1 && current <= 8 ? current : 1;
+  } catch {
+    return 1;
+  }
+};
+
+export const rotateImage = async (
+  filePath: string,
+  direction: PhotoRotateDirection
+): Promise<RotatedImage> => {
+  const orientation = await readImageOrientation(filePath);
+  const next = EXIF_ORIENTATION[orientation as keyof typeof EXIF_ORIENTATION][direction];
+  try {
+    await exiftool.write(filePath, { Orientation: next }, [
+      '-overwrite_original_in_place',
+      '-n',
+      '-m'
+    ]);
+  } catch {
+    await exiftool.write(filePath, { Orientation: next }, ['-overwrite_original', '-n', '-m']);
+  }
+  previewCache.delete(filePath);
+  return { mtimeMs: (await stat(filePath)).mtimeMs };
 };
 
 export const endExifTool = () => exiftool.end();

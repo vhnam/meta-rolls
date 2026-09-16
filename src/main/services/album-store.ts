@@ -220,3 +220,19 @@ export const ratePhotoInAlbum = (
 
   return { ...album, photos };
 };
+
+export const swapPhotoDimensionsByPath = (filePath: string, photoPath: string) => {
+  const db = getAppDatabase(filePath);
+  for (const album of listAlbums(filePath)) {
+    if (!album.photos.some((photo) => photo.path === photoPath)) {
+      continue;
+    }
+    writeAlbumPhotos(
+      db,
+      album.id,
+      album.photos.map((photo) =>
+        photo.path === photoPath ? { ...photo, width: photo.height, height: photo.width } : photo
+      )
+    );
+  }
+};

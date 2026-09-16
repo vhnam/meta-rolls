@@ -3,6 +3,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 import { type AlbumPhoto, type PhotoRating } from '../../shared/album';
 import { IpcChannel } from '../../shared/ipc';
+import { type PhotoRotateDirection } from '../../shared/media';
 
 const api = {
   settings: {
@@ -14,7 +15,9 @@ const api = {
   media: {
     listVolumes: () => ipcRenderer.invoke(IpcChannel.mediaListVolumes),
     listFolder: (dirPath: string) => ipcRenderer.invoke(IpcChannel.mediaListFolder, dirPath),
-    readExif: (filePath: string) => ipcRenderer.invoke(IpcChannel.mediaReadExif, filePath)
+    readExif: (filePath: string) => ipcRenderer.invoke(IpcChannel.mediaReadExif, filePath),
+    rotateImage: (filePath: string, direction: PhotoRotateDirection) =>
+      ipcRenderer.invoke(IpcChannel.mediaRotateImage, filePath, direction)
   },
   albums: {
     list: () => ipcRenderer.invoke(IpcChannel.albumsList),
@@ -44,6 +47,20 @@ const api = {
       ipcRenderer.on(IpcChannel.menuTogglePhotoFullscreen, handler);
       return () => {
         ipcRenderer.removeListener(IpcChannel.menuTogglePhotoFullscreen, handler);
+      };
+    },
+    onRotatePhotoCw: (callback: () => void) => {
+      const handler = () => callback();
+      ipcRenderer.on(IpcChannel.menuRotatePhotoCw, handler);
+      return () => {
+        ipcRenderer.removeListener(IpcChannel.menuRotatePhotoCw, handler);
+      };
+    },
+    onRotatePhotoCcw: (callback: () => void) => {
+      const handler = () => callback();
+      ipcRenderer.on(IpcChannel.menuRotatePhotoCcw, handler);
+      return () => {
+        ipcRenderer.removeListener(IpcChannel.menuRotatePhotoCcw, handler);
       };
     }
   },

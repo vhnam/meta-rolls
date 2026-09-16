@@ -1,7 +1,7 @@
 import { ElectronAPI } from '@electron-toolkit/preload';
 
 import { type Album, type AlbumPhoto, type PhotoRating } from '../../shared/album';
-import { type PhotoExif } from '../../shared/media';
+import { type PhotoExif, type PhotoRotateDirection } from '../../shared/media';
 
 export type SettingsStorageApi = {
   getItem: (name: string) => Promise<string | null>;
@@ -35,6 +35,7 @@ export type MediaLibraryApi = {
   listVolumes: () => Promise<MediaLibraryEntry[]>;
   listFolder: (dirPath: string) => Promise<MediaFolderListing>;
   readExif: (filePath: string) => Promise<PhotoExif | null>;
+  rotateImage: (filePath: string, direction: PhotoRotateDirection) => Promise<{ mtimeMs: number }>;
 };
 
 export type AlbumsApi = {
@@ -55,6 +56,8 @@ export type AlbumsApi = {
 export type MenuApi = {
   onOpenPreferences: (callback: () => void) => () => void;
   onTogglePhotoFullscreen: (callback: () => void) => () => void;
+  onRotatePhotoCw: (callback: () => void) => () => void;
+  onRotatePhotoCcw: (callback: () => void) => () => void;
 };
 
 export type WindowApi = {

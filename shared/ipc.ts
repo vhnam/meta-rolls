@@ -13,8 +13,11 @@ export const IpcChannel = {
   albumsMovePhoto: 'albums:move-photo',
   albumsRemovePhoto: 'albums:remove-photo',
   albumsRatePhoto: 'albums:rate-photo',
+  mediaRotateImage: 'media:rotate-image',
   menuOpenPreferences: 'menu:open-preferences',
   menuTogglePhotoFullscreen: 'menu:toggle-photo-fullscreen',
+  menuRotatePhotoCw: 'menu:rotate-photo-cw',
+  menuRotatePhotoCcw: 'menu:rotate-photo-ccw',
   windowSetFullScreen: 'window:set-full-screen',
   windowLeaveFullScreen: 'window:leave-full-screen'
 } as const;

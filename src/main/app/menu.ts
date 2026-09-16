@@ -24,6 +24,14 @@ function togglePhotoFullscreen(): void {
   sendMenuChannel(IpcChannel.menuTogglePhotoFullscreen);
 }
 
+function rotatePhotoCw(): void {
+  sendMenuChannel(IpcChannel.menuRotatePhotoCw);
+}
+
+function rotatePhotoCcw(): void {
+  sendMenuChannel(IpcChannel.menuRotatePhotoCcw);
+}
+
 const preferencesMenuItem: MenuItemConstructorOptions = {
   label: 'Preferences',
   accelerator: 'CommandOrControl+,',
@@ -90,6 +98,17 @@ export function setupAppMenu(): void {
         { role: 'resetZoom' },
         { role: 'zoomIn' },
         { role: 'zoomOut' },
+        { type: 'separator' },
+        {
+          label: 'Rotate 90° Clockwise',
+          accelerator: 'CommandOrControl+]',
+          click: rotatePhotoCw
+        },
+        {
+          label: 'Rotate 90° Counterclockwise',
+          accelerator: 'CommandOrControl+[',
+          click: rotatePhotoCcw
+        },
         { type: 'separator' },
         {
           label: 'View Photo Full Screen',

@@ -5,11 +5,18 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-09-16
+
+### Added
+
+- Media protocol applies EXIF orientation so previews and thumbnails match the file.
+- Rotate IPC writes the next Orientation tag, drops the display cache, and swaps stored album photo dimensions.
+
 ## [2.2.0] - 2026-09-16
 
 ### Added
 
-- Shared empty states for albums, photo lists, thumbnails, and the folder tree.
+- Shared empty states for albums, photo lists, and thumbnails.
 - Metadata overview cells show the field name in a tooltip.
 - Press **Z** to reset the preview to Fit; the zoom menu shows that shortcut.
 
@@ -22,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Media browser remembers which folders were expanded and which folder was selected, then restores that session after launch (including loading ancestors so nested folders reopen).
+- Folder tree empty state when no volumes are available.
 
 ### Changed
 
