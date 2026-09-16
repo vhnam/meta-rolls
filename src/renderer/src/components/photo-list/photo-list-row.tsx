@@ -1,5 +1,5 @@
 import { useDraggable } from '@dnd-kit/react';
-import { IconPhoto, IconPhotoFilled } from '@tabler/icons-react';
+import { IconCheck, IconPhoto, IconPhotoFilled } from '@tabler/icons-react';
 
 import { FILE_LIST_CELL_CLASS, FILE_LIST_ROW_CLASS } from '#/constants/media';
 import { type PhotoItem, type PhotoRating } from '#/types';
@@ -11,6 +11,7 @@ import { PhotoRatingStars } from './photo-rating-stars';
 type PhotoListRowProps = {
   photo: PhotoItem;
   selected: boolean;
+  placed?: boolean;
   dragId: string;
   dragData?: Record<string, unknown>;
   onSelectPhoto: (id: string) => void;
@@ -21,6 +22,7 @@ type PhotoListRowProps = {
 export function PhotoListRow({
   photo,
   selected,
+  placed = false,
   dragId,
   dragData,
   onSelectPhoto,
@@ -56,6 +58,15 @@ export function PhotoListRow({
           <IconPhoto className="size-3.5 shrink-0 text-muted-foreground" />
         )}
         <span className="truncate text-tiny">{photo.name}</span>
+        {placed ? (
+          <span
+            role="img"
+            aria-label="Placed in layout"
+            className="flex size-3 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"
+          >
+            <IconCheck className="size-2" />
+          </span>
+        ) : null}
       </span>
       {showRating ? (
         <span className={FILE_LIST_CELL_CLASS}>

@@ -1,6 +1,7 @@
 import { DragDropProvider, type DragEndEvent } from '@dnd-kit/react';
 import { useEffect, useState } from 'react';
 
+import { AlbumDetails } from '#/components/album-details';
 import { AlbumFormDialog } from '#/components/album-form-dialog';
 import { AlbumSidebarShell } from '#/components/album-sidebar';
 import { PhotoMetadata } from '#/components/photo-metadata';
@@ -15,8 +16,6 @@ import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { Album } from '#/types';
 import { readDragString } from '#/utils/common';
 import { toPhotoItem } from '#/utils/photo/album-photo';
-
-import { CullDetails } from '../cull-details';
 
 export function CullScreen() {
   const albums = useAlbumStore((state) => state.albums);
@@ -133,7 +132,7 @@ export function CullScreen() {
               className="min-h-0 min-w-0"
             >
               <div className="h-full min-h-0 overflow-hidden">
-                <CullDetails />
+                <AlbumDetails />
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>

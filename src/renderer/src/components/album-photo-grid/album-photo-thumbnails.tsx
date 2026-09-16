@@ -10,6 +10,7 @@ type AlbumPhotoThumbnailsProps = {
   album: Album;
   photos: AlbumPhoto[];
   selectedPhotoId: string | null;
+  placedPhotoIds?: ReadonlySet<string>;
   zoom: number;
   layout?: 'grid' | 'row';
   onSelectPhoto: (id: string) => void;
@@ -20,6 +21,7 @@ export function AlbumPhotoThumbnails({
   album,
   photos,
   selectedPhotoId,
+  placedPhotoIds,
   zoom,
   layout = 'grid',
   onSelectPhoto,
@@ -55,6 +57,7 @@ export function AlbumPhotoThumbnails({
                 <PhotoThumbnailTile
                   photo={toPhotoItem(photo)}
                   selected={photo.id === selectedPhotoId}
+                  placed={placedPhotoIds?.has(photo.id)}
                   dragId={`album-photo:${album.id}:${photo.id}`}
                   dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
                   onSelectPhoto={onSelectPhoto}
@@ -66,6 +69,7 @@ export function AlbumPhotoThumbnails({
               <PhotoThumbnailTile
                 photo={toPhotoItem(photo)}
                 selected={photo.id === selectedPhotoId}
+                placed={placedPhotoIds?.has(photo.id)}
                 dragId={`album-photo:${album.id}:${photo.id}`}
                 dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
                 onSelectPhoto={onSelectPhoto}

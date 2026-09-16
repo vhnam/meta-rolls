@@ -1,8 +1,8 @@
 import { useDraggable } from '@dnd-kit/react';
+import { IconCheck } from '@tabler/icons-react';
 import { useState } from 'react';
 
 import { Spinner } from '#/components/ui/spinner';
-
 import { THUMBNAIL_ASPECT_RATIO } from '#/constants/media';
 import { useHeldMediaSrc } from '#/hooks/use-held-media-src';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
@@ -15,6 +15,7 @@ import { PhotoRatingStars } from './photo-rating-stars';
 type PhotoThumbnailTileProps = {
   photo: PhotoItem;
   selected: boolean;
+  placed?: boolean;
   dragId: string;
   dragData?: Record<string, unknown>;
   onSelectPhoto: (id: string) => void;
@@ -25,6 +26,7 @@ type PhotoThumbnailTileProps = {
 export function PhotoThumbnailTile({
   photo,
   selected,
+  placed = false,
   dragId,
   dragData,
   onSelectPhoto,
@@ -80,6 +82,15 @@ export function PhotoThumbnailTile({
             className="absolute inset-0 flex items-center justify-center bg-black/40"
           >
             <Spinner className="size-4 text-white" />
+          </span>
+        ) : null}
+        {placed ? (
+          <span
+            role="img"
+            aria-label="Placed in layout"
+            className="absolute top-1 right-1 flex size-3.5 items-center justify-center rounded-full bg-primary text-primary-foreground"
+          >
+            <IconCheck className="size-2.5" />
           </span>
         ) : null}
       </span>

@@ -7,7 +7,11 @@ import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoRating } from '#/types';
 
-export function CullDetails() {
+type AlbumDetailsProps = {
+  placedPhotoIds?: ReadonlySet<string>;
+};
+
+export function AlbumDetails({ placedPhotoIds }: AlbumDetailsProps = {}) {
   const store = useMediaPoolStore();
   const albums = useAlbumStore((state) => state.albums);
   const selectedId = useAlbumStore((state) => state.activeAlbumId);
@@ -47,6 +51,7 @@ export function CullDetails() {
           album={currentAlbum}
           photos={albumPhotos}
           selectedPhotoId={activePhotoId}
+          placedPhotoIds={placedPhotoIds}
           onSelectPhoto={store.setSelectedPhotoId}
           onRatePhoto={handleRatePhoto}
           layout="row"
@@ -58,6 +63,7 @@ export function CullDetails() {
           album={currentAlbum}
           photos={albumPhotos}
           selectedPhotoId={activePhotoId}
+          placedPhotoIds={placedPhotoIds}
           onSelectPhoto={store.setSelectedPhotoId}
           onRatePhoto={handleRatePhoto}
         />
