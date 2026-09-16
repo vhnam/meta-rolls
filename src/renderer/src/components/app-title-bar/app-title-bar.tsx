@@ -1,4 +1,4 @@
-import { IconPhotoAlt, IconPhotoCheck } from '@tabler/icons-react';
+import { IconBook2, IconPhotoAlt, IconPhotoCheck } from '@tabler/icons-react';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 
 import { Tabs, TabsList, TabsTrigger } from '#/components/ui/tabs';
@@ -6,7 +6,8 @@ import appIcon from '@/resources/icon.png';
 
 const TAB_ROUTES = {
   media: '/media',
-  cull: '/cull'
+  cull: '/cull',
+  deliver: '/deliver'
 } as const;
 
 type TabValue = keyof typeof TAB_ROUTES;
@@ -14,10 +15,14 @@ type TabValue = keyof typeof TAB_ROUTES;
 export default function AppTitleBar() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const value: TabValue = pathname.startsWith('/cull') ? 'cull' : 'media';
+  const value: TabValue = pathname.startsWith('/cull')
+    ? 'cull'
+    : pathname.startsWith('/deliver')
+      ? 'deliver'
+      : 'media';
 
   const handleValueChange = (next: TabValue) => {
-    if (!['media', 'cull'].includes(next)) {
+    if (!['media', 'cull', 'deliver'].includes(next)) {
       return;
     }
 
@@ -40,6 +45,10 @@ export default function AppTitleBar() {
             <TabsTrigger value="cull">
               <IconPhotoCheck className="size-4" />
               Cull
+            </TabsTrigger>
+            <TabsTrigger value="deliver">
+              <IconBook2 className="size-4" />
+              Deliver
             </TabsTrigger>
           </TabsList>
         </Tabs>
