@@ -27,6 +27,7 @@ type AlbumActions = {
   movePhotoToAlbum: (fromAlbumId: string, toAlbumId: string, photoId: string) => Promise<void>;
   removePhotoFromAlbum: (albumId: string, photoId: string) => Promise<void>;
   rateAlbumPhoto: (albumId: string, photoId: string, rating: PhotoRating) => Promise<void>;
+  swapPhotoDimensions: (photoId: string) => void;
 };
 
 export type AlbumStore = AlbumState & AlbumActions;
@@ -132,7 +133,16 @@ export const useAlbumStore = create<AlbumStore>((set, get) => ({
     set((state) => ({
       albums: state.albums.map((item) => (item.id === albumId ? album : item))
     }));
-  }
+  },
+  swapPhotoDimensions: (photoId) =>
+    set((state) => ({
+      albums: state.albums.map((album) => ({
+        ...album,
+        photos: album.photos.map((photo) =>
+          photo.id === photoId ? { ...photo, width: photo.height, height: photo.width } : photo
+        )
+      }))
+    }))
 }));
 
 export const hydrateAlbumStore = async () => {

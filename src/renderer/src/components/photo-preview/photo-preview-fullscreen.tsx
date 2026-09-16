@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 import { getApi } from '#/hooks/use-ipc';
+import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoItem } from '#/types';
 import { toMediaFileUrl } from '#/utils';
 
@@ -12,7 +13,10 @@ type PhotoPreviewFullscreenProps = {
 };
 
 export function PhotoPreviewFullscreen({ photo, open, onOpenChange }: PhotoPreviewFullscreenProps) {
-  const src = photo?.path ? toMediaFileUrl(photo.path) : null;
+  const photoRevision = useMediaPoolStore((state) =>
+    photo ? (state.photoRevisions[photo.id] ?? 0) : 0
+  );
+  const src = photo?.path ? toMediaFileUrl(photo.path, photoRevision) : null;
 
   useEffect(() => {
     const api = getApi();

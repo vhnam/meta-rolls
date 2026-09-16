@@ -123,7 +123,7 @@ export function CullScreen() {
             <ResizablePanel defaultSize="80%" minSize="20%" className="min-h-0 min-w-0">
               <PhotoPreview
                 photo={selectedPhoto}
-                toolbarClassName="shrink-0 border-border bg-sidebar-accent px-1"
+                toolbarClassName="shrink-0 border-border bg-sidebar-accent"
               />
             </ResizablePanel>
             <ResizablePanel

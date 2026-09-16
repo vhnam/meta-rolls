@@ -2,6 +2,7 @@ import { useDraggable } from '@dnd-kit/react';
 import { useState } from 'react';
 
 import { THUMBNAIL_ASPECT_RATIO } from '#/constants/media';
+import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoItem, type PhotoRating } from '#/types';
 import { toMediaFileUrl } from '#/utils';
 import { cn } from '#/utils/common';
@@ -27,8 +28,10 @@ export function PhotoThumbnailTile({
   rating,
   onRatePhoto
 }: PhotoThumbnailTileProps) {
-  const [failed, setFailed] = useState(false);
-  const src = photo.path ? toMediaFileUrl(photo.path) : null;
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const revision = useMediaPoolStore((state) => state.photoRevisions[photo.id] ?? 0);
+  const src = photo.path ? toMediaFileUrl(photo.path, revision) : null;
+  const failed = src !== null && failedSrc === src;
   const { ref, isDragging } = useDraggable({ id: dragId, data: dragData });
   const showRating = onRatePhoto !== undefined && (selected || (rating ?? 0) > 0);
 
@@ -58,11 +61,12 @@ export function PhotoThumbnailTile({
       >
         {src && !failed && (
           <img
+            key={src}
             src={src}
             alt={photo.name}
             draggable={false}
             className="size-full select-none object-contain"
-            onError={() => setFailed(true)}
+            onError={() => setFailedSrc(src)}
           />
         )}
       </span>
