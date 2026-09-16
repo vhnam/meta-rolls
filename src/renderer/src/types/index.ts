@@ -10,4 +10,10 @@ export type {
   PhotoExifField,
   PhotoRotateDirection
 } from './media';
-export type { LanguagePreference, PrintFormat, ThemePreference } from './settings';
+export type {
+  InstaxPrintFormat,
+  LanguagePreference,
+  PaperPrintFormat,
+  PrintFormat,
+  ThemePreference
+} from './settings';
