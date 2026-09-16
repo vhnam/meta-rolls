@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-09-16
+
+### Fixed
+
+- Settings persist no longer races concurrent writes: `config.json` is locked per file, written via a temp file then renamed, and truncated JSON is recovered from the first complete object.
+
 ## [2.0.0] - 2026-09-15
 
 Second public release. Browse the library in Media, then cull and rate album photos in a dedicated workspace.
