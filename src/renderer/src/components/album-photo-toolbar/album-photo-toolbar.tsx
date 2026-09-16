@@ -15,20 +15,20 @@ type AlbumPhotoToolbarProps = {
   title: string;
   view: MediaView;
   zoom: number;
-  onViewChange: (view: MediaView) => void;
-  onZoomChange: (value: number) => void;
   leading?: ReactNode;
   zoomSeparator?: boolean;
+  onViewChange: (view: MediaView) => void;
+  onZoomChange: (value: number) => void;
 };
 
 export function AlbumPhotoToolbar({
   title,
   view,
   zoom,
-  onViewChange,
-  onZoomChange,
   leading,
-  zoomSeparator = false
+  zoomSeparator = false,
+  onViewChange,
+  onZoomChange
 }: AlbumPhotoToolbarProps) {
   return (
     <div className="flex h-7 shrink-0 items-center gap-0.5 border-b border-border bg-muted px-1 text-muted-foreground">

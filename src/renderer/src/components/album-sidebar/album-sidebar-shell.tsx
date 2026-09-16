@@ -1,6 +1,7 @@
-import { IconPlus } from '@tabler/icons-react';
+import { IconAlbum, IconPlus } from '@tabler/icons-react';
 
 import { Button } from '#/components/ui/button';
+import { Empty, EmptyContent, EmptyDescription, EmptyMedia } from '#/components/ui/empty';
 import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
 import { type Album } from '#/types';
 import { cn } from '#/utils/common';
@@ -61,9 +62,14 @@ export function AlbumSidebarShell({
           ))}
         </div>
       ) : (
-        <div className="flex flex-1 items-center justify-center text-sidebar-foreground">
-          <p className="text-xs text-muted-foreground">No albums found</p>
-        </div>
+        <Empty className="flex-1">
+          <EmptyMedia variant="icon">
+            <IconAlbum />
+          </EmptyMedia>
+          <EmptyContent>
+            <EmptyDescription>No albums found</EmptyDescription>
+          </EmptyContent>
+        </Empty>
       )}
     </aside>
   );

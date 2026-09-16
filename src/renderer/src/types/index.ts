@@ -7,6 +7,7 @@ export type {
   PhotoItem,
   PhotoPane,
   PhotoExif,
-  PhotoExifField
+  PhotoExifField,
+  PhotoRotateDirection
 } from './media';
 export type { LanguagePreference, PrintFormat, ThemePreference } from './settings';

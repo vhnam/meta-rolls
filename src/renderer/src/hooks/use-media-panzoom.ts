@@ -1,11 +1,12 @@
 import Panzoom, { type PanzoomObject } from '@panzoom/panzoom';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { isEditableKeyboardTarget } from '#/utils';
 import {
-  panzoomScaleForPreviewZoom,
   PREVIEW_ZOOM_FIT,
+  panzoomScaleForPreviewZoom,
   previewZoomFromPanzoomScale
-} from '#/utils/preview/preview-zoom';
+} from '#/utils/preview';
 
 const MAX_SCALE = 64;
 const MIN_SCALE = 0.125;
@@ -13,7 +14,7 @@ const ZOOM_ANIMATION_MS = 240;
 const WHEEL_STEP = 0.3;
 const WHEEL_LINE_PX = 16;
 const WHEEL_PAGE_PX = 800;
-const WHEEL_ZOOM_INTENSITY = 0.0016;
+const WHEEL_ZOOM_INTENSITY = 0.0022;
 
 type UseMediaPanzoomArgs = {
   viewport: HTMLElement | null;
@@ -175,21 +176,50 @@ export const useMediaPanzoom = ({ viewport, target, enabled, resetKey }: UseMedi
     };
   }, [enabled, target, viewport]);
 
-  const applyZoom = (value: string | null) => {
-    const panzoom = panzoomRef.current;
-    const easeTo = easeToRef.current;
-    if (!value || !panzoom || !target || !easeTo) {
+  const applyZoom = useCallback(
+    (value: string | null) => {
+      const panzoom = panzoomRef.current;
+      const easeTo = easeToRef.current;
+      if (!value || !panzoom || !target || !easeTo) {
+        return;
+      }
+
+      const scale = panzoomScaleForPreviewZoom(value, target);
+      if (scale === null) {
+        easeTo(1, { x: 0, y: 0 });
+        return;
+      }
+
+      easeTo(clampScale(scale), { x: 0, y: 0 });
+    },
+    [target]
+  );
+
+  useEffect(() => {
+    if (!enabled) {
       return;
     }
 
-    const scale = panzoomScaleForPreviewZoom(value, target);
-    if (scale === null) {
-      easeTo(1, { x: 0, y: 0 });
-      return;
-    }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.repeat ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey ||
+        (event.code !== 'KeyZ' && event.key.toLowerCase() !== 'z') ||
+        isEditableKeyboardTarget(event.target)
+      ) {
+        return;
+      }
 
-    easeTo(clampScale(scale), { x: 0, y: 0 });
-  };
+      event.preventDefault();
+      event.stopPropagation();
+      applyZoom(PREVIEW_ZOOM_FIT);
+    };
+
+    window.addEventListener('keydown', onKeyDown, true);
+    return () => window.removeEventListener('keydown', onKeyDown, true);
+  }, [applyZoom, enabled]);
 
   return { zoomValue, applyZoom };
 };

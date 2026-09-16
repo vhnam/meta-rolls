@@ -74,7 +74,7 @@ export default function MediaScreen() {
             <ResizablePanel defaultSize="35%" minSize="20%" className="min-h-0 min-w-0">
               <PhotoPreview
                 photo={selectedPhoto}
-                toolbarClassName="justify-between border-sidebar-border bg-muted"
+                toolbarClassName="border-sidebar-border bg-muted"
               />
             </ResizablePanel>
           </ResizablePanelGroup>

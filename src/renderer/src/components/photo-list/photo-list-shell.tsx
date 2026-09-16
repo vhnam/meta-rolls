@@ -1,9 +1,9 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { type CSSProperties, type ReactNode, useRef, useState } from 'react';
 
+import { Empty, EmptyContent, EmptyDescription } from '#/components/ui/empty';
 import {
   FILE_LIST_COLUMNS,
-  FILE_LIST_ROW_CLASS,
   FILE_LIST_ROW_HEIGHT,
   FILE_LIST_ROW_X_PADDING,
   type FileListColumn,
@@ -99,11 +99,11 @@ export function PhotoListShell<T>({
         }}
       >
         {rows.length === 0 ? (
-          <p className={cn(FILE_LIST_ROW_CLASS, 'px-1.5')}>
-            <span className="flex items-center text-tiny text-muted-foreground">
-              {emptyMessage}
-            </span>
-          </p>
+          <Empty className="h-full">
+            <EmptyContent>
+              <EmptyDescription>{emptyMessage}</EmptyDescription>
+            </EmptyContent>
+          </Empty>
         ) : (
           <div
             className="relative"

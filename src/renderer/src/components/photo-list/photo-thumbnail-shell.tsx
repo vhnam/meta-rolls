@@ -1,5 +1,6 @@
 import type { CSSProperties, PropsWithChildren } from 'react';
 
+import { Empty, EmptyContent, EmptyDescription } from '#/components/ui/empty';
 import { THUMBNAIL_GRID_CLASS, THUMBNAIL_STRIP_CLASS } from '#/constants/media';
 import { cn } from '#/utils/common';
 
@@ -31,11 +32,15 @@ export function PhotoThumbnailShell({
       <div
         ref={droppable?.ref}
         className={cn(
-          'flex-1 flex items-start justify-center text-sidebar-foreground',
+          'flex-1 flex',
           droppable?.isDropTarget && 'bg-accent/40 outline outline-primary -outline-offset-2'
         )}
       >
-        <p className="text-xs text-muted-foreground">{emptyMessage}</p>
+        <Empty className="h-full">
+          <EmptyContent>
+            <EmptyDescription>{emptyMessage}</EmptyDescription>
+          </EmptyContent>
+        </Empty>
       </div>
     );
   }

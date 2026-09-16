@@ -1,10 +1,118 @@
+import { readFile, stat } from 'node:fs/promises';
+import { extname } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import { net, protocol } from 'electron';
+import { nativeImage, net, protocol, type NativeImage } from 'electron';
 
 import { MEDIA_FILE_SCHEME } from '../../../shared/media';
-import { extractRawPreviewJpeg } from '../services/exif-reader';
+import { extractRawPreviewJpeg, readImageOrientation } from '../services/exif-reader';
+import { readImageDimensions } from '../services/image-dimensions';
 import { isRawImageFile } from '../services/media-library';
+import { applyExifOrientation } from './apply-exif-orientation';
+
+const DISPLAY_CACHE_LIMIT = 16;
+
+type CachedDisplay = {
+  mtimeMs: number;
+  body: Buffer;
+  mime: string;
+};
+
+const displayCache = new Map<string, CachedDisplay>();
+
+const mimeForPath = (filePath: string) => {
+  const extension = extname(filePath).toLowerCase();
+  if (extension === '.png') {
+    return 'image/png';
+  }
+  if (extension === '.webp') {
+    return 'image/webp';
+  }
+  if (extension === '.gif') {
+    return 'image/gif';
+  }
+  return 'image/jpeg';
+};
+
+const rememberDisplay = (filePath: string, cached: CachedDisplay) => {
+  displayCache.delete(filePath);
+  displayCache.set(filePath, cached);
+  if (displayCache.size > DISPLAY_CACHE_LIMIT) {
+    const oldest = displayCache.keys().next().value;
+    if (oldest) {
+      displayCache.delete(oldest);
+    }
+  }
+};
+
+export const forgetMediaDisplay = (filePath: string) => {
+  displayCache.delete(filePath);
+};
+
+const encodeDisplayImage = (filePath: string, image: NativeImage) => {
+  if (extname(filePath).toLowerCase() === '.png') {
+    return { body: image.toPNG(), mime: 'image/png' };
+  }
+  return { body: image.toJPEG(92), mime: 'image/jpeg' };
+};
+
+const loadDisplayImage = async (filePath: string, orientation: number) => {
+  if (isRawImageFile(filePath)) {
+    const jpeg = await extractRawPreviewJpeg(filePath);
+    if (!jpeg) {
+      return null;
+    }
+    const image = nativeImage.createFromBuffer(jpeg);
+    if (image.isEmpty()) {
+      return null;
+    }
+    return applyExifOrientation(image, orientation);
+  }
+
+  const image = nativeImage.createFromPath(filePath);
+  if (image.isEmpty()) {
+    return null;
+  }
+  if (orientation <= 1) {
+    return image;
+  }
+
+  const swaps = orientation >= 5;
+  if (swaps) {
+    const { width, height } = image.getSize();
+    const original = await readImageDimensions(filePath);
+    if (width === original.height && height === original.width) {
+      return image;
+    }
+  }
+
+  return applyExifOrientation(image, orientation);
+};
+
+const readDisplayBytes = async (filePath: string): Promise<CachedDisplay | null> => {
+  const mtimeMs = (await stat(filePath)).mtimeMs;
+  const cached = displayCache.get(filePath);
+  if (cached && cached.mtimeMs === mtimeMs) {
+    return cached;
+  }
+
+  const orientation = await readImageOrientation(filePath);
+  if (orientation === 1 && !isRawImageFile(filePath)) {
+    const body = await readFile(filePath);
+    const next = { mtimeMs, body, mime: mimeForPath(filePath) };
+    rememberDisplay(filePath, next);
+    return next;
+  }
+
+  const image = await loadDisplayImage(filePath, orientation);
+  if (!image) {
+    return null;
+  }
+  const encoded = encodeDisplayImage(filePath, image);
+  const next = { mtimeMs, ...encoded };
+  rememberDisplay(filePath, next);
+  return next;
+};
 
 export const registerMediaScheme = () => {
   protocol.registerSchemesAsPrivileged([
@@ -30,15 +138,13 @@ export const handleMediaProtocol = () => {
     }
 
     try {
-      if (isRawImageFile(filePath)) {
-        const jpeg = await extractRawPreviewJpeg(filePath);
-        if (!jpeg) {
-          return new Response('Not found', { status: 404 });
-        }
-        return new Response(new Blob([Uint8Array.from(jpeg)], { type: 'image/jpeg' }), {
+      const display = await readDisplayBytes(filePath);
+      if (display) {
+        return new Response(Uint8Array.from(display.body), {
           headers: {
-            'content-type': 'image/jpeg',
-            'content-length': String(jpeg.length)
+            'content-type': display.mime,
+            'content-length': String(display.body.length),
+            'cache-control': 'no-cache'
           }
         });
       }

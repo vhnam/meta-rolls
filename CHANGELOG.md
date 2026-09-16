@@ -5,6 +5,68 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-09-16
+
+### Added
+
+- Thumbnails and fullscreen keep the previous bitmap until the next URL is decoded, and show a spinner while that photo is rotating.
+
+## [2.5.0] - 2026-09-16
+
+### Added
+
+- Preview rotate animates 90° in place, queues extra turns, and preloads the rewritten file before swapping the image.
+- A spinner overlays the preview while a rotate is in flight.
+
+## [2.4.1] - 2026-09-16
+
+### Fixed
+
+- Press **Z** to Fit zoom on the capture phase so the shortcut still fires when another key handler would otherwise take it.
+
+## [2.4.0] - 2026-09-16
+
+### Added
+
+- Rotate the selected photo 90° clockwise or counterclockwise from the preview context menu, the View menu, or ⌘]/⌘[ (Ctrl+[ / Ctrl]).
+- Preview and thumbnail URLs include a revision so a rotate shows immediately.
+
+## [2.3.0] - 2026-09-16
+
+### Added
+
+- Media protocol applies EXIF orientation so previews and thumbnails match the file.
+- Rotate IPC writes the next Orientation tag, drops the display cache, and swaps stored album photo dimensions.
+
+## [2.2.0] - 2026-09-16
+
+### Added
+
+- Shared empty states for albums, photo lists, and thumbnails.
+- Metadata overview cells show the field name in a tooltip.
+- Press **Z** to reset the preview to Fit; the zoom menu shows that shortcut.
+
+### Changed
+
+- Sheet slide-in offsets use Tailwind spacing tokens.
+
+## [2.1.0] - 2026-09-16
+
+### Added
+
+- Media browser remembers which folders were expanded and which folder was selected, then restores that session after launch (including loading ancestors so nested folders reopen).
+- Folder tree empty state when no volumes are available.
+
+### Changed
+
+- Folder tree and list rows use an open-folder icon for the selected or expanded folder.
+
+## [2.0.1] - 2026-09-16
+
+### Fixed
+
+- Settings persist no longer races concurrent writes: `config.json` is locked per file, written via a temp file then renamed, and truncated JSON is recovered from the first complete object.
+
 ## [2.0.0] - 2026-09-15
 
 Second public release. Browse the library in Media, then cull and rate album photos in a dedicated workspace.

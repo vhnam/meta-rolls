@@ -9,10 +9,12 @@ export type PhotoOverviewItem = {
   value: string;
 };
 
-export type PhotoOverviewCell =
-  | { kind: 'aperture'; value: string; colSpan?: 1 | 2 }
-  | { kind: 'text'; value: string; colSpan?: 1 | 2 }
-  | { kind: 'iso'; value: string; colSpan?: 1 | 2 };
+export type PhotoOverviewCell = {
+  kind: 'aperture' | 'text' | 'iso';
+  label: string;
+  value: string;
+  colSpan?: 1 | 2;
+};
 
 export type PhotoOverviewCards = {
   exposure: PhotoOverviewCell[][];
@@ -73,10 +75,20 @@ const buildOverviewValues = (fields: PhotoExifField[] | undefined) => {
   return values;
 };
 
-const textCell = (value: string, colSpan?: 1 | 2): PhotoOverviewCell =>
-  value
-    ? { kind: 'text', value, ...(colSpan === 2 ? { colSpan: 2 } : {}) }
-    : { kind: 'text', value: PLACEHOLDER, ...(colSpan === 2 ? { colSpan: 2 } : {}) };
+const overviewFieldLabel = (id: (typeof PHOTO_OVERVIEW_FIELDS)[number]['id']) =>
+  PHOTO_OVERVIEW_FIELDS.find((field) => field.id === id)?.label ?? id;
+
+const overviewCell = (
+  kind: PhotoOverviewCell['kind'],
+  label: string,
+  value: string,
+  colSpan?: 1 | 2
+): PhotoOverviewCell => ({
+  kind,
+  label,
+  value: value || PLACEHOLDER,
+  ...(colSpan === 2 ? { colSpan: 2 } : {})
+});
 
 export const getPhotoOverview = (fields: PhotoExifField[] | undefined): PhotoOverviewItem[] => {
   const values = buildOverviewValues(fields);
@@ -106,14 +118,20 @@ export const getPhotoOverviewCards = (
   return {
     exposure: [
       [
-        aperture ? { kind: 'aperture', value: aperture } : { kind: 'text', value: PLACEHOLDER },
-        textCell(shutter)
+        overviewCell('aperture', overviewFieldLabel('aperture'), aperture),
+        overviewCell('text', overviewFieldLabel('shutter'), shutter)
       ],
       [
-        textCell(whiteBalance),
-        iso ? { kind: 'iso', value: iso } : { kind: 'text', value: PLACEHOLDER }
+        overviewCell('text', overviewFieldLabel('whiteBalance'), whiteBalance),
+        overviewCell('iso', overviewFieldLabel('iso'), iso)
       ]
     ],
-    file: [[textCell(fileSize), textCell(colorSpace)], [textCell(resolution, 2)]]
+    file: [
+      [
+        overviewCell('text', 'Size', fileSize),
+        overviewCell('text', overviewFieldLabel('colorSpace'), colorSpace)
+      ],
+      [overviewCell('text', overviewFieldLabel('resolution'), resolution, 2)]
+    ]
   };
 };

@@ -1,4 +1,11 @@
-export { findFolder, isFolderInPath, folderTreeChildren, folderTreePaddingLeft } from './folder';
+export {
+  findFolder,
+  folderAncestorIds,
+  folderPathDepth,
+  isFolderInPath,
+  folderTreeChildren,
+  folderTreePaddingLeft
+} from './folder';
 export {
   formatCreatedAt,
   formatMetadataValue,
@@ -16,6 +23,11 @@ export {
   getThumbnailColumnCount,
   getThumbnailStripWidth,
   formatPreviewZoomLabel,
+  PHOTO_ROTATE_MS,
+  photoRotateDegrees,
+  photoRotateFitScale,
+  preloadMediaImage,
+  waitMs,
   PREVIEW_ZOOM_FIT,
   PREVIEW_ZOOM_OPTIONS,
   type PreviewZoomValue

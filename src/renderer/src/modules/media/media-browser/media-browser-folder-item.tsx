@@ -3,13 +3,13 @@ import {
   IconChevronRight,
   IconDeviceDesktop,
   IconFolder,
-  IconFolderFilled,
+  IconFolderOpenFilled,
   IconLoader2
 } from '@tabler/icons-react';
 import { createContext, useContext, type CSSProperties, type MouseEvent } from 'react';
 import { type NodeApi, type NodeRendererProps } from 'react-arborist';
 
-import { type PhotoFolder } from '#/types';
+import { type FolderKind, type PhotoFolder } from '#/types';
 import { folderTreePaddingLeft } from '#/utils';
 import { cn } from '#/utils/common';
 
@@ -33,6 +33,31 @@ const collectOpenDescendantIds = (node: NodeApi<PhotoFolder>): string[] => {
   visit(node);
   return ids;
 };
+
+type FolderKindIconProps = {
+  kind?: FolderKind;
+  selected: boolean;
+  isOpen: boolean;
+};
+
+function FolderKindIcon({ kind, selected, isOpen }: FolderKindIconProps) {
+  const className = cn(
+    'size-3.5 shrink-0',
+    selected && 'text-accent-foreground',
+    !selected && kind === 'disk' && 'text-sidebar-primary',
+    !selected && kind !== 'disk' && 'text-muted-foreground'
+  );
+
+  if (kind === 'disk') {
+    return <IconDeviceDesktop className={className} />;
+  }
+
+  if (selected || isOpen) {
+    return <IconFolderOpenFilled className={className} />;
+  }
+
+  return <IconFolder className={className} />;
+}
 
 export function MediaBrowserFolderItem({ node, style }: NodeRendererProps<PhotoFolder>) {
   const ui = useContext(MediaBrowserFolderTreeUiContext);
@@ -88,18 +113,7 @@ export function MediaBrowserFolderItem({ node, style }: NodeRendererProps<PhotoF
       ) : (
         <span className="size-4" />
       )}
-      {folder.kind === 'disk' ? (
-        <IconDeviceDesktop
-          className={cn(
-            'size-3.5 shrink-0',
-            selected ? 'text-accent-foreground' : 'text-sidebar-primary'
-          )}
-        />
-      ) : selected ? (
-        <IconFolderFilled className="size-3.5 shrink-0 text-accent-foreground" />
-      ) : (
-        <IconFolder className="size-3.5 shrink-0 text-muted-foreground" />
-      )}
+      <FolderKindIcon kind={folder.kind} selected={selected} isOpen={node.isOpen} />
       <span className="truncate font-mono text-tiny">{folder.name}</span>
     </div>
   );

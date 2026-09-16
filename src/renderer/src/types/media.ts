@@ -1,4 +1,8 @@
-import { type PhotoExif, type PhotoExifField } from '../../../../shared/media';
+import {
+  type PhotoExif,
+  type PhotoExifField,
+  type PhotoRotateDirection
+} from '../../../../shared/media';
 
 export type FolderKind = 'disk' | 'folder';
 
@@ -26,4 +30,4 @@ export type PhotoItem = {
   path?: string;
 };
 
-export type { PhotoExif, PhotoExifField };
+export type { PhotoExif, PhotoExifField, PhotoRotateDirection };
