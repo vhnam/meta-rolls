@@ -5,6 +5,13 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-09-16
+
+### Added
+
+- Preview rotate animates 90° in place, queues extra turns, and preloads the rewritten file before swapping the image.
+- A spinner overlays the preview while a rotate is in flight.
+
 ## [2.4.1] - 2026-09-16
 
 ### Fixed

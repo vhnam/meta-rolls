@@ -1,5 +1,5 @@
 import { IconStarFilled } from '@tabler/icons-react';
-import { memo } from 'react';
+import { memo, type CSSProperties } from 'react';
 
 import {
   ContextMenu,
@@ -11,6 +11,7 @@ import {
   ContextMenuTrigger
 } from '#/components/ui/context-menu';
 import { type PhotoRating, type PhotoRotateDirection } from '#/types';
+import { cn } from '#/utils/common';
 
 const PREVIEW_RATING_STARS = [1, 2, 3, 4, 5] as const;
 const rotateShortcutMod = /Mac|iPhone|iPad/.test(navigator.userAgent) ? '⌘' : 'Ctrl+';
@@ -18,6 +19,8 @@ const rotateShortcutMod = /Mac|iPhone|iPad/.test(navigator.userAgent) ? '⌘' : 
 type PhotoPreviewImageProps = {
   src: string;
   name: string;
+  className?: string;
+  style?: CSSProperties;
   onImage: (node: HTMLImageElement | null) => void;
   onLoad: (src: string) => void;
   onError: (src: string) => void;
@@ -28,6 +31,8 @@ type PhotoPreviewImageProps = {
 export const PhotoPreviewImage = memo(function PhotoPreviewImage({
   src,
   name,
+  className,
+  style,
   onImage,
   onLoad,
   onError,
@@ -36,16 +41,28 @@ export const PhotoPreviewImage = memo(function PhotoPreviewImage({
 }: PhotoPreviewImageProps) {
   const canRate = onRatePhoto !== undefined;
 
+  const bindImage = (node: HTMLImageElement | null) => {
+    onImage(node);
+    if (node?.complete && node.naturalWidth > 0) {
+      onLoad(src);
+    }
+  };
+
   return (
     <ContextMenu>
       <ContextMenuTrigger
         render={
           <img
-            ref={onImage}
+            ref={bindImage}
             src={src}
             alt={name}
             draggable={false}
-            className="max-h-full max-w-full translate-z-0 will-change-transform select-none object-contain"
+            decoding="sync"
+            className={cn(
+              'max-h-full max-w-full translate-z-0 will-change-transform select-none object-contain',
+              className
+            )}
+            style={style}
             onLoad={() => onLoad(src)}
             onError={() => onError(src)}
           />

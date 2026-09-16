@@ -22,6 +22,7 @@ type MediaPoolState = {
   photoPane: PhotoPane | null;
   openFolderIds: string[];
   photoRevisions: Record<string, number>;
+  rotatingPhotoId: string | null;
 };
 
 type MediaPoolActions = {
@@ -35,6 +36,7 @@ type MediaPoolActions = {
   setSelectedPhotoId: (photoId: string | null) => void;
   swapPhotoDimensions: (photoId: string) => void;
   setPhotoRevision: (photoId: string, revision: number) => void;
+  setRotatingPhotoId: (photoId: string | null) => void;
   setSelectedListFolderId: (folderId: string | null) => void;
   toggleFolderTree: () => void;
   setPhotoPane: (photoPane: PhotoPane) => void;
@@ -217,6 +219,7 @@ export const useMediaPoolStore = create<MediaPoolStore>()(
       photoPane: null,
       openFolderIds: [],
       photoRevisions: {},
+      rotatingPhotoId: null,
       setQuery: (query) => set({ query }),
       setView: (view) => set({ view }),
       setZoom: (zoom) => set({ zoom }),
@@ -268,6 +271,8 @@ export const useMediaPoolStore = create<MediaPoolStore>()(
             ? state
             : { photoRevisions: { ...state.photoRevisions, [photoId]: revision } }
         ),
+      setRotatingPhotoId: (rotatingPhotoId) =>
+        set((state) => (state.rotatingPhotoId === rotatingPhotoId ? state : { rotatingPhotoId })),
       setSelectedListFolderId: (selectedListFolderId) =>
         set({ selectedListFolderId, selectedPhotoId: null }),
       toggleFolderTree: () => set((state) => ({ folderTreeCollapsed: !state.folderTreeCollapsed })),
