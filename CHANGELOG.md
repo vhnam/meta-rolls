@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-09-16
+
+### Added
+
+- Thumbnails and fullscreen keep the previous bitmap until the next URL is decoded, and show a spinner while that photo is rotating.
+
 ## [2.5.0] - 2026-09-16
 
 ### Added

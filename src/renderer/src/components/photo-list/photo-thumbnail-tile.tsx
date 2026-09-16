@@ -1,7 +1,10 @@
 import { useDraggable } from '@dnd-kit/react';
 import { useState } from 'react';
 
+import { Spinner } from '#/components/ui/spinner';
+
 import { THUMBNAIL_ASPECT_RATIO } from '#/constants/media';
+import { useHeldMediaSrc } from '#/hooks/use-held-media-src';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoItem, type PhotoRating } from '#/types';
 import { toMediaFileUrl } from '#/utils';
@@ -30,8 +33,10 @@ export function PhotoThumbnailTile({
 }: PhotoThumbnailTileProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const revision = useMediaPoolStore((state) => state.photoRevisions[photo.id] ?? 0);
+  const isRotating = useMediaPoolStore((state) => state.rotatingPhotoId === photo.id);
   const src = photo.path ? toMediaFileUrl(photo.path, revision) : null;
-  const failed = src !== null && failedSrc === src;
+  const heldSrc = useHeldMediaSrc(src);
+  const failed = heldSrc !== null && failedSrc === heldSrc;
   const { ref, isDragging } = useDraggable({ id: dragId, data: dragData });
   const showRating = onRatePhoto !== undefined && (selected || (rating ?? 0) > 0);
 
@@ -54,21 +59,29 @@ export function PhotoThumbnailTile({
     >
       <span
         className={cn(
-          'flex w-full items-center justify-center overflow-hidden border border-border bg-black',
+          'relative flex w-full items-center justify-center overflow-hidden border border-border bg-black',
           selected && 'border-primary ring-1 ring-primary'
         )}
         style={{ aspectRatio: THUMBNAIL_ASPECT_RATIO }}
       >
-        {src && !failed && (
+        {heldSrc && !failed && (
           <img
-            key={src}
-            src={src}
+            src={heldSrc}
             alt={photo.name}
             draggable={false}
             className="size-full select-none object-contain"
-            onError={() => setFailedSrc(src)}
+            onError={() => setFailedSrc(heldSrc)}
           />
         )}
+        {isRotating ? (
+          <span
+            role="status"
+            aria-label="Rotating photo"
+            className="absolute inset-0 flex items-center justify-center bg-black/40"
+          >
+            <Spinner className="size-4 text-white" />
+          </span>
+        ) : null}
       </span>
       {onRatePhoto ? (
         <span className={showRating ? 'visible' : 'invisible'}>

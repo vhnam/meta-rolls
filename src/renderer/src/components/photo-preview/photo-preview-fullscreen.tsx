@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
+import { Spinner } from '#/components/ui/spinner';
+import { useHeldMediaSrc } from '#/hooks/use-held-media-src';
 import { getApi } from '#/hooks/use-ipc';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoItem } from '#/types';
@@ -16,7 +18,11 @@ export function PhotoPreviewFullscreen({ photo, open, onOpenChange }: PhotoPrevi
   const photoRevision = useMediaPoolStore((state) =>
     photo ? (state.photoRevisions[photo.id] ?? 0) : 0
   );
+  const isRotating = useMediaPoolStore((state) =>
+    photo ? state.rotatingPhotoId === photo.id : false
+  );
   const src = photo?.path ? toMediaFileUrl(photo.path, photoRevision) : null;
+  const heldSrc = useHeldMediaSrc(src);
 
   useEffect(() => {
     const api = getApi();
@@ -60,15 +66,20 @@ export function PhotoPreviewFullscreen({ photo, open, onOpenChange }: PhotoPrevi
       className="fixed inset-0 z-50 flex h-screen w-screen items-center justify-center bg-black"
       onClick={() => onOpenChange(false)}
     >
-      {src ? (
+      {heldSrc ? (
         <img
-          src={src}
+          src={heldSrc}
           alt={photo.name}
           className="max-h-full max-w-full object-contain"
           onClick={(event) => event.stopPropagation()}
         />
       ) : (
         <p className="text-xs text-white/70">Preview not available for {photo.name}</p>
+      )}
+      {(isRotating || (src !== null && heldSrc !== src)) && (
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-black/40">
+          <Spinner className="size-6 text-white" />
+        </div>
       )}
     </div>,
     document.body
