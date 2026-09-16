@@ -1,5 +1,8 @@
+import { IconAlbum } from '@tabler/icons-react';
+
 import { AlbumPhotoList, AlbumPhotoThumbnails } from '#/components/album-photo-grid';
 import { AlbumPhotoToolbar } from '#/components/album-photo-toolbar';
+import { Empty, EmptyContent, EmptyDescription, EmptyMedia } from '#/components/ui/empty';
 import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoRating } from '#/types';
@@ -26,9 +29,20 @@ export function CullDetails() {
     void rateAlbumPhoto(currentAlbum.id, photoId, rating);
   };
 
-  const albumContent = (
+  const albumContent = !currentAlbum ? (
+    <Empty className="h-full">
+      <EmptyMedia variant="icon">
+        <IconAlbum />
+      </EmptyMedia>
+      <EmptyContent>
+        <EmptyDescription>
+          {albums.length === 0 ? 'No albums yet' : 'Select an album to view its photos'}
+        </EmptyDescription>
+      </EmptyContent>
+    </Empty>
+  ) : (
     <>
-      {view === 'thumbnail' && currentAlbum && (
+      {view === 'thumbnail' && (
         <AlbumPhotoThumbnails
           album={currentAlbum}
           photos={albumPhotos}
@@ -39,7 +53,7 @@ export function CullDetails() {
           zoom={zoom}
         />
       )}
-      {view === 'list' && currentAlbum && (
+      {view === 'list' && (
         <AlbumPhotoList
           album={currentAlbum}
           photos={albumPhotos}

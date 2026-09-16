@@ -1,4 +1,4 @@
-import { IconLayoutSidebar, IconLayoutSidebarFilled } from '@tabler/icons-react';
+import { IconAlbum, IconLayoutSidebar, IconLayoutSidebarFilled } from '@tabler/icons-react';
 import { useState } from 'react';
 
 import { AlbumFormDialog } from '#/components/album-form-dialog';
@@ -6,6 +6,7 @@ import { AlbumPhotoList, AlbumPhotoThumbnails } from '#/components/album-photo-g
 import { AlbumPhotoToolbar } from '#/components/album-photo-toolbar';
 import { AlbumSidebarShell } from '#/components/album-sidebar';
 import { Button } from '#/components/ui/button';
+import { Empty, EmptyContent, EmptyDescription, EmptyMedia } from '#/components/ui/empty';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
 import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
 import { PHOTO_PANE } from '#/constants/media';
@@ -60,9 +61,20 @@ export function MediaAlbums() {
     closeAlbumDialog();
   };
 
-  const albumContent = (
+  const albumContent = !currentAlbum ? (
+    <Empty className="h-full">
+      <EmptyMedia variant="icon">
+        <IconAlbum />
+      </EmptyMedia>
+      <EmptyContent>
+        <EmptyDescription>
+          {albums.length === 0 ? 'No albums yet' : 'Select an album to view its photos'}
+        </EmptyDescription>
+      </EmptyContent>
+    </Empty>
+  ) : (
     <>
-      {view === 'thumbnail' && currentAlbum && (
+      {view === 'thumbnail' && (
         <AlbumPhotoThumbnails
           album={currentAlbum}
           photos={albumPhotos}
@@ -71,7 +83,7 @@ export function MediaAlbums() {
           zoom={zoom}
         />
       )}
-      {view === 'list' && currentAlbum && (
+      {view === 'list' && (
         <AlbumPhotoList
           album={currentAlbum}
           photos={albumPhotos}

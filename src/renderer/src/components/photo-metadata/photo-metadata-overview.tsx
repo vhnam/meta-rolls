@@ -1,8 +1,10 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
 import {
   METADATA_OVERVIEW_CELL_CLASS,
   METADATA_OVERVIEW_CARD_CLASS,
   METADATA_OVERVIEW_LAYOUT_CLASS
 } from '#/constants/media';
+import { cn } from '#/utils/common';
 import { type PhotoOverviewCell, type PhotoOverviewCards } from '#/utils/metadata/photo-overview';
 
 type PhotoMetadataOverviewProps = {
@@ -14,7 +16,7 @@ const overviewCellValueClass = 'block max-w-full truncate';
 const OverviewCellContent = ({ cell }: { cell: PhotoOverviewCell }) => {
   if (cell.kind === 'aperture') {
     return (
-      <span className={`inline-flex max-w-full items-baseline gap-px ${overviewCellValueClass}`}>
+      <span className={cn('inline-flex max-w-full items-baseline gap-px', overviewCellValueClass)}>
         <span className="shrink-0 font-serif text-xs italic text-muted-foreground">f/</span>
         <span className="truncate">{cell.value}</span>
       </span>
@@ -27,7 +29,7 @@ const OverviewCellContent = ({ cell }: { cell: PhotoOverviewCell }) => {
 
   return (
     <span
-      className={`${overviewCellValueClass} ${cell.value === '--' ? 'text-muted-foreground' : ''}`}
+      className={cn(overviewCellValueClass, cell.value === '--' && 'text-muted-foreground')}
       title={cell.value === '--' ? undefined : cell.value}
     >
       {cell.value}
@@ -42,14 +44,25 @@ const OverviewCard = ({ rows }: { rows: PhotoOverviewCards['exposure'] }) => (
         row.map((cell, columnIndex) => {
           const colSpan = cell.colSpan ?? 1;
           return (
-            <div
-              key={`${rowIndex}-${columnIndex}`}
-              className={`${METADATA_OVERVIEW_CELL_CLASS} border-border/70 ${
-                colSpan === 2 ? 'col-span-2' : columnIndex === 0 ? 'border-r' : ''
-              } ${rowIndex < rows.length - 1 ? 'border-b' : ''}`}
-            >
-              <OverviewCellContent cell={cell} />
-            </div>
+            <Tooltip key={`${rowIndex}-${columnIndex}`}>
+              <TooltipTrigger
+                render={
+                  <div
+                    className={cn(
+                      METADATA_OVERVIEW_CELL_CLASS,
+                      'border-border/70 cursor-default',
+                      colSpan === 2 ? 'col-span-2' : columnIndex === 0 && 'border-r',
+                      rowIndex < rows.length - 1 && 'border-b'
+                    )}
+                  >
+                    <OverviewCellContent cell={cell} />
+                  </div>
+                }
+              />
+              <TooltipContent>
+                <p>{cell.label}</p>
+              </TooltipContent>
+            </Tooltip>
           );
         })
       )}

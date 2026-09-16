@@ -1,3 +1,4 @@
+import { Kbd } from '#/components/ui/kbd';
 import {
   Select,
   SelectContent,
@@ -40,10 +41,20 @@ export function PhotoPreviewToolbar({
         onValueChange={onZoomChange}
       >
         <SelectTrigger size="sm" className="h-6 border-transparent bg-transparent shadow-none">
-          <SelectValue placeholder="Fit">{zoomLabel}</SelectValue>
+          <SelectValue className="text-tiny" placeholder="Fit">
+            {zoomLabel}
+          </SelectValue>
         </SelectTrigger>
-        <SelectContent align="start">
-          <SelectItem value={PREVIEW_ZOOM_FIT}>Fit</SelectItem>
+        <SelectContent
+          align="start"
+          className="**:data-[slot=select-item]:pr-2 **:data-[slot=select-item]:pl-8 **:data-[slot=select-item]:[&_.absolute]:right-auto **:data-[slot=select-item]:[&_.absolute]:left-2"
+        >
+          <SelectItem value={PREVIEW_ZOOM_FIT}>
+            Fit
+            <Kbd data-icon="inline-end" className="ml-auto translate-x-0.5">
+              Z
+            </Kbd>
+          </SelectItem>
           <SelectSeparator />
           {PREVIEW_ZOOM_OPTIONS.filter((option) => option.value !== PREVIEW_ZOOM_FIT).map(
             (option) => (
@@ -54,8 +65,7 @@ export function PhotoPreviewToolbar({
           )}
         </SelectContent>
       </Select>
-      <div className="text-tiny text-accent-foreground">{photoName}</div>
-      <div>&nbsp;</div>
+      <div className="px-2 text-tiny text-accent-foreground">{photoName}</div>
     </div>
   );
 }
