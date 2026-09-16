@@ -1,0 +1,241 @@
+import Panzoom, { type PanzoomObject } from '@panzoom/panzoom';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+import { isEditableKeyboardTarget } from '#/utils';
+import { PREVIEW_ZOOM_FIT } from '#/utils/preview';
+
+const MAX_SCALE = 64;
+const MIN_SCALE = 0.125;
+const ZOOM_ANIMATION_MS = 240;
+const WHEEL_STEP = 0.3;
+const WHEEL_LINE_PX = 16;
+const WHEEL_PAGE_PX = 800;
+const WHEEL_ZOOM_INTENSITY = 0.0022;
+
+type UsePanzoomArgs = {
+  viewport: HTMLElement | null;
+  target: HTMLElement | null;
+  enabled: boolean;
+  resetKey: string | null;
+  scaleForZoomValue: (value: string, target: HTMLElement) => number | null;
+  zoomValueFromScale: (scale: number, target: HTMLElement) => string;
+};
+
+type PanPoint = {
+  x: number;
+  y: number;
+};
+
+const easeOutCubic = (t: number) => 1 - (1 - t) ** 3;
+
+const clampScale = (scale: number) => Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
+
+const wheelDeltaPx = (event: WheelEvent) => {
+  const raw = event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY;
+  if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+    return raw * WHEEL_LINE_PX;
+  }
+  if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+    return raw * WHEEL_PAGE_PX;
+  }
+  return raw;
+};
+
+const isWheelZoom = (event: WheelEvent) =>
+  event.ctrlKey || event.metaKey || event.deltaMode !== WheelEvent.DOM_DELTA_PIXEL;
+
+// Shared pan/zoom mechanics behind `useMediaPanzoom` (photo preview) and
+// `useCanvasPanzoom` (deliver book canvas). The two hooks only differ in how
+// a zoom preset value (e.g. "fit", "100") maps to/from a Panzoom scale.
+export const usePanzoom = ({
+  viewport,
+  target,
+  enabled,
+  resetKey,
+  scaleForZoomValue,
+  zoomValueFromScale
+}: UsePanzoomArgs) => {
+  const panzoomRef = useRef<PanzoomObject | null>(null);
+  const easeToRef = useRef<((scale: number, pan: PanPoint) => void) | null>(null);
+  const [zoomValue, setZoomValue] = useState<string | null>(PREVIEW_ZOOM_FIT);
+  const [zoomKey, setZoomKey] = useState(resetKey);
+  // Kept in refs (rather than effect deps) so a caller passing a fresh inline
+  // function every render doesn't tear down and rebuild Panzoom mid-gesture.
+  const scaleForZoomValueRef = useRef(scaleForZoomValue);
+  const zoomValueFromScaleRef = useRef(zoomValueFromScale);
+  useEffect(() => {
+    scaleForZoomValueRef.current = scaleForZoomValue;
+    zoomValueFromScaleRef.current = zoomValueFromScale;
+  }, [scaleForZoomValue, zoomValueFromScale]);
+
+  if (zoomKey !== resetKey) {
+    setZoomKey(resetKey);
+    setZoomValue(PREVIEW_ZOOM_FIT);
+  }
+
+  useEffect(() => {
+    if (!enabled || !viewport || !target) {
+      panzoomRef.current = null;
+      easeToRef.current = null;
+      return;
+    }
+
+    const panzoom = Panzoom(target, {
+      animate: false,
+      canvas: true,
+      cursor: 'grab',
+      duration: ZOOM_ANIMATION_MS,
+      easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      maxScale: MAX_SCALE,
+      minScale: MIN_SCALE,
+      pinchAndPan: true,
+      step: WHEEL_STEP
+    });
+    panzoomRef.current = panzoom;
+
+    let easeRaf = 0;
+    let wheelRaf = 0;
+    let panX = 0;
+    let panY = 0;
+    let pinchDelta = 0;
+    let pinchPoint: { clientX: number; clientY: number } | null = null;
+
+    const cancelEase = () => {
+      if (easeRaf) {
+        cancelAnimationFrame(easeRaf);
+        easeRaf = 0;
+      }
+    };
+
+    const easeTo = (toScale: number, toPan: PanPoint) => {
+      cancelEase();
+      const fromScale = panzoom.getScale();
+      const fromPan = panzoom.getPan();
+      const fromLog = Math.log(fromScale);
+      const toLog = Math.log(toScale);
+      const start = performance.now();
+
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / ZOOM_ANIMATION_MS);
+        const k = easeOutCubic(t);
+        panzoom.zoom(Math.exp(fromLog + (toLog - fromLog) * k), { animate: false });
+        panzoom.pan(fromPan.x + (toPan.x - fromPan.x) * k, fromPan.y + (toPan.y - fromPan.y) * k, {
+          animate: false,
+          force: true
+        });
+        if (t < 1) {
+          easeRaf = requestAnimationFrame(tick);
+          return;
+        }
+        easeRaf = 0;
+      };
+
+      easeRaf = requestAnimationFrame(tick);
+    };
+    easeToRef.current = easeTo;
+
+    const flushWheel = () => {
+      wheelRaf = 0;
+      if (pinchPoint && pinchDelta !== 0) {
+        const nextScale = clampScale(
+          panzoom.getScale() * Math.exp(-pinchDelta * WHEEL_ZOOM_INTENSITY)
+        );
+        panzoom.zoomToPoint(nextScale, pinchPoint, { animate: false });
+      } else if (panX !== 0 || panY !== 0) {
+        const scale = panzoom.getScale();
+        panzoom.pan(-panX / scale, -panY / scale, { animate: false, relative: true });
+      }
+      panX = 0;
+      panY = 0;
+      pinchDelta = 0;
+      pinchPoint = null;
+    };
+
+    const syncZoomValue = () => {
+      const next = zoomValueFromScaleRef.current(panzoom.getScale(), target);
+      setZoomValue((current) => (current === next ? current : next));
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      cancelEase();
+      if (isWheelZoom(event)) {
+        pinchDelta += wheelDeltaPx(event);
+        pinchPoint = { clientX: event.clientX, clientY: event.clientY };
+      } else {
+        panX += event.deltaX;
+        panY += event.deltaY;
+      }
+      if (!wheelRaf) {
+        wheelRaf = requestAnimationFrame(flushWheel);
+      }
+    };
+    const onDblClick = () => {
+      easeTo(1, { x: 0, y: 0 });
+    };
+
+    viewport.addEventListener('wheel', onWheel, { passive: false });
+    target.addEventListener('dblclick', onDblClick);
+    target.addEventListener('panzoomchange', syncZoomValue);
+
+    return () => {
+      cancelEase();
+      if (wheelRaf) {
+        cancelAnimationFrame(wheelRaf);
+      }
+      viewport.removeEventListener('wheel', onWheel);
+      target.removeEventListener('dblclick', onDblClick);
+      target.removeEventListener('panzoomchange', syncZoomValue);
+      panzoom.destroy();
+      panzoomRef.current = null;
+      easeToRef.current = null;
+    };
+  }, [enabled, target, viewport]);
+
+  const applyZoom = useCallback(
+    (value: string | null) => {
+      const panzoom = panzoomRef.current;
+      const easeTo = easeToRef.current;
+      if (!value || !panzoom || !target || !easeTo) {
+        return;
+      }
+
+      const scale = scaleForZoomValueRef.current(value, target);
+      if (scale === null) {
+        easeTo(1, { x: 0, y: 0 });
+        return;
+      }
+
+      easeTo(clampScale(scale), { x: 0, y: 0 });
+    },
+    [target]
+  );
+
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.repeat ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey ||
+        (event.code !== 'KeyZ' && event.key.toLowerCase() !== 'z') ||
+        isEditableKeyboardTarget(event.target)
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      applyZoom(PREVIEW_ZOOM_FIT);
+    };
+
+    window.addEventListener('keydown', onKeyDown, true);
+    return () => window.removeEventListener('keydown', onKeyDown, true);
+  }, [applyZoom, enabled]);
+
+  return { zoomValue, applyZoom };
+};
