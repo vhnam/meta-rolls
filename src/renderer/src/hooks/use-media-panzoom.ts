@@ -206,18 +206,19 @@ export const useMediaPanzoom = ({ viewport, target, enabled, resetKey }: UseMedi
         event.metaKey ||
         event.ctrlKey ||
         event.altKey ||
-        event.key.toLowerCase() !== 'z' ||
+        (event.code !== 'KeyZ' && event.key.toLowerCase() !== 'z') ||
         isEditableKeyboardTarget(event.target)
       ) {
         return;
       }
 
       event.preventDefault();
+      event.stopPropagation();
       applyZoom(PREVIEW_ZOOM_FIT);
     };
 
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    window.addEventListener('keydown', onKeyDown, true);
+    return () => window.removeEventListener('keydown', onKeyDown, true);
   }, [applyZoom, enabled]);
 
   return { zoomValue, applyZoom };

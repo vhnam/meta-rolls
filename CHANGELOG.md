@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.1] - 2026-09-16
+
+### Fixed
+
+- Press **Z** to Fit zoom on the capture phase so the shortcut still fires when another key handler would otherwise take it.
+
 ## [2.4.0] - 2026-09-16
 
 ### Added
