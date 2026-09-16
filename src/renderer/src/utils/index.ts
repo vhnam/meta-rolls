@@ -1,4 +1,11 @@
-export { findFolder, isFolderInPath, folderTreeChildren, folderTreePaddingLeft } from './folder';
+export {
+  findFolder,
+  folderAncestorIds,
+  folderPathDepth,
+  isFolderInPath,
+  folderTreeChildren,
+  folderTreePaddingLeft
+} from './folder';
 export {
   formatCreatedAt,
   formatMetadataValue,

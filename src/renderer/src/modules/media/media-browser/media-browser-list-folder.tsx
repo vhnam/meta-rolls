@@ -1,4 +1,4 @@
-import { IconFolder, IconFolderFilled } from '@tabler/icons-react';
+import { IconFolder, IconFolderOpenFilled } from '@tabler/icons-react';
 
 import { FILE_LIST_CELL_CLASS, FILE_LIST_ROW_CLASS } from '#/constants/media';
 import { PhotoFolder } from '#/types';
@@ -30,7 +30,7 @@ export function MediaBrowserListFolder({
     >
       <span className={cn(FILE_LIST_CELL_CLASS, 'gap-1')}>
         {selected ? (
-          <IconFolderFilled className="size-3.5 shrink-0 text-accent-foreground" />
+          <IconFolderOpenFilled className="size-3.5 shrink-0 text-accent-foreground" />
         ) : (
           <IconFolder className="size-3.5 shrink-0 text-muted-foreground" />
         )}

@@ -5,6 +5,16 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-09-16
+
+### Added
+
+- Media browser remembers which folders were expanded and which folder was selected, then restores that session after launch (including loading ancestors so nested folders reopen).
+
+### Changed
+
+- Folder tree and list rows use an open-folder icon for the selected or expanded folder.
+
 ## [2.0.1] - 2026-09-16
 
 ### Fixed
