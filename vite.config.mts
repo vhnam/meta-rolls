@@ -8,6 +8,11 @@ import { defineConfig } from 'vite';
 // Renderer build. Run with `vite build` / `vite dev` (this is the default config file).
 export default defineConfig({
   root: 'src/renderer',
+  // Production builds are loaded via `file://` (see src/main/index.ts), where
+  // the default root-absolute base ('/assets/...') resolves to the filesystem
+  // root instead of the app bundle and 404s. Relative paths work in both dev
+  // (Vite's HTTP server) and the packaged file:// build.
+  base: './',
   build: {
     outDir: resolve('out/renderer'),
     emptyOutDir: true,
