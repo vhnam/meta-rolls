@@ -2,7 +2,7 @@ import {
   type PhotoExif,
   type PhotoExifField,
   type PhotoRotateDirection
-} from '../../../../shared/media';
+} from '#/shared/media';
 
 export type FolderKind = 'disk' | 'folder';
 

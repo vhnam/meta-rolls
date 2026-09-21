@@ -1,4 +1,4 @@
-import { MEDIA_FILE_SCHEME } from '../../../../../shared/media';
+import { MEDIA_FILE_SCHEME } from '#/shared/media';
 
 export const toMediaFileUrl = (filePath: string, revision?: number) => {
   const params = new URLSearchParams({ path: filePath });

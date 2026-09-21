@@ -2,7 +2,7 @@ import { IconBook2, IconPhotoAlt, IconPhotoCheck } from '@tabler/icons-react';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 
 import { Tabs, TabsList, TabsTrigger } from '#/components/ui/tabs';
-import appIcon from '@/resources/icon.png';
+import appIcon from '#/resources/icon.png';
 
 const TAB_ROUTES = {
   media: '/media',

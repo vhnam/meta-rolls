@@ -21,13 +21,14 @@ export default defineConfig({
   },
   resolve: {
     alias: [
-      { find: '#', replacement: resolve('src/renderer/src') },
-      { find: '@/resources', replacement: resolve('resources') }
+      { find: '#/resources', replacement: resolve('resources') },
+      { find: '#/shared', replacement: resolve('shared') },
+      { find: '#', replacement: resolve('src/renderer/src') }
     ]
   },
   server: {
     fs: {
-      allow: [resolve('.'), resolve('resources')]
+      allow: [resolve('.'), resolve('resources'), resolve('shared')]
     }
   },
   plugins: [
