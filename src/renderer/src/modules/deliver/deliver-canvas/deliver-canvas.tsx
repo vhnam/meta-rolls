@@ -13,13 +13,13 @@ import {
 import { PRINT_FORMAT } from '#/constants/settings';
 import { useCanvasPanzoom } from '#/hooks/use-canvas-panzoom';
 import { getApi } from '#/hooks/use-ipc';
+import { bookPageFolio } from '#/shared/print';
 import { useAlbumStore } from '#/stores/album.store';
 import { useCanvasStore } from '#/stores/canvas.store';
 import { useSettingsStore } from '#/stores/settings.store';
 import { type PhotoItem } from '#/types';
 import { cn, readDragString } from '#/utils/common';
 import { getInstaxCardGeometry, toMediaFileUrl } from '#/utils/photo';
-import { bookPageFolio } from '#/shared/print';
 
 import { DeliverCanvasSidebar } from './deliver-canvas-sidebar';
 import { DeliverCanvasSlot, deliverSlotPhotoStyle } from './deliver-canvas-slot';

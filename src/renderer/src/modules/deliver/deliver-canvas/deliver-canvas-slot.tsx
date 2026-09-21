@@ -12,6 +12,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger
 } from '#/components/ui/context-menu';
+import { slotImageLayout } from '#/shared/print';
 import {
   type InstaxPrintFormat,
   type PhotoItem,
@@ -20,8 +21,6 @@ import {
 } from '#/types';
 import { cn } from '#/utils/common';
 import { getInstaxCardGeometry, toMediaFileUrl } from '#/utils/photo';
-
-import { slotImageLayout } from '#/shared/print';
 
 type DeliverCanvasSlotProps = {
   slotId: string;

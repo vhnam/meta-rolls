@@ -1,10 +1,9 @@
 import { create } from 'zustand';
 
 import { DEFAULT_SLOT_SETTINGS, PHOTOS_PER_PAGE, SLOTS_PER_SPREAD } from '#/constants/canvas';
+import { normalizeRotationDeg } from '#/shared/print';
 import { type PhotoRotateDirection, type SlotFit, type SlotSettings } from '#/types';
 import { photoRotateDegrees } from '#/utils/preview/photo-rotate';
-
-import { normalizeRotationDeg } from '#/shared/print';
 
 type CanvasState = {
   selectedSlotId: string | null;

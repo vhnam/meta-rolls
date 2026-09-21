@@ -1,8 +1,7 @@
 import { INSTAX_CARD_DIMENSIONS, PAPER_PAGE_DIMENSIONS, PHOTOS_PER_PAGE } from '#/constants/canvas';
 import { PRINT_FORMAT } from '#/constants/settings';
-import { type InstaxPrintFormat, type PaperPrintFormat } from '#/types';
-
 import { folioFontMm } from '#/shared/print';
+import { type InstaxPrintFormat, type PaperPrintFormat } from '#/types';
 
 export const AUTO_CARD_HEIGHT_PX = 176;
 // Preview height for a paper sheet. Width follows the chosen format's aspect
