@@ -13,7 +13,7 @@ type AlbumPhotoThumbnailsProps = {
   placedPhotoIds?: ReadonlySet<string>;
   zoom: number;
   layout?: 'grid' | 'row';
-  onSelectPhoto: (id: string) => void;
+  onSelectPhoto: (id: string | null) => void;
   onRatePhoto?: (photoId: string, rating: PhotoRating) => void;
 };
 
@@ -44,6 +44,7 @@ export function AlbumPhotoThumbnails({
         columns={columns}
         itemWidth={itemWidth}
         droppable={{ ref, isDropTarget }}
+        onClearSelection={() => onSelectPhoto(null)}
       >
         {photos.map((photo) => (
           <PhotoContextMenu

@@ -51,9 +51,9 @@ export function AlbumSidebarRow({
           }
         >
           {selected ? (
-            <IconFolderOpenFilled className="size-3" />
+            <IconFolderOpenFilled size={16} className="size-4 shrink-0" />
           ) : (
-            <IconFolder className="size-3" />
+            <IconFolder size={16} className="size-4 shrink-0" />
           )}
           <span className="truncate">{album.name}</span>
         </ContextMenuTrigger>

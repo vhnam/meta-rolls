@@ -13,7 +13,7 @@ type MediaBrowserThumbnailsProps = {
   selectedPhotoId: string | null;
   selectedListFolderId: string | null;
   zoom: number;
-  onSelectPhoto: (id: string) => void;
+  onSelectPhoto: (id: string | null) => void;
   onHighlightFolder: (id: string) => void;
   onOpenFolder: (id: string) => void;
 };
@@ -47,6 +47,7 @@ export function MediaBrowserThumbnails({
         isEmpty={items.length === 0}
         emptyMessage="No files in this folder."
         columns={columns}
+        onClearSelection={() => onSelectPhoto(null)}
       >
         {items.map((item) =>
           item.type === 'folder' ? (

@@ -1,4 +1,5 @@
 import type { CSSProperties, PropsWithChildren } from 'react';
+import { useEffect } from 'react';
 
 import { Empty, EmptyContent, EmptyDescription } from '#/components/ui/empty';
 import { THUMBNAIL_GRID_CLASS, THUMBNAIL_STRIP_CLASS } from '#/constants/media';
@@ -16,6 +17,7 @@ type PhotoThumbnailShellProps = PropsWithChildren & {
   itemWidth?: number;
   layout?: 'grid' | 'row';
   droppable?: PhotoThumbnailDroppable;
+  onClearSelection?: () => void;
 };
 
 export function PhotoThumbnailShell({
@@ -25,8 +27,26 @@ export function PhotoThumbnailShell({
   itemWidth,
   layout = 'grid',
   droppable,
+  onClearSelection,
   children
 }: PhotoThumbnailShellProps) {
+  useEffect(() => {
+    if (!onClearSelection) {
+      return;
+    }
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+      if (target.closest('[data-photo-thumbnail], [data-slot^="context-menu"]')) {
+        return;
+      }
+      onClearSelection();
+    };
+    document.addEventListener('pointerdown', handlePointerDown, true);
+    return () => document.removeEventListener('pointerdown', handlePointerDown, true);
+  }, [onClearSelection]);
   if (isEmpty) {
     return (
       <div

@@ -30,9 +30,9 @@ export function MediaBrowserListFolder({
     >
       <span className={cn(FILE_LIST_CELL_CLASS, 'gap-1')}>
         {selected ? (
-          <IconFolderOpenFilled className="size-3.5 shrink-0 text-accent-foreground" />
+          <IconFolderOpenFilled size={16} className="size-4 shrink-0 text-accent-foreground" />
         ) : (
-          <IconFolder className="size-3.5 shrink-0 text-muted-foreground" />
+          <IconFolder size={16} className="size-4 shrink-0 text-muted-foreground" />
         )}
         <span className="truncate text-tiny">{folder.name}</span>
       </span>

@@ -47,6 +47,7 @@ export function PhotoThumbnailTile({
       ref={ref}
       role="button"
       tabIndex={0}
+      data-photo-thumbnail=""
       className={cn(
         'flex w-full min-w-0 cursor-pointer flex-col items-center gap-0.5',
         isDragging && 'opacity-50'
