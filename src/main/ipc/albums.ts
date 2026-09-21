@@ -2,7 +2,7 @@ import { join } from 'node:path';
 
 import { app, ipcMain } from 'electron';
 
-import { isPhotoRating, parseAlbumPhoto } from '../../../shared/album';
+import { isPhotoRating, parseAlbumPhoto, parseAlbumPrintConfig } from '../../../shared/album';
 import { IpcChannel } from '../../../shared/ipc';
 import {
   addPhotoToAlbum,
@@ -12,7 +12,8 @@ import {
   ratePhotoInAlbum,
   removeAlbum,
   removePhotoFromAlbum,
-  renameAlbum
+  renameAlbum,
+  updateAlbumPrintConfig
 } from '../services/album-store';
 
 const albumsFilePath = () => join(app.getPath('userData'), 'meta-rolls.sqlite');
@@ -95,5 +96,16 @@ export const registerAlbumsIpc = () => {
         assertId(photoId),
         assertPhotoRating(rating)
       )
+  );
+
+  ipcMain.handle(
+    IpcChannel.albumsUpdatePrintConfig,
+    (_event, albumId: unknown, printConfig: unknown) => {
+      const parsed = parseAlbumPrintConfig(printConfig);
+      if (!parsed) {
+        throw new Error('Album print config is invalid');
+      }
+      return updateAlbumPrintConfig(albumsFilePath(), assertId(albumId), parsed);
+    }
   );
 };

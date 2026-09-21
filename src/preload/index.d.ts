@@ -1,6 +1,11 @@
 import { ElectronAPI } from '@electron-toolkit/preload';
 
-import { type Album, type AlbumPhoto, type PhotoRating } from '../../shared/album';
+import {
+  type Album,
+  type AlbumPhoto,
+  type AlbumPrintConfig,
+  type PhotoRating
+} from '../../shared/album';
 import { type PhotoExif, type PhotoRotateDirection } from '../../shared/media';
 
 export type SettingsStorageApi = {
@@ -51,6 +56,7 @@ export type AlbumsApi = {
   ) => Promise<{ from: Album; to: Album } | null>;
   removePhoto: (albumId: string, photoId: string) => Promise<Album | null>;
   ratePhoto: (albumId: string, photoId: string, rating: PhotoRating) => Promise<Album | null>;
+  updatePrintConfig: (albumId: string, printConfig: AlbumPrintConfig) => Promise<Album | null>;
 };
 
 export type MenuApi = {

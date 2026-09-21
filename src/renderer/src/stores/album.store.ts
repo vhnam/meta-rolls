@@ -2,7 +2,13 @@ import { create } from 'zustand';
 
 import { MEDIA_VIEW, THUMBNAIL_ZOOM_STEP } from '#/constants/media';
 import { getApi } from '#/hooks/use-ipc';
-import { type Album, type AlbumPhoto, type MediaView, type PhotoRating } from '#/types';
+import {
+  type Album,
+  type AlbumPhoto,
+  type AlbumPrintConfig,
+  type MediaView,
+  type PhotoRating
+} from '#/types';
 
 type AlbumState = {
   albums: Album[];
@@ -27,6 +33,7 @@ type AlbumActions = {
   movePhotoToAlbum: (fromAlbumId: string, toAlbumId: string, photoId: string) => Promise<void>;
   removePhotoFromAlbum: (albumId: string, photoId: string) => Promise<void>;
   rateAlbumPhoto: (albumId: string, photoId: string, rating: PhotoRating) => Promise<void>;
+  updatePrintConfig: (albumId: string, printConfig: AlbumPrintConfig) => Promise<void>;
   swapPhotoDimensions: (photoId: string) => void;
 };
 
@@ -127,6 +134,18 @@ export const useAlbumStore = create<AlbumStore>((set, get) => ({
   },
   rateAlbumPhoto: async (albumId, photoId, rating) => {
     const album = await getApi().albums.ratePhoto(albumId, photoId, rating);
+    if (!album) {
+      return;
+    }
+    set((state) => ({
+      albums: state.albums.map((item) => (item.id === albumId ? album : item))
+    }));
+  },
+  updatePrintConfig: async (albumId, printConfig) => {
+    set((state) => ({
+      albums: state.albums.map((item) => (item.id === albumId ? { ...item, ...printConfig } : item))
+    }));
+    const album = await getApi().albums.updatePrintConfig(albumId, printConfig);
     if (!album) {
       return;
     }

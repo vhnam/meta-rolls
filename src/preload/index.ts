@@ -1,7 +1,7 @@
 import { electronAPI } from '@electron-toolkit/preload';
 import { contextBridge, ipcRenderer } from 'electron';
 
-import { type AlbumPhoto, type PhotoRating } from '../../shared/album';
+import { type AlbumPhoto, type AlbumPrintConfig, type PhotoRating } from '../../shared/album';
 import { IpcChannel } from '../../shared/ipc';
 import { type PhotoRotateDirection } from '../../shared/media';
 
@@ -32,7 +32,9 @@ const api = {
     removePhoto: (albumId: string, photoId: string) =>
       ipcRenderer.invoke(IpcChannel.albumsRemovePhoto, albumId, photoId),
     ratePhoto: (albumId: string, photoId: string, rating: PhotoRating) =>
-      ipcRenderer.invoke(IpcChannel.albumsRatePhoto, albumId, photoId, rating)
+      ipcRenderer.invoke(IpcChannel.albumsRatePhoto, albumId, photoId, rating),
+    updatePrintConfig: (albumId: string, printConfig: AlbumPrintConfig) =>
+      ipcRenderer.invoke(IpcChannel.albumsUpdatePrintConfig, albumId, printConfig)
   },
   menu: {
     onOpenPreferences: (callback: () => void) => {

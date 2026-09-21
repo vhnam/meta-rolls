@@ -1,3 +1,8 @@
-import { type Album, type AlbumPhoto, type PhotoRating } from '../../../../shared/album';
+import {
+  type Album,
+  type AlbumPhoto,
+  type AlbumPrintConfig,
+  type PhotoRating
+} from '#/shared/album';
 
-export type { Album, AlbumPhoto, PhotoRating };
+export type { Album, AlbumPhoto, AlbumPrintConfig, PhotoRating };

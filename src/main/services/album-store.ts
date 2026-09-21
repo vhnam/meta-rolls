@@ -4,8 +4,11 @@ import { type DatabaseSync } from 'node:sqlite';
 import {
   type Album,
   type AlbumPhoto,
+  type AlbumPrintConfig,
   type PhotoRating,
-  parseAlbumPhoto
+  DEFAULT_ALBUM_PRINT_CONFIG,
+  parseAlbumPhoto,
+  toAlbumPrintConfig
 } from '../../../shared/album';
 import { getAppDatabase } from './app-database';
 
@@ -13,7 +16,10 @@ type AlbumRow = {
   id: string;
   name: string;
   photos: string;
+  print_config: string;
 };
+
+const ALBUM_COLUMNS = 'id, name, photos, print_config';
 
 const parseAlbumPhotos = (value: string): AlbumPhoto[] => {
   try {
@@ -30,14 +36,26 @@ const parseAlbumPhotos = (value: string): AlbumPhoto[] => {
   }
 };
 
-const toAlbum = (row: AlbumRow): Album => ({
-  id: row.id,
-  name: row.name,
-  photos: parseAlbumPhotos(row.photos)
-});
+const toAlbum = (row: AlbumRow): Album => {
+  const printConfig = toAlbumPrintConfig(parsePrintConfigJson(row.print_config));
+  return {
+    id: row.id,
+    name: row.name,
+    photos: parseAlbumPhotos(row.photos),
+    ...printConfig
+  };
+};
+
+const parsePrintConfigJson = (value: string): unknown => {
+  try {
+    return JSON.parse(value) as unknown;
+  } catch {
+    return null;
+  }
+};
 
 const readAlbum = (db: DatabaseSync, albumId: string): Album | null => {
-  const row = readRow(db.prepare('SELECT id, name, photos FROM albums WHERE id = ?').get(albumId));
+  const row = readRow(db.prepare(`SELECT ${ALBUM_COLUMNS} FROM albums WHERE id = ?`).get(albumId));
   return row ? toAlbum(row) : null;
 };
 
@@ -53,16 +71,17 @@ const readRow = (value: unknown): AlbumRow | null => {
   if (
     typeof row.id !== 'string' ||
     typeof row.name !== 'string' ||
-    typeof row.photos !== 'string'
+    typeof row.photos !== 'string' ||
+    typeof row.print_config !== 'string'
   ) {
     return null;
   }
-  return { id: row.id, name: row.name, photos: row.photos };
+  return { id: row.id, name: row.name, photos: row.photos, print_config: row.print_config };
 };
 
 export const listAlbums = (filePath: string): Album[] => {
   const rows = getAppDatabase(filePath)
-    .prepare('SELECT id, name, photos FROM albums ORDER BY created_at ASC, name COLLATE NOCASE ASC')
+    .prepare(`SELECT ${ALBUM_COLUMNS} FROM albums ORDER BY created_at ASC, name COLLATE NOCASE ASC`)
     .all();
 
   return rows.flatMap((row) => {
@@ -85,13 +104,17 @@ export const createAlbum = (filePath: string, name?: string): Album => {
   const album: Album = {
     id: randomUUID(),
     name: trimmed || `Album ${count + 1}`,
-    photos: []
+    photos: [],
+    ...DEFAULT_ALBUM_PRINT_CONFIG
   };
 
-  db.prepare('INSERT INTO albums (id, name, photos, created_at) VALUES (?, ?, ?, ?)').run(
+  db.prepare(
+    'INSERT INTO albums (id, name, photos, print_config, created_at) VALUES (?, ?, ?, ?, ?)'
+  ).run(
     album.id,
     album.name,
     JSON.stringify(album.photos),
+    JSON.stringify(DEFAULT_ALBUM_PRINT_CONFIG),
     Date.now()
   );
 
@@ -106,8 +129,7 @@ export const renameAlbum = (filePath: string, albumId: string, name: string): Al
 
   const db = getAppDatabase(filePath);
   db.prepare('UPDATE albums SET name = ? WHERE id = ?').run(trimmed, albumId);
-  const row = readRow(db.prepare('SELECT id, name, photos FROM albums WHERE id = ?').get(albumId));
-  return row ? toAlbum(row) : null;
+  return readAlbum(db, albumId);
 };
 
 export const removeAlbum = (filePath: string, albumId: string): void => {
@@ -219,6 +241,25 @@ export const ratePhotoInAlbum = (
   writeAlbumPhotos(db, albumId, photos);
 
   return { ...album, photos };
+};
+
+export const updateAlbumPrintConfig = (
+  filePath: string,
+  albumId: string,
+  printConfig: AlbumPrintConfig
+): Album | null => {
+  const db = getAppDatabase(filePath);
+  const album = readAlbum(db, albumId);
+  if (!album) {
+    return null;
+  }
+
+  db.prepare('UPDATE albums SET print_config = ? WHERE id = ?').run(
+    JSON.stringify(printConfig),
+    albumId
+  );
+
+  return { ...album, ...printConfig };
 };
 
 export const swapPhotoDimensionsByPath = (filePath: string, photoPath: string) => {
