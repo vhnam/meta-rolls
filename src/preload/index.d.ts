@@ -7,6 +7,7 @@ import {
   type PhotoRating
 } from '../../shared/album';
 import { type PhotoExif, type PhotoRotateDirection } from '../../shared/media';
+import { type DeliverPdfExportRequest } from '../../shared/print';
 
 export type SettingsStorageApi = {
   getItem: (name: string) => Promise<string | null>;
@@ -71,12 +72,17 @@ export type WindowApi = {
   onLeaveFullScreen: (callback: () => void) => () => void;
 };
 
+export type DeliverApi = {
+  exportPdf: (request: DeliverPdfExportRequest) => Promise<string | null>;
+};
+
 export type RendererApi = {
   settings: SettingsStorageApi;
   media: MediaLibraryApi;
   albums: AlbumsApi;
   menu: MenuApi;
   window: WindowApi;
+  deliver: DeliverApi;
 };
 
 declare global {

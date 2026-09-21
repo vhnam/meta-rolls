@@ -89,7 +89,7 @@ const loadDisplayImage = async (filePath: string, orientation: number) => {
   return applyExifOrientation(image, orientation);
 };
 
-const readDisplayBytes = async (filePath: string): Promise<CachedDisplay | null> => {
+export const readDisplayBytes = async (filePath: string): Promise<CachedDisplay | null> => {
   const mtimeMs = (await stat(filePath)).mtimeMs;
   const cached = displayCache.get(filePath);
   if (cached && cached.mtimeMs === mtimeMs) {

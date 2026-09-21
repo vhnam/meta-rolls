@@ -4,6 +4,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 import { type AlbumPhoto, type AlbumPrintConfig, type PhotoRating } from '../../shared/album';
 import { IpcChannel } from '../../shared/ipc';
 import { type PhotoRotateDirection } from '../../shared/media';
+import { type DeliverPdfExportRequest } from '../../shared/print';
 
 const api = {
   settings: {
@@ -76,6 +77,10 @@ const api = {
         ipcRenderer.removeListener(IpcChannel.windowLeaveFullScreen, handler);
       };
     }
+  },
+  deliver: {
+    exportPdf: (request: DeliverPdfExportRequest) =>
+      ipcRenderer.invoke(IpcChannel.deliverExportPdf, request)
   }
 };
 

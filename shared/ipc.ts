@@ -20,5 +20,6 @@ export const IpcChannel = {
   menuRotatePhotoCw: 'menu:rotate-photo-cw',
   menuRotatePhotoCcw: 'menu:rotate-photo-ccw',
   windowSetFullScreen: 'window:set-full-screen',
-  windowLeaveFullScreen: 'window:leave-full-screen'
+  windowLeaveFullScreen: 'window:leave-full-screen',
+  deliverExportPdf: 'deliver:export-pdf'
 } as const;
