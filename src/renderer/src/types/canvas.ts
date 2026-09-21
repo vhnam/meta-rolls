@@ -5,4 +5,5 @@ export type SlotSettings = {
   cropX: number;
   cropY: number;
   cropZoom: number;
+  imageRotationDeg: number;
 };

@@ -1,49 +1,31 @@
-import { DragDropProvider, DragOverlay, type DragEndEvent } from '@dnd-kit/react';
-import { useEffect, useMemo, useState } from 'react';
+import { DragOverlay, type DragEndEvent } from '@dnd-kit/react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 
 import { PreviewZoomSelect } from '#/components/preview-zoom-select';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '#/components/ui/select';
+import { toast } from '#/components/ui/toast';
 import {
   BOOK_PAGE_COUNT,
   DEFAULT_SLOT_SETTINGS,
   isInstaxFormat,
-  PAPER_PAGE_DIMENSIONS,
+  leadingEmptySlots,
   PHOTOS_PER_PAGE
 } from '#/constants/canvas';
 import { PRINT_FORMAT } from '#/constants/settings';
 import { useCanvasPanzoom } from '#/hooks/use-canvas-panzoom';
+import { getApi } from '#/hooks/use-ipc';
+import { useAlbumStore } from '#/stores/album.store';
 import { useCanvasStore } from '#/stores/canvas.store';
 import { useSettingsStore } from '#/stores/settings.store';
-import { type InstaxPrintFormat, type PaperPrintFormat, type PhotoItem } from '#/types';
+import { type PhotoItem } from '#/types';
 import { cn, readDragString } from '#/utils/common';
 import { getInstaxCardGeometry, toMediaFileUrl } from '#/utils/photo';
+import { bookPageFolio } from '#/shared/print';
 
-import { DeliverCanvasSlot } from './deliver-canvas-slot';
+import { DeliverCanvasSidebar } from './deliver-canvas-sidebar';
+import { DeliverCanvasSlot, deliverSlotPhotoStyle } from './deliver-canvas-slot';
+import { getDeliverPageMetrics } from './deliver-page-metrics';
 
-const CARD_HEIGHT_PX = 176;
-// Tall enough to hold two stacked Instax cards (2 * 176 + gap + padding) with
-// visible margin once a paper page size is layered on top.
-const PAPER_PAGE_HEIGHT_PX = 460;
-const PAGE_SIZE_NONE = 'auto';
 const SLOT_DROP_ANIMATION = { duration: 220, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' };
-
-const PAGE_PRESET_OPTIONS = [
-  { value: PRINT_FORMAT.instaxMini, label: 'Instax Mini' },
-  { value: PRINT_FORMAT.instaxWide, label: 'Instax Wide' }
-] as const;
-
-const PAGE_SIZE_OPTIONS = [
-  { value: PAGE_SIZE_NONE, label: 'Auto' },
-  { value: PRINT_FORMAT.a4, label: 'A4' },
-  { value: PRINT_FORMAT.a5, label: 'A5' },
-  { value: PRINT_FORMAT.letter, label: 'Letter' }
-] as const;
 
 type DeliverCanvasProps = {
   albumId: string | null;
@@ -58,49 +40,91 @@ const SLOT_IDS = Array.from({ length: BOOK_PAGE_COUNT * PHOTOS_PER_PAGE }, (_, i
 
 const getPageIndexFromSlotId = (slotId: string) => Number(slotId.split('-')[1]);
 
+export const applyDeliverLayoutDragEnd = (event: DragEndEvent) => {
+  if (event.canceled) {
+    return false;
+  }
+  const targetSlotId = readDragString(event.operation.target?.data, 'slotId');
+  if (!targetSlotId) {
+    return false;
+  }
+  const targetIndex = SLOT_IDS.indexOf(targetSlotId);
+  if (targetIndex === -1) {
+    return true;
+  }
+
+  const sourceSlotId = readDragString(event.operation.source?.data, 'slotId');
+  const photoId = readDragString(event.operation.source?.data, 'photoId');
+  const { activeSpreadIndex, swapSpreadSlots, placePhotoInSpreadSlot } = useCanvasStore.getState();
+
+  if (sourceSlotId) {
+    const sourceIndex = SLOT_IDS.indexOf(sourceSlotId);
+    if (sourceIndex !== -1 && sourceIndex !== targetIndex) {
+      swapSpreadSlots(activeSpreadIndex, sourceIndex, targetIndex);
+    }
+    return true;
+  }
+
+  if (photoId) {
+    placePhotoInSpreadSlot(activeSpreadIndex, targetIndex, photoId);
+    return true;
+  }
+
+  return true;
+};
+
 export function DeliverCanvas({ albumId, photos }: DeliverCanvasProps) {
   const [viewport, setViewport] = useState<HTMLDivElement | null>(null);
   const [book, setBook] = useState<HTMLDivElement | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
   const { zoomValue, applyZoom } = useCanvasPanzoom({ viewport, target: book, enabled: true });
+  const album = useAlbumStore((state) => state.albums.find((item) => item.id === albumId));
+  const albumName = album?.name ?? 'Album';
   const defaultPrintFormat = useSettingsStore((state) => state.defaultPrintFormat);
-  const pagePresetByAlbumId = useCanvasStore((state) => state.pagePresetByAlbumId);
-  const pageSizeByAlbumId = useCanvasStore((state) => state.pageSizeByAlbumId);
-  const setAlbumPagePreset = useCanvasStore((state) => state.setAlbumPagePreset);
-  const setAlbumPageSize = useCanvasStore((state) => state.setAlbumPageSize);
   const fallbackPreset = isInstaxFormat(defaultPrintFormat)
     ? defaultPrintFormat
     : PRINT_FORMAT.instaxMini;
-  const pagePreset = (albumId ? pagePresetByAlbumId[albumId] : undefined) ?? fallbackPreset;
-  const pageSize = (albumId ? pageSizeByAlbumId[albumId] : undefined) ?? null;
+  const pagePreset = album?.pagePreset ?? fallbackPreset;
+  const pageSize = album?.pageSize ?? null;
+  const showPageNumbers = album?.showPageNumbers ?? false;
+  const leftHandFirst = album?.leftHandFirst ?? false;
   const selectedSlotId = useCanvasStore((state) => state.selectedSlotId);
   const selectSlot = useCanvasStore((state) => state.selectSlot);
   const slotSettings = useCanvasStore((state) => state.slotSettings);
   const activeSpreadIndex = useCanvasStore((state) => state.activeSpreadIndex);
   const spreadPhotoIds = useCanvasStore((state) => state.spreadPhotoIds);
-  const swapSpreadSlots = useCanvasStore((state) => state.swapSpreadSlots);
+  const rotateSlotImage = useCanvasStore((state) => state.rotateSlotImage);
+  const clearSpreadSlot = useCanvasStore((state) => state.clearSpreadSlot);
   const syncSpreadsWithPhotos = useCanvasStore((state) => state.syncSpreadsWithPhotos);
 
-  const handlePagePresetChange = (value: string | null) => {
-    if (albumId && value) {
-      setAlbumPagePreset(albumId, value as InstaxPrintFormat);
-    }
-  };
-  const handlePageSizeChange = (value: string | null) => {
-    if (!albumId) {
-      return;
-    }
-    setAlbumPageSize(
-      albumId,
-      value && value !== PAGE_SIZE_NONE ? (value as PaperPrintFormat) : null
-    );
-  };
-
   const photoIds = useMemo(() => photos.map((photo) => photo.id), [photos]);
-  const photosKey = useMemo(() => [...photoIds].sort().join(','), [photoIds]);
+  const leadEmptySlots = leadingEmptySlots(leftHandFirst);
+  const photosKey = useMemo(
+    () => `${leadEmptySlots}:${[...photoIds].sort().join(',')}`,
+    [leadEmptySlots, photoIds]
+  );
 
   useEffect(() => {
-    syncSpreadsWithPhotos(photosKey, photoIds);
-  }, [photosKey, photoIds, syncSpreadsWithPhotos]);
+    syncSpreadsWithPhotos(photosKey, photoIds, leadEmptySlots);
+  }, [photosKey, photoIds, leadEmptySlots, syncSpreadsWithPhotos]);
+
+  useEffect(() => {
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+      if (book?.contains(target)) {
+        return;
+      }
+      if (target instanceof Element && target.closest('[data-slot^="context-menu"]')) {
+        return;
+      }
+      selectSlot(null);
+    };
+    document.addEventListener('pointerdown', handlePointerDown, true);
+    return () => document.removeEventListener('pointerdown', handlePointerDown, true);
+  }, [book, selectSlot]);
 
   const activeSpreadPhotoIds = spreadPhotoIds[activeSpreadIndex] ?? [];
   const photoById = useMemo(() => new Map(photos.map((photo) => [photo.id, photo])), [photos]);
@@ -117,30 +141,56 @@ export function DeliverCanvas({ albumId, photos }: DeliverCanvasProps) {
   const getRotationDeg = (pageIndex: number) =>
     pagePreset === PRINT_FORMAT.instaxMini ? (pageIndex === 0 ? -90 : 90) : 0;
 
-  const pageStyle = pageSize
-    ? {
-        width:
-          PAPER_PAGE_HEIGHT_PX *
-          (PAPER_PAGE_DIMENSIONS[pageSize].width / PAPER_PAGE_DIMENSIONS[pageSize].height),
-        height: PAPER_PAGE_HEIGHT_PX
-      }
-    : undefined;
+  const { pageStyle, cardHeightPx, folioStyle } = getDeliverPageMetrics(pageSize, pagePreset);
 
-  const handleSlotDragEnd = (event: DragEndEvent) => {
-    if (event.canceled) {
+  const handleExportPdf = async () => {
+    if (!albumId) {
       return;
     }
-    const sourceSlotId = readDragString(event.operation.source?.data, 'slotId');
-    const targetSlotId = readDragString(event.operation.target?.data, 'slotId');
-    if (!sourceSlotId || !targetSlotId || sourceSlotId === targetSlotId) {
+    setIsExporting(true);
+    try {
+      const filePath = await getApi().deliver.exportPdf({
+        albumName,
+        pagePreset,
+        pageSize,
+        showPageNumbers,
+        leftHandFirst,
+        pages: spreadPhotoIds.flatMap((ids) =>
+          Array.from({ length: BOOK_PAGE_COUNT }, (_page, pageIndex) => ({
+            rotationDeg: getRotationDeg(pageIndex),
+            slots: Array.from({ length: PHOTOS_PER_PAGE }, (_slot, slotIndex) => {
+              const photoId = ids[pageIndex * PHOTOS_PER_PAGE + slotIndex];
+              const photo = photoId ? (photoById.get(photoId) ?? null) : null;
+              const slotId = buildSlotId(pageIndex, slotIndex);
+              return {
+                path: photo?.path ?? null,
+                name: photo?.name ?? '',
+                fit: slotSettings[slotId]?.fit ?? DEFAULT_SLOT_SETTINGS.fit,
+                imageRotationDeg:
+                  slotSettings[slotId]?.imageRotationDeg ?? DEFAULT_SLOT_SETTINGS.imageRotationDeg
+              };
+            })
+          }))
+        )
+      });
+      if (filePath) {
+        toast.add({
+          type: 'success',
+          title: 'PDF exported',
+          description: filePath
+        });
+      }
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleRemoveFromCanvas = (slotId: string) => {
+    const slotIndex = SLOT_IDS.indexOf(slotId);
+    if (slotIndex === -1) {
       return;
     }
-    const sourceIndex = SLOT_IDS.indexOf(sourceSlotId);
-    const targetIndex = SLOT_IDS.indexOf(targetSlotId);
-    if (sourceIndex === -1 || targetIndex === -1) {
-      return;
-    }
-    swapSpreadSlots(activeSpreadIndex, sourceIndex, targetIndex);
+    clearSpreadSlot(activeSpreadIndex, slotIndex, slotId);
   };
 
   return (
@@ -155,149 +205,155 @@ export function DeliverCanvas({ albumId, photos }: DeliverCanvasProps) {
           ref={setViewport}
           className="relative flex min-h-0 min-w-0 flex-1 touch-none items-center justify-center overflow-hidden overscroll-none bg-card p-4"
         >
-          <DragDropProvider onDragEnd={handleSlotDragEnd}>
-            <div
-              key={activeSpreadIndex}
-              ref={setBook}
-              className="flex animate-in items-stretch overflow-hidden rounded-sm bg-background shadow-md duration-200 fade-in-0 zoom-in-95"
-            >
-              {pages.map((slots, pageIndex) => (
+          <div
+            key={activeSpreadIndex}
+            ref={setBook}
+            className="flex animate-in items-stretch duration-200 fade-in-0 zoom-in-95"
+          >
+            {pages.map((slots, pageIndex) => (
+              <Fragment key={pageIndex}>
+                {pageIndex === 1 ? (
+                  <div
+                    aria-hidden
+                    className="w-2 shrink-0 self-stretch bg-neutral-300 shadow-[inset_6px_0_8px_-4px_rgb(0_0_0/0.28),inset_-6px_0_8px_-4px_rgb(0_0_0/0.28)] dark:bg-neutral-500"
+                  />
+                ) : null}
                 <div
-                  key={pageIndex}
                   style={pageStyle}
                   className={cn(
-                    'flex flex-col items-center justify-center gap-3 bg-white p-4 dark:bg-neutral-100/95',
-                    pageIndex === 0 && 'border-r border-border/60'
+                    'relative flex flex-col items-center justify-center gap-3 bg-white p-4 shadow-md dark:bg-neutral-100/95',
+                    pageIndex === 0 ? 'rounded-l-sm' : 'rounded-r-sm'
                   )}
                 >
-                  {slots.map(({ slotId, photo }) => (
-                    <DeliverCanvasSlot
-                      key={slotId}
-                      slotId={slotId}
-                      photo={photo}
-                      fit={slotSettings[slotId]?.fit ?? DEFAULT_SLOT_SETTINGS.fit}
-                      format={pagePreset}
-                      cardHeightPx={CARD_HEIGHT_PX}
-                      rotationDeg={getRotationDeg(pageIndex)}
-                      isSelected={selectedSlotId === slotId}
-                      onSelect={selectSlot}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-
-            <DragOverlay dropAnimation={SLOT_DROP_ANIMATION}>
-              {(source) => {
-                const slotId = readDragString(source.data, 'slotId');
-                const photo = slotId ? photoBySlotId.get(slotId) : null;
-                if (!photo) {
-                  return null;
-                }
-                const src = photo.path ? toMediaFileUrl(photo.path) : null;
-                const fit =
-                  (slotId ? slotSettings[slotId]?.fit : undefined) ?? DEFAULT_SLOT_SETTINGS.fit;
-                const { cardWidthPx, imageWidthPx, imageHeightPx, topPx, sidePx } =
-                  getInstaxCardGeometry(pagePreset, CARD_HEIGHT_PX);
-                const rotationDeg = slotId ? getRotationDeg(getPageIndexFromSlotId(slotId)) : 0;
-                const tiltDeg = rotationDeg < 0 ? -3 : 3;
-                const isQuarterTurn = rotationDeg % 180 !== 0;
-
-                return (
                   <div
-                    className="relative"
+                    className={cn(
+                      'flex flex-col items-center justify-center gap-3',
+                      activeSpreadIndex === 0 &&
+                        pageIndex === 0 &&
+                        !leftHandFirst &&
+                        'invisible pointer-events-none'
+                    )}
+                  >
+                    {slots.map(({ slotId, photo }) => (
+                      <DeliverCanvasSlot
+                        key={slotId}
+                        slotId={slotId}
+                        photo={photo}
+                        fit={slotSettings[slotId]?.fit ?? DEFAULT_SLOT_SETTINGS.fit}
+                        format={pagePreset}
+                        cardHeightPx={cardHeightPx}
+                        rotationDeg={getRotationDeg(pageIndex)}
+                        imageRotationDeg={
+                          slotSettings[slotId]?.imageRotationDeg ??
+                          DEFAULT_SLOT_SETTINGS.imageRotationDeg
+                        }
+                        isSelected={selectedSlotId === slotId}
+                        onSelect={selectSlot}
+                        onRotateImage={rotateSlotImage}
+                        onRemoveFromCanvas={handleRemoveFromCanvas}
+                      />
+                    ))}
+                  </div>
+                  {showPageNumbers
+                    ? (() => {
+                        const folio = bookPageFolio(
+                          activeSpreadIndex * BOOK_PAGE_COUNT + pageIndex,
+                          leftHandFirst
+                        );
+                        return folio === null ? null : (
+                          <span
+                            className="pointer-events-none absolute font-medium tabular-nums text-neutral-500"
+                            style={folioStyle}
+                          >
+                            {folio}
+                          </span>
+                        );
+                      })()
+                    : null}
+                </div>
+              </Fragment>
+            ))}
+          </div>
+
+          <DragOverlay dropAnimation={SLOT_DROP_ANIMATION}>
+            {(source) => {
+              const slotId = readDragString(source.data, 'slotId');
+              const draggedPhotoId = readDragString(source.data, 'photoId');
+              const photo = slotId
+                ? (photoBySlotId.get(slotId) ?? null)
+                : draggedPhotoId
+                  ? (photoById.get(draggedPhotoId) ?? null)
+                  : null;
+              if (!photo) {
+                return null;
+              }
+              const src = photo.path ? toMediaFileUrl(photo.path) : null;
+              const fit =
+                (slotId ? slotSettings[slotId]?.fit : undefined) ?? DEFAULT_SLOT_SETTINGS.fit;
+              const imageRotationDeg =
+                (slotId ? slotSettings[slotId]?.imageRotationDeg : undefined) ??
+                DEFAULT_SLOT_SETTINGS.imageRotationDeg;
+              const { cardWidthPx, imageWidthPx, imageHeightPx, topPx, sidePx } =
+                getInstaxCardGeometry(pagePreset, cardHeightPx);
+              const rotationDeg = slotId ? getRotationDeg(getPageIndexFromSlotId(slotId)) : 0;
+              const tiltDeg = rotationDeg < 0 ? -3 : 3;
+              const isQuarterTurn = rotationDeg % 180 !== 0;
+
+              return (
+                <div
+                  className="relative"
+                  style={{
+                    width: isQuarterTurn ? cardHeightPx : cardWidthPx,
+                    height: isQuarterTurn ? cardWidthPx : cardHeightPx
+                  }}
+                >
+                  <div
+                    className="absolute top-1/2 left-1/2 border-2 border-primary bg-white shadow-2xl dark:bg-neutral-100"
                     style={{
-                      width: isQuarterTurn ? CARD_HEIGHT_PX : cardWidthPx,
-                      height: isQuarterTurn ? cardWidthPx : CARD_HEIGHT_PX
+                      width: cardWidthPx,
+                      height: cardHeightPx,
+                      transform: `translate(-50%, -50%) rotate(${rotationDeg + tiltDeg}deg) scale(1.06)`
                     }}
                   >
                     <div
-                      className="absolute top-1/2 left-1/2 border-2 border-primary bg-white shadow-2xl dark:bg-neutral-100"
+                      className="absolute overflow-hidden bg-muted"
                       style={{
-                        width: cardWidthPx,
-                        height: CARD_HEIGHT_PX,
-                        transform: `translate(-50%, -50%) rotate(${rotationDeg + tiltDeg}deg) scale(1.06)`
+                        top: topPx,
+                        left: sidePx,
+                        width: imageWidthPx,
+                        height: imageHeightPx
                       }}
                     >
-                      <div
-                        className="absolute overflow-hidden bg-muted"
-                        style={{
-                          top: topPx,
-                          left: sidePx,
-                          width: imageWidthPx,
-                          height: imageHeightPx
-                        }}
-                      >
-                        {src ? (
-                          <img
-                            src={src}
-                            alt={photo.name}
-                            className="h-full w-full"
-                            style={{ objectFit: fit }}
-                          />
-                        ) : null}
-                      </div>
+                      {src ? (
+                        <img
+                          src={src}
+                          alt={photo.name}
+                          className="absolute top-1/2 left-1/2 max-w-none"
+                          style={deliverSlotPhotoStyle(
+                            imageWidthPx,
+                            imageHeightPx,
+                            imageRotationDeg,
+                            fit
+                          )}
+                        />
+                      ) : null}
                     </div>
                   </div>
-                );
-              }}
-            </DragOverlay>
-          </DragDropProvider>
+                </div>
+              );
+            }}
+          </DragOverlay>
         </div>
 
-        <div className="flex w-36 shrink-0 flex-col gap-3 border-l border-border bg-muted/40 p-3">
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="deliver-page-preset"
-              className="text-tiny font-medium text-muted-foreground"
-            >
-              Page preset
-            </label>
-            <Select
-              items={PAGE_PRESET_OPTIONS}
-              value={pagePreset}
-              disabled={!albumId}
-              onValueChange={handlePagePresetChange}
-            >
-              <SelectTrigger id="deliver-page-preset" size="sm" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PAGE_PRESET_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="deliver-page-size"
-              className="text-tiny font-medium text-muted-foreground"
-            >
-              Page size
-            </label>
-            <Select
-              items={PAGE_SIZE_OPTIONS}
-              value={pageSize ?? PAGE_SIZE_NONE}
-              disabled={!albumId}
-              onValueChange={handlePageSizeChange}
-            >
-              <SelectTrigger id="deliver-page-size" size="sm" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PAGE_SIZE_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+        <DeliverCanvasSidebar
+          albumId={albumId}
+          pagePreset={pagePreset}
+          pageSize={pageSize}
+          showPageNumbers={showPageNumbers}
+          leftHandFirst={leftHandFirst}
+          isExporting={isExporting}
+          onExport={() => void handleExportPdf()}
+        />
       </div>
     </section>
   );

@@ -16,7 +16,7 @@ import { Album } from '#/types';
 import { readDragString } from '#/utils/common';
 import { toPhotoItem } from '#/utils/photo/album-photo';
 
-import { DeliverCanvas } from '../deliver-canvas';
+import { applyDeliverLayoutDragEnd, DeliverCanvas } from '../deliver-canvas';
 import { DeliverPageStrip } from '../deliver-page-strip';
 
 export function DeliverScreen() {
@@ -50,6 +50,9 @@ export function DeliverScreen() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     if (event.canceled) {
+      return;
+    }
+    if (applyDeliverLayoutDragEnd(event)) {
       return;
     }
     const target = event.operation.target;

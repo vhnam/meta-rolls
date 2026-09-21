@@ -29,23 +29,28 @@ export function DeliverPageStrip() {
               className="pointer-events-none absolute inset-0 animate-in rounded-sm zoom-in-95 ring-2 ring-primary/60 duration-300 fade-in-0"
             />
           ) : null}
-          <div className="flex gap-0.5">
+          <div className="flex">
             {[0, 1].map((pageIndex) => (
-              <div key={pageIndex} className="flex flex-col gap-0.5">
-                {[0, 1].map((rowIndex) => {
-                  const slotIndex = pageIndex * 2 + rowIndex;
-                  return (
-                    <span
-                      key={rowIndex}
-                      className={cn(
-                        'h-4 w-6 rounded-xs border',
-                        slots[slotIndex]
-                          ? 'border-primary/60 bg-primary/60'
-                          : 'border-muted-foreground/30 bg-muted'
-                      )}
-                    />
-                  );
-                })}
+              <div key={pageIndex} className="flex">
+                {pageIndex === 1 ? (
+                  <span aria-hidden className="mx-0.5 w-px self-stretch bg-border" />
+                ) : null}
+                <div className="flex flex-col gap-0.5">
+                  {[0, 1].map((rowIndex) => {
+                    const slotIndex = pageIndex * 2 + rowIndex;
+                    return (
+                      <span
+                        key={rowIndex}
+                        className={cn(
+                          'h-4 w-6 rounded-xs border',
+                          slots[slotIndex]
+                            ? 'border-primary/60 bg-primary/60'
+                            : 'border-muted-foreground/30 bg-muted'
+                        )}
+                      />
+                    );
+                  })}
+                </div>
               </div>
             ))}
           </div>

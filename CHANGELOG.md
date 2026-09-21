@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.0] - 2026-09-22
+
+### Added
+
+- Deliver reads print settings from the album, supports drag-to-slot placement, slot image rotate/remove, left-hand-first openings, and PDF export from the canvas sidebar.
+
 ## [3.4.0] - 2026-09-22
 
 ### Added

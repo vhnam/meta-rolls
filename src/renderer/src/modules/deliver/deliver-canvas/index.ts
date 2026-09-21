@@ -1,1 +1,1 @@
-export { DeliverCanvas } from './deliver-canvas';
+export { applyDeliverLayoutDragEnd, DeliverCanvas } from './deliver-canvas';

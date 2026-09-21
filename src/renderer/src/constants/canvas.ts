@@ -11,7 +11,8 @@ export const DEFAULT_SLOT_SETTINGS: SlotSettings = {
   fit: SLOT_FIT.cover,
   cropX: 0.5,
   cropY: 0.5,
-  cropZoom: 1
+  cropZoom: 1,
+  imageRotationDeg: 0
 };
 
 // Instax print dimensions in millimeters. "Card" is the whole white-bordered
@@ -46,3 +47,7 @@ export const isPaperFormat = (format: PrintFormat): format is PaperPrintFormat =
 export const PHOTOS_PER_PAGE = 2;
 export const BOOK_PAGE_COUNT = 2;
 export const SLOTS_PER_SPREAD = PHOTOS_PER_PAGE * BOOK_PAGE_COUNT;
+
+// LTR openings: [left leaf | right leaf]. Off = first opening is a blank left
+// leaf and photos start on the right. On = photos start on the left leaf.
+export const leadingEmptySlots = (leftHandFirst: boolean) => (leftHandFirst ? 0 : PHOTOS_PER_PAGE);
