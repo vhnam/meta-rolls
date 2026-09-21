@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.1] - 2026-09-22
+
+### Changed
+
+- Switch uses Tailwind’s `group-has-focus-visible` variant and `h-3.5` for the small size.
+
 ## [3.6.0] - 2026-09-22
 
 ### Added
