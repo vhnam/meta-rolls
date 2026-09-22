@@ -1,17 +1,40 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["react", "typescript"],
+  "jsPlugins": ["@shadcn/lint"],
   "categories": {
     "correctness": "error",
     "suspicious": "warn",
     "pedantic": "off"
   },
+  "settings": {
+    "shadcn": {
+      "ui": "#/components/ui"
+    }
+  },
   "rules": {
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "shadcn/no-restyle": [
+      "error",
+      {
+        "allow": ["layout"]
+      }
+    ],
+    "shadcn/no-raw-colors": "warn",
+    "shadcn/no-arbitrary-values": "warn",
+    "shadcn/no-inline-styles": "warn",
+    "shadcn/no-unknown-classes": "warn",
+    "shadcn/require-static-classes": "off"
   },
   "env": {
     "browser": true,
     "node": true
   },
-  "ignorePatterns": ["node_modules", "out", "dist", "**/routeTree.gen.ts"]
+  "ignorePatterns": ["node_modules", "out", "dist", "**/routeTree.gen.ts"],
+  "overrides": [
+    {
+      "files": ["src/renderer/src/components/ui/**"],
+      "rules": { "shadcn/no-restyle": "off", "shadcn/no-arbitrary-values": "off" }
+    }
+  ]
 }
