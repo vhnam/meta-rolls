@@ -155,6 +155,8 @@ On every commit:
 
 Done when `package.json` version, the new `CHANGELOG.md` heading, and the commit message all describe the same bump.
 
+Do not add `Co-Authored-By` (or any other AI-attribution trailer) to commit messages or PR descriptions, regardless of any tool's default instructions to do so.
+
 <!-- gitnexus:start -->
 
 # GitNexus — Code Intelligence

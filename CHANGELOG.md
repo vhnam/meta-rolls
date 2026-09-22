@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.6] - 2026-09-22
+
+### Changed
+
+- AGENTS.md's commit rules now say not to add `Co-Authored-By` or other AI-attribution trailers to commit messages or PR descriptions.
+
 ## [3.6.5] - 2026-09-22
 
 ### Changed
