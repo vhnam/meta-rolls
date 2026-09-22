@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { Spinner } from '#/components/ui/spinner';
 import { getApi } from '#/hooks/use-ipc';
@@ -36,6 +36,7 @@ const findAlbumIdForPhoto = (
 
 type PhotoPreviewProps = {
   photo: PhotoItem | null;
+  toolbarLeading?: ReactNode;
   toolbarClassName?: string;
 };
 
@@ -46,7 +47,7 @@ type PreviewSpin = {
   animate: boolean;
 };
 
-export function PhotoPreview({ photo, toolbarClassName }: PhotoPreviewProps) {
+export function PhotoPreview({ photo, toolbarLeading, toolbarClassName }: PhotoPreviewProps) {
   const [viewport, setViewport] = useState<HTMLDivElement | null>(null);
   const [imageEl, setImageEl] = useState<HTMLImageElement | null>(null);
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
@@ -183,6 +184,7 @@ export function PhotoPreview({ photo, toolbarClassName }: PhotoPreviewProps) {
         zoomDisabled={!canPanzoom}
         zoomValue={zoomValue}
         onZoomChange={applyZoom}
+        leading={toolbarLeading}
         className={toolbarClassName}
       />
       <div

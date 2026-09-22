@@ -12,6 +12,7 @@ type AlbumSidebarShellProps = {
   albums: Album[];
   selectedId: string | null;
   collapsed?: boolean;
+  title?: string;
   onSelect: (id: string) => void;
   onAddAlbum: () => void;
   onRenameAlbum: (album: Album) => void;
@@ -22,6 +23,7 @@ export function AlbumSidebarShell({
   albums,
   selectedId,
   collapsed = false,
+  title,
   onSelect,
   onAddAlbum,
   onRenameAlbum,
@@ -34,7 +36,8 @@ export function AlbumSidebarShell({
         collapsed ? 'hidden' : 'h-full w-full'
       )}
     >
-      <div className="flex h-7 shrink-0 items-center justify-end border-b border-border bg-sidebar-accent px-1">
+      <div className="flex h-7 shrink-0 items-center justify-between border-b border-border bg-sidebar-accent px-1">
+        <div className="px-2 text-tiny font-medium">{title}</div>
         <Tooltip>
           <TooltipTrigger
             render={
