@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.7] - 2026-09-22
+
+### Changed
+
+- `.gitignore` excludes Skills CLI vendor trees (`banner-design`, `brand`, `design`, and the other locked installs). `skills-lock.json` records which skills `npx skills add` restored.
+
 ## [3.6.6] - 2026-09-22
 
 ### Changed

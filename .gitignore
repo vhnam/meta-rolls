@@ -11,3 +11,26 @@ out
 .claude/skills/gitnexus-*
 .cursor/skills/gitnexus-*
 .agents/skills/gitnexus-*
+
+# Skills CLI installs from skills-lock.json (`npx skills add`). Do not commit.
+.claude/skills/banner-design/
+.claude/skills/brand/
+.claude/skills/design/
+.claude/skills/design-system/
+.claude/skills/slides/
+.claude/skills/ui-styling/
+.claude/skills/ui-ux-pro-max/
+.cursor/skills/banner-design/
+.cursor/skills/brand/
+.cursor/skills/design/
+.cursor/skills/design-system/
+.cursor/skills/slides/
+.cursor/skills/ui-styling/
+.cursor/skills/ui-ux-pro-max/
+.agents/skills/banner-design/
+.agents/skills/brand/
+.agents/skills/design/
+.agents/skills/design-system/
+.agents/skills/slides/
+.agents/skills/ui-styling/
+.agents/skills/ui-ux-pro-max/
