@@ -5,6 +5,16 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.0] - 2026-09-22
+
+### Added
+
+- Albums persist whole-spread rotation in 90° steps. Deliver animates that rotation, can collapse the albums panel and print settings, and a post-export toast can open the saved PDF.
+
+### Changed
+
+- Deliver page strip uses a titled Pages header, and the print sidebar groups page vs layout fields.
+
 ## [3.7.0] - 2026-09-22
 
 ### Added

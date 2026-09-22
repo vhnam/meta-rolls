@@ -74,6 +74,7 @@ export type WindowApi = {
 
 export type DeliverApi = {
   exportPdf: (request: DeliverPdfExportRequest) => Promise<string | null>;
+  openExportedFile: (filePath: string) => Promise<boolean>;
 };
 
 export type RendererApi = {

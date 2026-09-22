@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
 
-import { BrowserWindow, dialog, ipcMain } from 'electron';
+import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
 
 import { IpcChannel } from '../../../shared/ipc';
 import { parseDeliverPdfExportRequest } from '../../../shared/print';
@@ -44,5 +44,13 @@ export const registerDeliverIpc = () => {
     const pdf = await renderDeliverPdf(request);
     await writeFile(result.filePath, pdf);
     return result.filePath;
+  });
+
+  ipcMain.handle(IpcChannel.deliverOpenExportedFile, async (_event, filePath: unknown) => {
+    if (typeof filePath !== 'string') {
+      return false;
+    }
+    const error = await shell.openPath(filePath);
+    return error === '';
   });
 };

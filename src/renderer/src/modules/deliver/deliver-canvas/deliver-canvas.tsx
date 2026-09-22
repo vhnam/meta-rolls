@@ -1,5 +1,5 @@
 import { DragOverlay, type DragEndEvent } from '@dnd-kit/react';
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
 import { PreviewZoomSelect } from '#/components/preview-zoom-select';
 import { toast } from '#/components/ui/toast';
@@ -20,6 +20,7 @@ import { useSettingsStore } from '#/stores/settings.store';
 import { type PhotoItem } from '#/types';
 import { cn, readDragString } from '#/utils/common';
 import { getInstaxCardGeometry, toMediaFileUrl } from '#/utils/photo';
+import { PREVIEW_ZOOM_FIT } from '#/utils/preview';
 
 import { DeliverCanvasSidebar } from './deliver-canvas-sidebar';
 import { DeliverCanvasSlot, deliverSlotPhotoStyle } from './deliver-canvas-slot';
@@ -30,6 +31,7 @@ const SLOT_DROP_ANIMATION = { duration: 220, easing: 'cubic-bezier(0.22, 1, 0.36
 type DeliverCanvasProps = {
   albumId: string | null;
   photos: PhotoItem[];
+  sidebarToggle?: ReactNode;
 };
 
 const buildSlotId = (pageIndex: number, slotIndex: number) => `page-${pageIndex}-slot-${slotIndex}`;
@@ -73,7 +75,7 @@ export const applyDeliverLayoutDragEnd = (event: DragEndEvent) => {
   return true;
 };
 
-export function DeliverCanvas({ albumId, photos }: DeliverCanvasProps) {
+export function DeliverCanvas({ albumId, photos, sidebarToggle }: DeliverCanvasProps) {
   const [viewport, setViewport] = useState<HTMLDivElement | null>(null);
   const [book, setBook] = useState<HTMLDivElement | null>(null);
   const [isExporting, setIsExporting] = useState(false);
@@ -86,7 +88,24 @@ export function DeliverCanvas({ albumId, photos }: DeliverCanvasProps) {
     : PRINT_FORMAT.instaxMini;
   const pagePreset = album?.pagePreset ?? fallbackPreset;
   const pageSize = album?.pageSize ?? null;
+  const pageRotationDeg = album?.pageRotationDeg ?? 0;
   const showPageNumbers = album?.showPageNumbers ?? false;
+  // `pageRotationDeg` wraps to 0 at a full turn (e.g. 270 -> 0, not 360), so
+  // animating the raw value would spin backward through 270/180/90 instead of
+  // continuing forward. Track an unwrapped display angle that keeps
+  // accumulating in whichever direction the wrapped value actually moved.
+  const [displayRotationDeg, setDisplayRotationDeg] = useState<number>(pageRotationDeg);
+  const previousRotationDegRef = useRef(pageRotationDeg);
+  useEffect(() => {
+    const previous = previousRotationDegRef.current;
+    if (previous === pageRotationDeg) {
+      return;
+    }
+    const rawDelta = pageRotationDeg - previous;
+    const shortestDelta = ((((rawDelta + 180) % 360) + 360) % 360) - 180;
+    setDisplayRotationDeg((current) => current + shortestDelta);
+    previousRotationDegRef.current = pageRotationDeg;
+  }, [pageRotationDeg]);
   const leftHandFirst = album?.leftHandFirst ?? false;
   const selectedSlotId = useCanvasStore((state) => state.selectedSlotId);
   const selectSlot = useCanvasStore((state) => state.selectSlot);
@@ -107,6 +126,16 @@ export function DeliverCanvas({ albumId, photos }: DeliverCanvasProps) {
   useEffect(() => {
     syncSpreadsWithPhotos(photosKey, photoIds, leadEmptySlots);
   }, [photosKey, photoIds, leadEmptySlots, syncSpreadsWithPhotos]);
+
+  // Rotating swaps the book's effective footprint against the viewport, so
+  // reset to Panzoom's own "fit" scale rather than leaving a stale zoom that
+  // no longer matches the rotated shape.
+  useEffect(() => {
+    if (book) {
+      applyZoom(PREVIEW_ZOOM_FIT);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageRotationDeg]);
 
   useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {
@@ -177,7 +206,11 @@ export function DeliverCanvas({ albumId, photos }: DeliverCanvasProps) {
         toast.add({
           type: 'success',
           title: 'PDF exported',
-          description: filePath
+          description: filePath,
+          actionProps: {
+            children: 'Open',
+            onClick: () => void getApi().deliver.openExportedFile(filePath)
+          }
         });
       }
     } finally {
@@ -196,6 +229,7 @@ export function DeliverCanvas({ albumId, photos }: DeliverCanvasProps) {
   return (
     <section className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-border bg-card">
       <div className="flex h-7 shrink-0 items-center gap-2 border-b border-border bg-muted px-2 text-muted-foreground">
+        {sidebarToggle}
         <PreviewZoomSelect value={zoomValue} disabled={!book} onChange={applyZoom} />
         <span className="text-tiny font-medium text-foreground">Layout</span>
       </div>
@@ -207,72 +241,74 @@ export function DeliverCanvas({ albumId, photos }: DeliverCanvasProps) {
         >
           <div
             key={activeSpreadIndex}
-            ref={setBook}
-            className="flex animate-in items-stretch duration-200 fade-in-0 zoom-in-95"
+            className="flex h-full w-full animate-in items-center justify-center duration-200 ease-out fade-in-0 zoom-in-95 transition-transform"
+            style={{ transform: `rotate(${displayRotationDeg}deg)` }}
           >
-            {pages.map((slots, pageIndex) => (
-              <Fragment key={pageIndex}>
-                {pageIndex === 1 ? (
+            <div ref={setBook} className="flex items-stretch">
+              {pages.map((slots, pageIndex) => (
+                <Fragment key={pageIndex}>
+                  {pageIndex === 1 ? (
+                    <div
+                      aria-hidden
+                      className="w-2 shrink-0 self-stretch bg-neutral-300 shadow-[inset_6px_0_8px_-4px_rgb(0_0_0/0.28),inset_-6px_0_8px_-4px_rgb(0_0_0/0.28)] dark:bg-neutral-500"
+                    />
+                  ) : null}
                   <div
-                    aria-hidden
-                    className="w-2 shrink-0 self-stretch bg-neutral-300 shadow-[inset_6px_0_8px_-4px_rgb(0_0_0/0.28),inset_-6px_0_8px_-4px_rgb(0_0_0/0.28)] dark:bg-neutral-500"
-                  />
-                ) : null}
-                <div
-                  style={pageStyle}
-                  className={cn(
-                    'relative flex flex-col items-center justify-center gap-3 bg-white p-4 shadow-md dark:bg-neutral-100/95',
-                    pageIndex === 0 ? 'rounded-l-sm' : 'rounded-r-sm'
-                  )}
-                >
-                  <div
+                    style={pageStyle}
                     className={cn(
-                      'flex flex-col items-center justify-center gap-3',
-                      activeSpreadIndex === 0 &&
-                        pageIndex === 0 &&
-                        !leftHandFirst &&
-                        'invisible pointer-events-none'
+                      'relative flex flex-col items-center justify-center gap-3 bg-white p-4 shadow-md dark:bg-neutral-100/95',
+                      pageIndex === 0 ? 'rounded-l-sm' : 'rounded-r-sm'
                     )}
                   >
-                    {slots.map(({ slotId, photo }) => (
-                      <DeliverCanvasSlot
-                        key={slotId}
-                        slotId={slotId}
-                        photo={photo}
-                        fit={slotSettings[slotId]?.fit ?? DEFAULT_SLOT_SETTINGS.fit}
-                        format={pagePreset}
-                        cardHeightPx={cardHeightPx}
-                        rotationDeg={getRotationDeg(pageIndex)}
-                        imageRotationDeg={
-                          slotSettings[slotId]?.imageRotationDeg ??
-                          DEFAULT_SLOT_SETTINGS.imageRotationDeg
-                        }
-                        isSelected={selectedSlotId === slotId}
-                        onSelect={selectSlot}
-                        onRotateImage={rotateSlotImage}
-                        onRemoveFromCanvas={handleRemoveFromCanvas}
-                      />
-                    ))}
+                    <div
+                      className={cn(
+                        'flex flex-col items-center justify-center gap-3',
+                        activeSpreadIndex === 0 &&
+                          pageIndex === 0 &&
+                          !leftHandFirst &&
+                          'invisible pointer-events-none'
+                      )}
+                    >
+                      {slots.map(({ slotId, photo }) => (
+                        <DeliverCanvasSlot
+                          key={slotId}
+                          slotId={slotId}
+                          photo={photo}
+                          fit={slotSettings[slotId]?.fit ?? DEFAULT_SLOT_SETTINGS.fit}
+                          format={pagePreset}
+                          cardHeightPx={cardHeightPx}
+                          rotationDeg={getRotationDeg(pageIndex)}
+                          imageRotationDeg={
+                            slotSettings[slotId]?.imageRotationDeg ??
+                            DEFAULT_SLOT_SETTINGS.imageRotationDeg
+                          }
+                          isSelected={selectedSlotId === slotId}
+                          onSelect={selectSlot}
+                          onRotateImage={rotateSlotImage}
+                          onRemoveFromCanvas={handleRemoveFromCanvas}
+                        />
+                      ))}
+                    </div>
+                    {showPageNumbers
+                      ? (() => {
+                          const folio = bookPageFolio(
+                            activeSpreadIndex * BOOK_PAGE_COUNT + pageIndex,
+                            leftHandFirst
+                          );
+                          return folio === null ? null : (
+                            <span
+                              className="pointer-events-none absolute font-medium tabular-nums text-neutral-500"
+                              style={folioStyle}
+                            >
+                              {folio}
+                            </span>
+                          );
+                        })()
+                      : null}
                   </div>
-                  {showPageNumbers
-                    ? (() => {
-                        const folio = bookPageFolio(
-                          activeSpreadIndex * BOOK_PAGE_COUNT + pageIndex,
-                          leftHandFirst
-                        );
-                        return folio === null ? null : (
-                          <span
-                            className="pointer-events-none absolute font-medium tabular-nums text-neutral-500"
-                            style={folioStyle}
-                          >
-                            {folio}
-                          </span>
-                        );
-                      })()
-                    : null}
-                </div>
-              </Fragment>
-            ))}
+                </Fragment>
+              ))}
+            </div>
           </div>
 
           <DragOverlay dropAnimation={SLOT_DROP_ANIMATION}>
@@ -349,6 +385,7 @@ export function DeliverCanvas({ albumId, photos }: DeliverCanvasProps) {
           albumId={albumId}
           pagePreset={pagePreset}
           pageSize={pageSize}
+          pageRotationDeg={pageRotationDeg}
           showPageNumbers={showPageNumbers}
           leftHandFirst={leftHandFirst}
           isExporting={isExporting}

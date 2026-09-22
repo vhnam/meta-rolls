@@ -80,7 +80,9 @@ const api = {
   },
   deliver: {
     exportPdf: (request: DeliverPdfExportRequest) =>
-      ipcRenderer.invoke(IpcChannel.deliverExportPdf, request)
+      ipcRenderer.invoke(IpcChannel.deliverExportPdf, request),
+    openExportedFile: (filePath: string) =>
+      ipcRenderer.invoke(IpcChannel.deliverOpenExportedFile, filePath)
   }
 };
 

@@ -20,9 +20,14 @@ export type AlbumPagePreset = 'instax-mini' | 'instax-wide';
 
 export type AlbumPageSize = 'a4' | 'a5' | 'letter';
 
+// Whole-spread view/print rotation, stepped 90° at a time by the Deliver
+// sidebar's rotate-clockwise/counterclockwise buttons.
+export type AlbumPageRotationDeg = 0 | 90 | 180 | 270;
+
 export type AlbumPrintConfig = {
   pagePreset: AlbumPagePreset | null;
   pageSize: AlbumPageSize | null;
+  pageRotationDeg: AlbumPageRotationDeg;
   showPageNumbers: boolean;
   leftHandFirst: boolean;
 };
@@ -30,6 +35,7 @@ export type AlbumPrintConfig = {
 export const DEFAULT_ALBUM_PRINT_CONFIG: AlbumPrintConfig = {
   pagePreset: null,
   pageSize: null,
+  pageRotationDeg: 0,
   showPageNumbers: false,
   leftHandFirst: false
 };
@@ -40,6 +46,7 @@ export type Album = {
   photos: AlbumPhoto[];
   pagePreset: AlbumPagePreset | null;
   pageSize: AlbumPageSize | null;
+  pageRotationDeg: AlbumPageRotationDeg;
   showPageNumbers: boolean;
   leftHandFirst: boolean;
 };
@@ -81,6 +88,9 @@ const isPagePreset = (value: unknown): value is AlbumPagePreset =>
 const isPageSize = (value: unknown): value is AlbumPageSize =>
   value === 'a4' || value === 'a5' || value === 'letter';
 
+const isPageRotationDeg = (value: unknown): value is AlbumPageRotationDeg =>
+  value === 0 || value === 90 || value === 180 || value === 270;
+
 export const parseAlbumPrintConfig = (value: unknown): AlbumPrintConfig | null => {
   if (value === null || typeof value !== 'object') {
     return null;
@@ -90,6 +100,9 @@ export const parseAlbumPrintConfig = (value: unknown): AlbumPrintConfig | null =
     return null;
   }
   if (config.pageSize !== null && !isPageSize(config.pageSize)) {
+    return null;
+  }
+  if (config.pageRotationDeg !== undefined && !isPageRotationDeg(config.pageRotationDeg)) {
     return null;
   }
   if (typeof config.showPageNumbers !== 'boolean') {
@@ -104,6 +117,7 @@ export const parseAlbumPrintConfig = (value: unknown): AlbumPrintConfig | null =
   return {
     pagePreset: config.pagePreset,
     pageSize: config.pageSize,
+    pageRotationDeg: isPageRotationDeg(config.pageRotationDeg) ? config.pageRotationDeg : 0,
     showPageNumbers: config.showPageNumbers,
     leftHandFirst: config.leftHandFirst === true || config.firstPageIsLeftHand === true
   };
