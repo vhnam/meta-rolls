@@ -2,7 +2,7 @@ import { ContextMenu as ContextMenuPrimitive } from '@base-ui/react/context-menu
 import { IconChevronRight, IconCheck } from '@tabler/icons-react';
 import * as React from 'react';
 
-import { cn } from '#/utils/common';
+import { cn } from '#/utils';
 
 function ContextMenu({ ...props }: ContextMenuPrimitive.Root.Props) {
   return <ContextMenuPrimitive.Root data-slot="context-menu" {...props} />;
@@ -213,7 +213,7 @@ function ContextMenuShortcut({ className, ...props }: React.ComponentProps<'span
     <span
       data-slot="context-menu-shortcut"
       className={cn(
-        'ml-auto text-xs tracking-widest text-muted-foreground group-focus/context-menu-item:text-accent-foreground',
+        'ml-auto pl-4 text-xs tracking-widest text-muted-foreground group-focus/context-menu-item:text-accent-foreground',
         className
       )}
       {...props}

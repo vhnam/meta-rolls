@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.4] - 2026-09-22
+
+### Changed
+
+- `ResizablePanelGroup`, `Spinner`, `FieldGroup`, `FieldLabel`, `DialogContent`, `ContextMenuShortcut`, and `Select{Trigger,Value,Item}` gained variant props (`tone`, `size`, `variant`, `indicatorPosition`) for the color/spacing/typography treatments consumers were previously overriding via `className`, fixing `shadcn/no-restyle` violations at the source.
+
 ## [3.6.3] - 2026-09-22
 
 ### Added

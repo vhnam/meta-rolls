@@ -1,5 +1,6 @@
 import { Select as SelectPrimitive } from '@base-ui/react/select';
 import { IconSelector, IconCheck, IconChevronUp, IconChevronDown } from '@tabler/icons-react';
+import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
 import { cn } from '#/utils/common';
@@ -16,32 +17,62 @@ function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   );
 }
 
-function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
+const selectValueVariants = cva('flex flex-1 text-left', {
+  variants: {
+    size: {
+      default: '',
+      sm: 'text-tiny'
+    }
+  },
+  defaultVariants: {
+    size: 'default'
+  }
+});
+
+function SelectValue({
+  className,
+  size,
+  ...props
+}: SelectPrimitive.Value.Props & VariantProps<typeof selectValueVariants>) {
   return (
     <SelectPrimitive.Value
       data-slot="select-value"
-      className={cn('flex flex-1 text-left', className)}
+      className={cn(selectValueVariants({ size }), className)}
       {...props}
     />
   );
 }
 
+const selectTriggerVariants = cva(
+  "flex w-fit items-center justify-between gap-1.5 rounded-none py-2 pr-2 pl-2.5 text-xs whitespace-nowrap transition-colors outline-none select-none focus-visible:ring-1 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-1 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-7 data-[size=sm]:rounded-none *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  {
+    variants: {
+      variant: {
+        default:
+          'border border-input bg-transparent focus-visible:border-ring aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
+        ghost: 'border border-transparent bg-transparent shadow-none'
+      }
+    },
+    defaultVariants: {
+      variant: 'default'
+    }
+  }
+);
+
 function SelectTrigger({
   className,
   size = 'default',
+  variant,
   children,
   ...props
 }: SelectPrimitive.Trigger.Props & {
   size?: 'sm' | 'default';
-}) {
+} & VariantProps<typeof selectTriggerVariants>) {
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       data-size={size}
-      className={cn(
-        "flex w-fit items-center justify-between gap-1.5 rounded-none border border-input bg-transparent py-2 pr-2 pl-2.5 text-xs whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-1 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-7 data-[size=sm]:rounded-none *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className
-      )}
+      className={cn(selectTriggerVariants({ variant }), className)}
       {...props}
     >
       {children}
@@ -104,14 +135,31 @@ function SelectLabel({ className, ...props }: SelectPrimitive.GroupLabel.Props) 
   );
 }
 
-function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Props) {
+const selectItemVariants = cva(
+  "relative flex w-full cursor-default items-center gap-2 rounded-none text-xs outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+  {
+    variants: {
+      indicatorPosition: {
+        end: 'py-2 pr-8 pl-2',
+        start: 'py-2 pr-2 pl-8'
+      }
+    },
+    defaultVariants: {
+      indicatorPosition: 'end'
+    }
+  }
+);
+
+function SelectItem({
+  className,
+  children,
+  indicatorPosition,
+  ...props
+}: SelectPrimitive.Item.Props & VariantProps<typeof selectItemVariants>) {
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
-      className={cn(
-        "relative flex w-full cursor-default items-center gap-2 rounded-none py-2 pr-8 pl-2 text-xs outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
-        className
-      )}
+      className={cn(selectItemVariants({ indicatorPosition }), className)}
       {...props}
     >
       <SelectPrimitive.ItemText className="flex flex-1 shrink-0 gap-2 whitespace-nowrap">
@@ -119,7 +167,12 @@ function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Prop
       </SelectPrimitive.ItemText>
       <SelectPrimitive.ItemIndicator
         render={
-          <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center" />
+          <span
+            className={cn(
+              'pointer-events-none absolute flex size-4 items-center justify-center',
+              indicatorPosition === 'start' ? 'left-2' : 'right-2'
+            )}
+          />
         }
       >
         <IconCheck className="pointer-events-none" />
