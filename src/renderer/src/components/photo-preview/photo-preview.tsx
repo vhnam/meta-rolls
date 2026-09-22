@@ -222,7 +222,7 @@ export function PhotoPreview({ photo, toolbarClassName }: PhotoPreviewProps) {
         )}
         {isRotating ? (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-background/40">
-            <Spinner className="size-6 text-muted-foreground" />
+            <Spinner className="size-6" />
           </div>
         ) : null}
       </div>

@@ -58,26 +58,28 @@ export function AlbumFormDialog({ open, album, onOpenChange, onSaveAlbum }: Albu
           <DialogHeader>
             <DialogTitle>{isEditing ? 'Rename album' : 'Add album'}</DialogTitle>
           </DialogHeader>
-          <FieldGroup className="py-6">
-            <FormischField of={form} path={['name']}>
-              {(field) => (
-                <Field data-invalid={field.errors !== null}>
-                  <FieldLabel htmlFor="form-name">Album name</FieldLabel>
-                  <Input
-                    {...field.props}
-                    id="form-name"
-                    value={field.input}
-                    aria-invalid={field.errors !== null}
-                    placeholder="My album"
-                    autoComplete="off"
-                  />
-                  {field.errors && (
-                    <FieldError errors={field.errors.map((message) => ({ message }))} />
-                  )}
-                </Field>
-              )}
-            </FormischField>
-          </FieldGroup>
+          <div className="py-6">
+            <FieldGroup>
+              <FormischField of={form} path={['name']}>
+                {(field) => (
+                  <Field data-invalid={field.errors !== null}>
+                    <FieldLabel htmlFor="form-name">Album name</FieldLabel>
+                    <Input
+                      {...field.props}
+                      id="form-name"
+                      value={field.input}
+                      aria-invalid={field.errors !== null}
+                      placeholder="My album"
+                      autoComplete="off"
+                    />
+                    {field.errors && (
+                      <FieldError errors={field.errors.map((message) => ({ message }))} />
+                    )}
+                  </Field>
+                )}
+              </FormischField>
+            </FieldGroup>
+          </div>
           <DialogFooter>
             <DialogClose
               render={

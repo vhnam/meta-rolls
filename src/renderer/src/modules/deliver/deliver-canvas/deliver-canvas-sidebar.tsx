@@ -87,9 +87,9 @@ export function DeliverCanvasSidebar({
 
   return (
     <div className="flex w-48 shrink-0 flex-col border-l border-border bg-muted/40 p-3">
-      <FieldGroup className="min-h-0 flex-1 gap-4">
+      <FieldGroup size="compact" className="min-h-0 flex-1">
         <Field>
-          <FieldLabel htmlFor="deliver-page-preset" className="text-tiny text-muted-foreground">
+          <FieldLabel htmlFor="deliver-page-preset" size="compact">
             Page preset
           </FieldLabel>
           <Select
@@ -112,7 +112,7 @@ export function DeliverCanvasSidebar({
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="deliver-page-size" className="text-tiny text-muted-foreground">
+          <FieldLabel htmlFor="deliver-page-size" size="compact">
             Page size
           </FieldLabel>
           <Select
@@ -142,7 +142,7 @@ export function DeliverCanvasSidebar({
             disabled={!albumId}
             onCheckedChange={handleShowPageNumbersChange}
           />
-          <FieldLabel htmlFor="deliver-page-numbers" className="text-tiny text-muted-foreground">
+          <FieldLabel htmlFor="deliver-page-numbers" size="compact">
             Page numbers
           </FieldLabel>
         </Field>
@@ -155,7 +155,7 @@ export function DeliverCanvasSidebar({
             disabled={!albumId}
             onCheckedChange={handleLeftHandFirstChange}
           />
-          <FieldLabel htmlFor="deliver-left-hand-first" className="text-tiny text-muted-foreground">
+          <FieldLabel htmlFor="deliver-left-hand-first" size="compact">
             Left-hand first
           </FieldLabel>
         </Field>

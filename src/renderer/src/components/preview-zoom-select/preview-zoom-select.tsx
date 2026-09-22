@@ -36,19 +36,13 @@ export function PreviewZoomSelect({
       value={value ?? PREVIEW_ZOOM_FIT}
       onValueChange={onChange}
     >
-      <SelectTrigger
-        size="sm"
-        className={cn('h-6 border-transparent bg-transparent shadow-none', triggerClassName)}
-      >
-        <SelectValue className="text-tiny" placeholder="Fit">
+      <SelectTrigger size="sm" variant="ghost" className={cn('h-6', triggerClassName)}>
+        <SelectValue size="sm" placeholder="Fit">
           {zoomLabel}
         </SelectValue>
       </SelectTrigger>
-      <SelectContent
-        align="start"
-        className="**:data-[slot=select-item]:pr-2 **:data-[slot=select-item]:pl-8 **:data-[slot=select-item]:[&_.absolute]:right-auto **:data-[slot=select-item]:[&_.absolute]:left-2"
-      >
-        <SelectItem value={PREVIEW_ZOOM_FIT}>
+      <SelectContent align="start">
+        <SelectItem value={PREVIEW_ZOOM_FIT} indicatorPosition="start">
           Fit
           <Kbd data-icon="inline-end" className="ml-auto translate-x-0.5">
             Z
@@ -57,7 +51,7 @@ export function PreviewZoomSelect({
         <SelectSeparator />
         {PREVIEW_ZOOM_OPTIONS.filter((option) => option.value !== PREVIEW_ZOOM_FIT).map(
           (option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <SelectItem key={option.value} value={option.value} indicatorPosition="start">
               {option.label}
             </SelectItem>
           )

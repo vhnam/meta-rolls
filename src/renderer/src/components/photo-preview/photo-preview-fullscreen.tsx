@@ -78,7 +78,7 @@ export function PhotoPreviewFullscreen({ photo, open, onOpenChange }: PhotoPrevi
       )}
       {(isRotating || (src !== null && heldSrc !== src)) && (
         <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-black/40">
-          <Spinner className="size-6 text-white" />
+          <Spinner tone="inverted" className="size-6" />
         </div>
       )}
     </div>,

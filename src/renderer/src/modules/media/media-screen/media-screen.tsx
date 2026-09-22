@@ -61,10 +61,7 @@ export default function MediaScreen() {
 
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
-      <ResizablePanelGroup
-        orientation="vertical"
-        className="min-h-0 flex-1 bg-background text-foreground"
-      >
+      <ResizablePanelGroup orientation="vertical" className="min-h-0 flex-1">
         <ResizablePanel defaultSize="55%" minSize="20%" className="min-h-0 min-w-0">
           <ResizablePanelGroup orientation="horizontal" className="min-h-0">
             <ResizablePanel defaultSize="65%" minSize="20%" className="min-h-0 min-w-0">

@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.5] - 2026-09-22
+
+### Changed
+
+- Media/Cull/Deliver screens, the album form dialog, photo previews, the preview zoom select, and the deliver canvas sidebar now use the new UI variants instead of one-off `className` overrides. Preferences dialog's title also renders the section's label instead of capitalizing its raw id via CSS.
+
 ## [3.6.4] - 2026-09-22
 
 ### Changed

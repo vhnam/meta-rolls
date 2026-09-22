@@ -82,7 +82,7 @@ export function PhotoThumbnailTile({
             aria-label="Rotating photo"
             className="absolute inset-0 flex items-center justify-center bg-black/40"
           >
-            <Spinner className="size-4 text-white" />
+            <Spinner tone="inverted" />
           </span>
         ) : null}
         {placed ? (

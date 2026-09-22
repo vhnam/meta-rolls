@@ -85,11 +85,11 @@ export const PhotoPreviewImage = memo(function PhotoPreviewImage({
         <ContextMenuGroup>
           <ContextMenuItem disabled={!onRotatePhoto} onClick={() => onRotatePhoto?.('cw')}>
             Rotate 90° Clockwise
-            <ContextMenuShortcut className="pl-4">{rotateShortcutMod}&#93;</ContextMenuShortcut>
+            <ContextMenuShortcut>{rotateShortcutMod}&#93;</ContextMenuShortcut>
           </ContextMenuItem>
           <ContextMenuItem disabled={!onRotatePhoto} onClick={() => onRotatePhoto?.('ccw')}>
             Rotate 90° Counterclockwise
-            <ContextMenuShortcut className="pl-4">{rotateShortcutMod}&#91;</ContextMenuShortcut>
+            <ContextMenuShortcut>{rotateShortcutMod}&#91;</ContextMenuShortcut>
           </ContextMenuItem>
         </ContextMenuGroup>
       </ContextMenuContent>

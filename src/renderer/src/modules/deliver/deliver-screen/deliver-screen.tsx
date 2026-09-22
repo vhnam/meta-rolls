@@ -97,10 +97,7 @@ export function DeliverScreen() {
 
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
-      <ResizablePanelGroup
-        orientation="horizontal"
-        className="min-h-0 flex-1 bg-background text-foreground"
-      >
+      <ResizablePanelGroup orientation="horizontal" className="min-h-0 flex-1">
         <ResizablePanel defaultSize="15%" minSize="10%" maxSize="30%" className="min-h-0 min-w-0">
           <ResizablePanelGroup orientation="vertical" className="min-h-0">
             <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
