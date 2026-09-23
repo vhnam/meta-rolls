@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.22.0] - 2026-09-24
+
+### Added
+
+- Rolls section in Preferences (⌘,): a switch to hide the Rolls workspace for digital-only users (removes the tab and redirects `/rolls` to Media; stored rolls are kept) and a default currency, which new dev jobs start with instead of the hard-coded VND. Both persist with the other settings.
+
 ## [3.21.0] - 2026-09-24
 
 ### Added

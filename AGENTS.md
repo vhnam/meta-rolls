@@ -99,7 +99,8 @@ src/renderer/src/
 │   │   └── deliver-page-strip/    # thumbnail strip of pages, reorder/add/remove
 │   └── preferences/
 │       ├── preferences-dialog/    # the Cmd+, dialog shell
-│       └── preferences-appearance/ # theme/language section
+│       ├── preferences-appearance/ # theme/language section
+│       └── preferences-rolls/     # show/hide Rolls workspace, default currency
 ├── components/                    # shared across modules — see "Shared components" below
 │   ├── ui/                        # shadcn only (button, tabs, …) — regenerate, don't hand-edit
 │   ├── app-title-bar/             # bottom tab bar (Media / Cull / Deliver)
@@ -133,7 +134,7 @@ src/renderer/src/
 │   ├── album.store.ts             # album list, active album, view/zoom, rate/add/remove
 │   ├── rolls.store.ts             # film rolls snapshot, list filters/sort, roll actions
 │   ├── canvas.store.ts            # print layout: slot placement/crop/fit, spreads, rotation
-│   └── settings.store.ts          # theme, language (Zustand persist → IPC)
+│   └── settings.store.ts          # theme, language, rollsEnabled, defaultCurrency (Zustand persist → IPC)
 ├── types/                         # renderer domain types and const enums
 │   ├── album.ts
 │   ├── canvas.ts

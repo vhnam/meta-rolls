@@ -3,18 +3,25 @@ import { createJSONStorage, persist, type StateStorage } from 'zustand/middlewar
 
 import { LANGUAGE_PREFERENCE, PRINT_FORMAT, THEME_PREFERENCE } from '#/constants/settings';
 import { getApi } from '#/hooks/use-ipc';
+import { DEFAULT_CURRENCY } from '#/shared/rolls';
 import { type LanguagePreference, type PrintFormat, type ThemePreference } from '#/types';
 
 type SettingsState = {
   theme: ThemePreference;
   language: LanguagePreference;
   defaultPrintFormat: PrintFormat;
+  /** Digital-only users can hide the Rolls workspace. */
+  rollsEnabled: boolean;
+  /** Currency a new dev job starts with (ISO 4217 code). */
+  defaultCurrency: string;
 };
 
 type SettingsActions = {
   setTheme: (theme: ThemePreference) => void;
   setLanguage: (language: LanguagePreference) => void;
   setDefaultPrintFormat: (format: PrintFormat) => void;
+  setRollsEnabled: (enabled: boolean) => void;
+  setDefaultCurrency: (currency: string) => void;
 };
 
 export type SettingsStore = SettingsState & SettingsActions;
@@ -31,9 +38,14 @@ export const useSettingsStore = create<SettingsStore>()(
       theme: THEME_PREFERENCE.system,
       language: LANGUAGE_PREFERENCE.en,
       defaultPrintFormat: PRINT_FORMAT.instaxMini,
+      rollsEnabled: true,
+      defaultCurrency: DEFAULT_CURRENCY,
       setTheme: (theme) => set({ theme }),
       setLanguage: (language) => set({ language }),
-      setDefaultPrintFormat: (defaultPrintFormat) => set({ defaultPrintFormat })
+      setDefaultPrintFormat: (defaultPrintFormat) => set({ defaultPrintFormat }),
+      setRollsEnabled: (rollsEnabled) => set({ rollsEnabled }),
+      setDefaultCurrency: (currency) =>
+        set({ defaultCurrency: currency.trim().toUpperCase().slice(0, 3) || DEFAULT_CURRENCY })
     }),
     {
       name: 'settings',
@@ -41,7 +53,9 @@ export const useSettingsStore = create<SettingsStore>()(
       partialize: (state) => ({
         theme: state.theme,
         language: state.language,
-        defaultPrintFormat: state.defaultPrintFormat
+        defaultPrintFormat: state.defaultPrintFormat,
+        rollsEnabled: state.rollsEnabled,
+        defaultCurrency: state.defaultCurrency
       }),
       skipHydration: true
     }

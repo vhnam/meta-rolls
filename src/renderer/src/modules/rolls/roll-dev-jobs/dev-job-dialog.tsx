@@ -12,8 +12,9 @@ import {
 import { Field, FieldGroup, FieldLabel } from '#/components/ui/field';
 import { Input } from '#/components/ui/input';
 import { FILM_PROCESS_LABEL } from '#/constants/rolls';
-import { DEFAULT_CURRENCY, FILM_PROCESSES, type DevJob, type FilmProcess } from '#/shared/rolls';
+import { FILM_PROCESSES, type DevJob, type FilmProcess } from '#/shared/rolls';
 import { useRollsStore } from '#/stores/rolls.store';
+import { useSettingsStore } from '#/stores/settings.store';
 
 const LAB_LIST_ID = 'dev-job-labs';
 
@@ -28,6 +29,7 @@ type DevJobDialogProps = {
 /** Mounted only while open, so its fields initialise from props without an effect. */
 export function DevJobDialog({ rollId, job, defaultProcess, onClose }: DevJobDialogProps) {
   const rolls = useRollsStore((state) => state.rolls);
+  const defaultCurrency = useSettingsStore((state) => state.defaultCurrency);
   const saveDevJob = useRollsStore((state) => state.saveDevJob);
   const labs = [
     ...new Set(rolls.flatMap((roll) => roll.devJobs.map((j) => j.lab)).filter(Boolean))
@@ -35,7 +37,7 @@ export function DevJobDialog({ rollId, job, defaultProcess, onClose }: DevJobDia
 
   const [lab, setLab] = useState(job?.lab ?? '');
   const [price, setPrice] = useState(job?.price?.toString() ?? '');
-  const [currency, setCurrency] = useState(job?.currency ?? DEFAULT_CURRENCY);
+  const [currency, setCurrency] = useState(job?.currency ?? defaultCurrency);
   const [sentAt, setSentAt] = useState(job?.sentAt ?? '');
   const [receivedAt, setReceivedAt] = useState(job?.receivedAt ?? '');
   const [process, setProcess] = useState<FilmProcess>(job?.process ?? defaultProcess);
@@ -52,7 +54,7 @@ export function DevJobDialog({ rollId, job, defaultProcess, onClose }: DevJobDia
         rollId,
         lab: lab.trim(),
         price: price.trim() === '' || Number.isNaN(Number(price)) ? null : Number(price),
-        currency: currency.trim().toUpperCase() || DEFAULT_CURRENCY,
+        currency: currency.trim().toUpperCase() || defaultCurrency,
         sentAt: sentAt || null,
         receivedAt: receivedAt || null,
         process,

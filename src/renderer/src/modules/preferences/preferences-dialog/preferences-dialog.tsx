@@ -3,9 +3,13 @@ import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '#/components/ui/dialog';
 import { getApi } from '#/hooks/use-ipc';
 import { PreferencesAppearance } from '#/modules/preferences/preferences-appearance';
+import { PreferencesRolls } from '#/modules/preferences/preferences-rolls';
 import { cn } from '#/utils/common';
 
-const NAV_ITEMS = [{ id: 'appearance', label: 'Appearance' }] as const;
+const NAV_ITEMS = [
+  { id: 'appearance', label: 'Appearance' },
+  { id: 'rolls', label: 'Rolls' }
+] as const;
 
 type PreferencesSection = (typeof NAV_ITEMS)[number]['id'];
 
@@ -55,11 +59,9 @@ export default function PreferencesDialog() {
           <DialogDescription className="sr-only">
             Choose how Meta Rolls looks and behaves.
           </DialogDescription>
-          {section === 'appearance' ? (
-            <section className="mt-6 flex flex-col gap-1">
-              <PreferencesAppearance />
-            </section>
-          ) : null}
+          <section className="mt-6 flex flex-col gap-1">
+            {section === 'appearance' ? <PreferencesAppearance /> : <PreferencesRolls />}
+          </section>
         </div>
       </DialogContent>
     </Dialog>

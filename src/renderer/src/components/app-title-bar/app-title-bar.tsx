@@ -3,6 +3,7 @@ import { useNavigate, useRouterState } from '@tanstack/react-router';
 
 import { Tabs, TabsList, TabsTrigger } from '#/components/ui/tabs';
 import appIcon from '#/resources/icon.png';
+import { useSettingsStore } from '#/stores/settings.store';
 
 const TAB_ROUTES = {
   rolls: '/rolls',
@@ -15,6 +16,7 @@ type TabValue = keyof typeof TAB_ROUTES;
 
 export default function AppTitleBar() {
   const navigate = useNavigate();
+  const rollsEnabled = useSettingsStore((state) => state.rollsEnabled);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const value: TabValue = pathname.startsWith('/rolls')
     ? 'rolls'
@@ -41,10 +43,12 @@ export default function AppTitleBar() {
         </div>
         <Tabs value={value} onValueChange={handleValueChange}>
           <TabsList variant="line">
-            <TabsTrigger value="rolls">
-              <IconMovie className="size-4" />
-              Rolls
-            </TabsTrigger>
+            {rollsEnabled && (
+              <TabsTrigger value="rolls">
+                <IconMovie className="size-4" />
+                Rolls
+              </TabsTrigger>
+            )}
             <TabsTrigger value="media">
               <IconPhotoAlt className="size-4" />
               Media
