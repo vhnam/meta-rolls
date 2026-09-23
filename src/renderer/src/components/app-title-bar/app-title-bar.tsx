@@ -1,10 +1,11 @@
-import { IconBook2, IconPhotoAlt, IconPhotoCheck } from '@tabler/icons-react';
+import { IconBook2, IconMovie, IconPhotoAlt, IconPhotoCheck } from '@tabler/icons-react';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 
 import { Tabs, TabsList, TabsTrigger } from '#/components/ui/tabs';
 import appIcon from '#/resources/icon.png';
 
 const TAB_ROUTES = {
+  rolls: '/rolls',
   media: '/media',
   cull: '/cull',
   deliver: '/deliver'
@@ -15,14 +16,16 @@ type TabValue = keyof typeof TAB_ROUTES;
 export default function AppTitleBar() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const value: TabValue = pathname.startsWith('/cull')
-    ? 'cull'
-    : pathname.startsWith('/deliver')
-      ? 'deliver'
-      : 'media';
+  const value: TabValue = pathname.startsWith('/rolls')
+    ? 'rolls'
+    : pathname.startsWith('/cull')
+      ? 'cull'
+      : pathname.startsWith('/deliver')
+        ? 'deliver'
+        : 'media';
 
   const handleValueChange = (next: TabValue) => {
-    if (!['media', 'cull', 'deliver'].includes(next)) {
+    if (!(next in TAB_ROUTES)) {
       return;
     }
 
@@ -38,6 +41,10 @@ export default function AppTitleBar() {
         </div>
         <Tabs value={value} onValueChange={handleValueChange}>
           <TabsList variant="line">
+            <TabsTrigger value="rolls">
+              <IconMovie className="size-4" />
+              Rolls
+            </TabsTrigger>
             <TabsTrigger value="media">
               <IconPhotoAlt className="size-4" />
               Media

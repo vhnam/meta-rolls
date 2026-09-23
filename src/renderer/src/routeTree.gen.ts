@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CullRouteImport } from './routes/cull'
 import { Route as DeliverRouteImport } from './routes/deliver'
 import { Route as MediaRouteImport } from './routes/media'
+import { Route as RollsRouteImport } from './routes/rolls'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,25 @@ const MediaRoute = MediaRouteImport.update({
   path: '/media',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RollsRoute = RollsRouteImport.update({
+  id: '/rolls',
+  path: '/rolls',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cull': typeof CullRoute
   '/deliver': typeof DeliverRoute
   '/media': typeof MediaRoute
+  '/rolls': typeof RollsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cull': typeof CullRoute
   '/deliver': typeof DeliverRoute
   '/media': typeof MediaRoute
+  '/rolls': typeof RollsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/cull': typeof CullRoute
   '/deliver': typeof DeliverRoute
   '/media': typeof MediaRoute
+  '/rolls': typeof RollsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cull' | '/deliver' | '/media'
+  fullPaths: '/' | '/cull' | '/deliver' | '/media' | '/rolls'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cull' | '/deliver' | '/media'
-  id: '__root__' | '/' | '/cull' | '/deliver' | '/media'
+  to: '/' | '/cull' | '/deliver' | '/media' | '/rolls'
+  id: '__root__' | '/' | '/cull' | '/deliver' | '/media' | '/rolls'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +76,7 @@ export interface RootRouteChildren {
   CullRoute: typeof CullRoute
   DeliverRoute: typeof DeliverRoute
   MediaRoute: typeof MediaRoute
+  RollsRoute: typeof RollsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MediaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rolls': {
+      id: '/rolls'
+      path: '/rolls'
+      fullPath: '/rolls'
+      preLoaderRoute: typeof RollsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   CullRoute: CullRoute,
   DeliverRoute: DeliverRoute,
   MediaRoute: MediaRoute,
+  RollsRoute: RollsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

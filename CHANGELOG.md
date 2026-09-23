@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.13.0] - 2026-09-24
+
+### Added
+
+- Rolls tab and `/rolls` route: the bottom tab bar is now `Rolls · Media · Cull · Deliver`, and the Rolls screen shows the roll list beside the roll detail. ⌘/Ctrl+N opens the add-roll dialog.
+
 ## [3.12.0] - 2026-09-24
 
 ### Added
