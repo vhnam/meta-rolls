@@ -5,10 +5,18 @@ first public release. Checked items are done; the rest is the work queue.
 
 ## My mistakes from earlier in this session
 
-- [ ] **Commit trailers.** AGENTS.md forbids `Co-Authored-By` trailers in commits. I added
+- [x] **Commit trailers.** AGENTS.md forbids `Co-Authored-By` trailers in commits. I added
       one to 11 commits already pushed to `origin/feat/deliver`. Fixing this means rewriting
       those 11 commits and force-pushing — needs your explicit go-ahead since it rewrites
       pushed history.
+      Fixed: by the time this ran, 16 commits actually carried the trailer (more had landed
+      since this note was written). Rewrote `884e436..HEAD` (20 commits touched, 16 of them
+      content-changed) with a `git filter-branch --msg-filter` that only strips the exact
+      `Co-Authored-By: Claude Sonnet 5 <...>` line — verified `884e436` itself, which just
+      _mentions_ "Co-Authored-By" in its body explaining this rule, was correctly left alone.
+      Confirmed identical file trees before/after (`git diff` empty), zero trailer matches
+      left, then force-pushed with `--force-with-lease`. A local-only backup branch,
+      `backup/before-trailer-cleanup`, still points at the old tip.
 - [x] **Bundle size claim was wrong.** I said the ~98 MB asar was "legitimately exiftool".
       It's actually dominated by shipped developer tooling (`.gitnexus`, etc.) — see Blocker 1.
 - [x] **Cache correctness claim was wrong.** My immutable-cache commit says the `v` param
@@ -109,9 +117,22 @@ Only reviewed via code reading — could not run the app in this environment.
 
 ## Suggested order
 
-1. Blockers 1, 2, 5 + the two extension-check gaps + the `file:` navigation scoping —
-   small, no trailer concerns.
-2. Manual smoke test of a packaged build from a clean userData folder.
-3. Fix the `v`-param cache-correctness issue (derive from file mtime).
-4. Code signing / notarization (needs your Apple Developer account).
-5. Decide on rewriting the 11 commits to drop `Co-Authored-By` trailers (force-push).
+1. [x] Blockers 1, 2, 5 + the two extension-check gaps + the `file:` navigation scoping.
+2. [ ] Manual smoke test of a packaged build from a clean userData folder. **Needs you** —
+       this sandbox can't launch Electron with a display.
+3. [x] Fix the `v`-param cache-correctness issue (derive from file mtime).
+4. [ ] Code signing / notarization. **Needs you** — Apple Developer account.
+5. [x] Rewrite commits to drop `Co-Authored-By` trailers (force-pushed).
+
+### Still open, not in the original numbered list
+
+- `src/main/services/pdf-export.ts`'s `services/` + Electron-API layering violation.
+- AGENTS.md's stale file tree (Deliver module, `ipc/deliver.ts`, `services/pdf-export.ts`,
+  `shared/print.ts`, `app/apply-exif-orientation.ts`).
+- No tests anywhere in the repo.
+- `DeliverScreen`'s unselected `useMediaPoolStore()` call.
+- Thumbnail cache eviction's full `readdir` + `stat` scan past ~2000 entries.
+- Raw IPC error text in toasts; no `BrowserWindow` `minWidth`/`minHeight`; first-run flow
+  not visually verified.
+- The imprecise `image-decode.ts` refactor claim (RAW previews now also run the
+  baked-orientation check) — flagged as low-risk, not re-verified.
