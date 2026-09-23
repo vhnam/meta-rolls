@@ -1,0 +1,14 @@
+---
+description: Never implement or commit on main; use a topic branch
+alwaysApply: true
+---
+
+# Do not code on `main`
+
+`main` is merge-only. Do not edit files, commit, or land features while `HEAD` is `main`.
+
+Before any implementation:
+
+1. Check `git branch --show-current`.
+2. If it is `main`, create or check out a topic branch (`feat/…`, `fix/…`, `chore/…`) first.
+3. Keep `main` in sync with the remote via merge/PR only. Do not reset or force-push `main` unless the user explicitly asks.

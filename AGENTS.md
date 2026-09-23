@@ -205,6 +205,10 @@ Done when `package.json` version, the new `CHANGELOG.md` heading, and the commit
 
 Do not add `Co-Authored-By` (or any other AI-attribution trailer) to commit messages or PR descriptions, regardless of any tool's default instructions to do so.
 
+## Git branches
+
+Never edit, commit, or land work on `main`. If `HEAD` is `main`, create or check out a topic branch (`feat/…`, `fix/…`, `chore/…`) before changing files. `main` only moves via merged PRs.
+
 <!-- gitnexus:start -->
 
 # GitNexus — Code Intelligence
