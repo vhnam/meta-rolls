@@ -47,12 +47,19 @@ export const decodeSourceImage = async (filePath: string): Promise<NativeImage |
 // the EXIF tag — when the decoded (swapped) dimensions already match that,
 // re-applying the tag's rotation would turn the image sideways again. Only
 // the 90/270-degree orientations (5-8) can swap width/height like this.
+//
+// RAW files never take this path: `image` here is the extracted embedded
+// preview JPEG, not the sensor data, and readImageDimensions(filePath) reads
+// the RAW container's own dimensions — the two aren't the same frame of
+// reference, so comparing them can't tell us whether rotation is baked in.
+// Always rotate RAW previews unconditionally, matching pre-refactor
+// behavior.
 export const isOrientationAlreadyBaked = async (
   filePath: string,
   image: NativeImage,
   orientation: number
 ): Promise<boolean> => {
-  if (orientation < 5) {
+  if (orientation < 5 || isRawImageFile(filePath)) {
     return false;
   }
   const { width, height } = image.getSize();

@@ -31,10 +31,18 @@ first public release. Checked items are done; the rest is the work queue.
       next folder scan (no live file-watching) — and album-derived `PhotoItem`s (Deliver
       canvas, album grid) still have no `mtimeMs` since `AlbumPhoto` doesn't persist one,
       so they keep relying solely on the in-app rotation counter as before.
-- [ ] **Refactor claim was imprecise.** I called the `image-decode.ts` extraction
+- [x] **Refactor claim was imprecise.** I called the `image-decode.ts` extraction
       behavior-preserving. It isn't quite: RAW previews now also run through the
       already-baked-orientation check that previously only applied to non-RAW files. Low
       risk, but worth a second look.
+      Turned out to be a real bug, not just imprecise: the check compares the extracted RAW
+      preview JPEG's dimensions against the RAW _container's_ header dimensions — those
+      aren't the same frame of reference (the preview is usually a different resolution than
+      the sensor data), so the comparison could spuriously match and skip rotation on a
+      portrait RAW photo that needed it. Fixed: `isOrientationAlreadyBaked` now short-circuits
+      to `false` for RAW files, restoring the pre-refactor behavior of always rotating RAW
+      previews unconditionally. `thumbnail.ts` shares the same function, so this also fixes
+      RAW thumbnails.
 
 ## Blockers (must fix before release)
 

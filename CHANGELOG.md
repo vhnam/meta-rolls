@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.6] - 2026-09-23
+
+### Fixed
+
+- `isOrientationAlreadyBaked`'s already-baked-rotation heuristic now skips RAW files instead of running against them. It compares the decoded image's dimensions to the file's own header dimensions to detect whether a camera already baked rotation into the pixels — for a RAW file, the decoded image is the embedded preview JPEG, not the sensor data, so that comparison isn't valid and could spuriously skip rotation on a portrait RAW photo. RAW previews (full-resolution and thumbnails) now always rotate unconditionally when the EXIF orientation calls for it, matching the behavior before the `image-decode.ts` extraction.
+
 ## [3.9.5] - 2026-09-23
 
 ### Fixed
