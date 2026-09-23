@@ -215,3 +215,17 @@ export type RollScanStatus = {
   folderMissing: boolean;
   missingPaths: string[];
 };
+
+/** The roll and frame a scan file is linked to, if any. */
+export const findFrameByScanPath = (
+  rolls: Roll[],
+  path: string
+): { roll: Roll; frame: RollFrame } | null => {
+  for (const roll of rolls) {
+    const frame = roll.frames.find((item) => item.scanPath === path);
+    if (frame) {
+      return { roll, frame };
+    }
+  }
+  return null;
+};

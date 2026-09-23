@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.21.0] - 2026-09-24
+
+### Added
+
+- "From roll" section in the metadata panel (Media, Cull, and Deliver) for any photo whose file is linked to a roll frame: roll and frame number, film stock, shot ISO with push/pull, camera, lens (the frame's override or the roll default), aperture, and shutter. Photos not linked to a roll are unchanged. `findFrameByScanPath` added to `shared/rolls.ts`.
+
 ## [3.20.0] - 2026-09-24
 
 ### Added

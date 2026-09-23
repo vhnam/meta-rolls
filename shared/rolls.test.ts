@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  type Roll,
   type RollFrame,
   daysUntilExpiry,
   defaultRollName,
+  findFrameByScanPath,
   formatPushPull,
   isFrameEmpty,
   nextRollStatus,
@@ -79,5 +81,16 @@ describe('rolls helpers', () => {
     expect(more.extraFiles.map((f) => f.name)).toEqual(['d']);
     const fewer = planScanLink([{ name: 'a', path: '/a' }], frames);
     expect(fewer.emptyFrameNumbers).toEqual([2, 3]);
+  });
+
+  it('finds the frame a scan path is linked to', () => {
+    const frame = (id: string, scanPath: string | null) => ({ id, scanPath }) as RollFrame;
+    const rolls = [
+      { id: 'a', frames: [frame('a1', '/s/1.jpg')] },
+      { id: 'b', frames: [frame('b1', null), frame('b2', '/t/9.jpg')] }
+    ] as Roll[];
+    expect(findFrameByScanPath(rolls, '/t/9.jpg')?.frame.id).toBe('b2');
+    expect(findFrameByScanPath(rolls, '/t/9.jpg')?.roll.id).toBe('b');
+    expect(findFrameByScanPath(rolls, '/nope.jpg')).toBeNull();
   });
 });
