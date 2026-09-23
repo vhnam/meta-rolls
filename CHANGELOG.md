@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.10] - 2026-09-23
+
+### Added
+
+- Vitest for unit tests (`pnpm test` / `pnpm test:watch`), scoped to pure logic in `shared/` and `src/main/` — no DOM or Electron dependency needed. First suite: `shared/print.test.ts`, covering rotation normalization, slot layout, folio numbering, and `parseDeliverPdfExportRequest`'s validation (valid input, the legacy `firstPageIsLeftHand` alias, and every rejection path). Wired into the pre-commit hook alongside format/lint.
+
 ## [3.9.9] - 2026-09-23
 
 ### Changed
