@@ -5,6 +5,7 @@ import { isEditableKeyboardTarget } from '#/utils/common';
 
 import { RollDetail } from '../roll-detail';
 import { RollFormDialog } from '../roll-form-dialog';
+import { FrameInspector } from '../roll-frames';
 import { RollsList } from '../rolls-list';
 
 export function RollsScreen() {
@@ -28,12 +29,16 @@ export function RollsScreen() {
   return (
     <>
       <ResizablePanelGroup orientation="horizontal" className="h-full">
-        <ResizablePanel defaultSize="30%" minSize="20%" maxSize="50%">
+        <ResizablePanel defaultSize="30%" minSize="20%" maxSize="40%">
           <RollsList onAddRoll={() => setDialogOpen(true)} />
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel defaultSize="70%" minSize="40%">
+        <ResizablePanel defaultSize="45%" minSize="30%">
           <RollDetail />
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel defaultSize="25%" minSize="15%" maxSize="40%">
+          <FrameInspector />
         </ResizablePanel>
       </ResizablePanelGroup>
       <RollFormDialog open={dialogOpen} onOpenChange={setDialogOpen} />

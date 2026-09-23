@@ -1,7 +1,7 @@
 import { Field, FieldLabel } from '#/components/ui/field';
 import { Input } from '#/components/ui/input';
 
-type RollDetailFieldProps = {
+type RollsFieldProps = {
   label: string;
   value: string;
   type?: 'text' | 'number' | 'date';
@@ -14,13 +14,13 @@ type RollDetailFieldProps = {
  * Uncontrolled and keyed by the saved value: when a save reloads the roll, the input remounts
  * with the new value instead of syncing state in an effect.
  */
-export function RollDetailField({
+export function RollsField({
   label,
   value,
   type = 'text',
   placeholder,
   onCommit
-}: RollDetailFieldProps) {
+}: RollsFieldProps) {
   return (
     <Field>
       <FieldLabel>{label}</FieldLabel>

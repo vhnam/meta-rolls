@@ -18,9 +18,10 @@ import {
 import { useRollsStore } from '#/stores/rolls.store';
 
 import { DevJobDialog, RollDevJobs } from '../roll-dev-jobs';
+import { RollFrameGrid } from '../roll-frames';
+import { RollsField } from '../rolls-field';
 import { cameraLabel, stockLabel } from '../rolls-list/rolls-list-model';
 import { RollsOptionSelect } from '../rolls-option-select';
-import { RollDetailField } from './roll-detail-field';
 
 const NONE = 'none';
 
@@ -79,7 +80,7 @@ function RollDetailBody({ roll }: { roll: Roll }) {
       <div className="mx-auto flex max-w-2xl flex-col gap-4">
         <header className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
-            <RollDetailField
+            <RollsField
               label="Roll name"
               value={roll.name}
               onCommit={(name) => name.trim() && void updateRoll(roll.id, { name: name.trim() })}
@@ -174,7 +175,7 @@ function RollDetailBody({ roll }: { roll: Roll }) {
               ]}
             />
           </Field>
-          <RollDetailField
+          <RollsField
             label="Exposures"
             type="number"
             value={String(roll.exposures)}
@@ -187,7 +188,7 @@ function RollDetailBody({ roll }: { roll: Roll }) {
             }}
           />
           <div>
-            <RollDetailField
+            <RollsField
               label="Shot ISO"
               type="number"
               value={String(roll.shotIso)}
@@ -197,26 +198,26 @@ function RollDetailBody({ roll }: { roll: Roll }) {
             />
             {pushPull && <p className="mt-1 text-xs text-muted-foreground">{pushPull}</p>}
           </div>
-          <RollDetailField
+          <RollsField
             label="Expiry date"
             type="date"
             value={roll.expiryAt ?? ''}
             onCommit={(value) => void updateRoll(roll.id, { expiryAt: value || null })}
           />
-          <RollDetailField
+          <RollsField
             label="Loaded"
             type="date"
             value={roll.loadedAt ?? ''}
             onCommit={(value) => void updateRoll(roll.id, { loadedAt: value || null })}
           />
-          <RollDetailField
+          <RollsField
             label="Finished"
             type="date"
             value={roll.finishedAt ?? ''}
             onCommit={(value) => void updateRoll(roll.id, { finishedAt: value || null })}
           />
           <div className="col-span-2">
-            <RollDetailField
+            <RollsField
               label="Notes"
               value={roll.notes}
               onCommit={(notes) => void updateRoll(roll.id, { notes })}
@@ -239,9 +240,7 @@ function RollDetailBody({ roll }: { roll: Roll }) {
           />
         )}
 
-        <p className="text-xs text-muted-foreground">
-          {roll.frames.length} frames · {roll.frames.filter((f) => f.scanPath).length} scanned
-        </p>
+        <RollFrameGrid roll={roll} />
       </div>
     </div>
   );

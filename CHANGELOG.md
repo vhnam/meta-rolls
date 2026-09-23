@@ -5,6 +5,17 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.16.0] - 2026-09-24
+
+### Added
+
+- Frame grid on the roll detail: numbered frames, click / ⌘-click / Shift-click selection, arrow keys to move (Shift extends), a dot on frames with details, dashed style for blank frames, "Add frame", and "Remove last" (only enabled when the last frame has no scan or details).
+- Frame inspector as a third pane on `/rolls`: aperture, shutter speed, lens (roll default or override), date, location, notes, and an unexposed/blank switch. With several frames selected, shared values show and differing ones read "Mixed"; an edit applies to all selected frames.
+
+### Changed
+
+- The shared save-on-blur input moved from `roll-detail-field` to `modules/rolls/rolls-field`, since the detail and inspector both use it.
+
 ## [3.15.0] - 2026-09-24
 
 ### Added

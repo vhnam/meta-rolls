@@ -82,6 +82,8 @@ src/renderer/src/
 │   │   ├── rolls-list/            # roll list: grouped by status, filters, search, sort
 │   │   ├── roll-detail/           # editable roll fields, status control
 │   │   ├── roll-dev-jobs/         # Development section + dev job dialog
+│   │   ├── roll-frames/           # frame grid (selection, add/remove) + frame inspector
+│   │   ├── rolls-field/           # save-on-blur input shared by detail and inspector
 │   │   ├── roll-form-dialog/      # add roll (pick/create stock, camera, quantity)
 │   │   └── rolls-option-select/   # small value/label Select wrapper for the Rolls module
 │   ├── cull/
