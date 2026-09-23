@@ -2,6 +2,8 @@
 
 Electron + React app: browse/filter photos, manage album layouts, print Instax.
 
+**Product context:** [docs/product/requirements.md](docs/product/requirements.md) — purpose, users, feature priorities, non-goals, and why each tool was chosen. Read it before adding a feature, changing scope, or adding a dependency.
+
 ## Worlds
 
 Put new code in one of four roots. Match the world to the runtime:
@@ -146,6 +148,10 @@ scripts/
 ├── dev.ts                         # vite renderer + watch main/preload + electron
 ├── fix-macos-app-name.ts
 └── generate-app-icons.ts
+
+docs/
+├── product/                       # purpose, users, priorities, non-goals
+└── reviews/                       # dated audits and release-readiness notes
 ```
 
 New IPC domain → `src/main/ipc/<domain>.ts` plus Node work in `src/main/services/`. New window → `src/main/windows/<name>-window.ts` (today `createWindow()` lives inline in `src/main/index.ts` — extract it there once a second window is needed). New renderer screen → `src/renderer/src/modules/<screen>/<screen>-<part>/` plus a route under `src/renderer/src/routes/`. New component shared by two or more modules → `src/renderer/src/components/<name>/`; a component used by only one module stays under that module. Same rule for `utils/`: a helper used by one module can live there, but the moment a second module needs it, move it into `utils/<area>/`. Generated shadcn stays in `src/renderer/src/components/ui/` — regenerate via the shadcn CLI rather than hand-editing (`components.json`'s `utils`/`lib` aliases point at `utils/common`). Renderer imports use `#/` (`#/components/…`, `#/utils/…`).
