@@ -116,12 +116,26 @@ first public release. Checked items are done; the rest is the work queue.
 
 Only reviewed via code reading — could not run the app in this environment.
 
-- [ ] Error toasts surface Electron's raw IPC error text (`Error invoking remote method
+- [x] Error toasts surface Electron's raw IPC error text (`Error invoking remote method
 '…': Error: …`) instead of a clean message.
-- [ ] `BrowserWindow` has no `minWidth`/`minHeight` — resizable panels can be dragged into an
+      Fixed: `use-ipc.ts`'s `toMessage` strips Electron's `Error invoking remote
+    handler/method '<channel>': Error: ` wrapper before showing the message. Note: I
+      could not run a real IPC rejection in this sandbox to confirm the exact wrapper text
+      Electron 44 produces — the regex is written from well-documented Electron behavior
+      that's been stable across versions, and the fallback is safe either way (a
+      non-matching message just passes through unchanged, same as before this fix).
+- [x] `BrowserWindow` has no `minWidth`/`minHeight` — resizable panels can be dragged into an
       unusable layout.
-- [ ] Empty states exist for albums (`Empty`/`EmptyMedia`/`EmptyDescription`); first-run flow
+      Fixed: `minWidth: 760, minHeight: 480` in `index.ts`'s `createWindow`.
+- [x] Empty states exist for albums (`Empty`/`EmptyMedia`/`EmptyDescription`); first-run flow
       as a whole hasn't been visually verified.
+      Code-reviewed (not visually verified — still can't run a display here): on first
+      launch `loadVolumes()` auto-selects the first disk volume as the active folder rather
+      than leaving nothing selected, an empty/no-match folder shows "No files in this
+      folder." (`PhotoThumbnailShell`'s `isEmpty`/`emptyMessage`), the Albums pane shows "No
+      albums yet" / "Select an album to view its photos", and `PhotoPreview` branches
+      cleanly on `photo === null`. No bugs found, but this is still not a substitute for
+      actually launching a fresh install.
 
 ## Suggested order
 
@@ -140,7 +154,7 @@ Only reviewed via code reading — could not run the app in this environment.
 - No tests anywhere in the repo.
 - `DeliverScreen`'s unselected `useMediaPoolStore()` call.
 - Thumbnail cache eviction's full `readdir` + `stat` scan past ~2000 entries.
-- Raw IPC error text in toasts; no `BrowserWindow` `minWidth`/`minHeight`; first-run flow
-  not visually verified.
-- The imprecise `image-decode.ts` refactor claim (RAW previews now also run the
-  baked-orientation check) — flagged as low-risk, not re-verified.
+
+All three UI/UX items (raw IPC error text, window min-size, first-run flow) are now `[x]`
+above — the first-run item is code-reviewed only, still not visually verified. The
+`image-decode.ts` RAW-orientation item is also `[x]` above (it was a real bug, fixed).

@@ -54,6 +54,10 @@ function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
+    // Below this the resizable browser/preview/albums panels have nowhere
+    // left to shrink into and start overlapping/clipping their content.
+    minWidth: 760,
+    minHeight: 480,
     show: false,
     fullscreenable: true,
     autoHideMenuBar: process.platform !== 'darwin',

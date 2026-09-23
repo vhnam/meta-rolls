@@ -5,6 +5,13 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.7] - 2026-09-23
+
+### Fixed
+
+- Error toasts no longer show Electron's raw IPC rejection text (`Error invoking remote method '…': Error: …`) — `use-ipc.ts` strips that wrapper down to the message the IPC handler actually threw.
+- The main window now has a `minWidth`/`minHeight` (760×480), so the resizable browser/preview/albums panels can't be dragged into an unusably small layout.
+
 ## [3.9.6] - 2026-09-23
 
 ### Fixed
