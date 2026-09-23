@@ -6,6 +6,14 @@ const CACHE_DIR_NAME = 'thumbnails';
 // A rough cap on how many resized JPEGs live on disk at once — generous
 // enough for a large library's grid view, small enough to not grow forever.
 const MAX_CACHE_ENTRIES = 2000;
+// Pruning only kicks in once the cache is this far over the cap, and then
+// trims back down to MAX_CACHE_ENTRIES in one batch. Without this gap, a
+// prune that removes just enough to land exactly on the cap means the very
+// next write is over it again — the expensive part of a prune (stat'ing
+// every entry to find the oldest) would rerun on every single write once
+// the cache is full, instead of roughly once every PRUNE_BATCH writes.
+const PRUNE_BATCH = 400;
+const PRUNE_TRIGGER_ENTRIES = MAX_CACHE_ENTRIES + PRUNE_BATCH;
 
 const cacheDir = (userDataPath: string) => join(userDataPath, CACHE_DIR_NAME);
 
@@ -65,7 +73,10 @@ const pruneThumbnailCache = async (userDataPath: string): Promise<void> => {
   } catch {
     return;
   }
-  if (entries.length <= MAX_CACHE_ENTRIES) {
+  // The readdir above is one cheap syscall regardless of scale. The
+  // per-entry stat pass below is the expensive part, so it only runs once
+  // the cache has actually drifted PRUNE_BATCH past the cap.
+  if (entries.length <= PRUNE_TRIGGER_ENTRIES) {
     return;
   }
 

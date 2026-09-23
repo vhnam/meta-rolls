@@ -106,9 +106,15 @@ first public release. Checked items are done; the rest is the work queue.
 
 ## Cache / performance
 
-- [ ] Thumbnail disk cache eviction (`thumbnail-cache.ts`) does a full `readdir` + `stat` on
+- [x] Thumbnail disk cache eviction (`thumbnail-cache.ts`) does a full `readdir` + `stat` on
       every file once the cache exceeds ~2000 entries, on every write past that point. Fine
       at current scale; would want a smarter/batched approach if the cache grows much larger.
+      Fixed: added hysteresis — pruning only triggers once the cache is 400 entries over the
+      cap (`PRUNE_TRIGGER_ENTRIES`), and then trims back down to the 2000 cap in one batch.
+      The cheap `readdir` still runs every write, but the expensive per-file `stat` pass now
+      runs roughly once every 400 writes instead of every write past the cap. Verified with a
+      standalone script (this module has no Electron dependency) simulating 2500 writes: the
+      count grows freely from 2000→2400, drops to 2000 in one batch, repeats.
 - [x] Otherwise reasonable: resize-before-rotate ordering, in-flight request de-dup, mtime-keyed
       cache entries.
 
@@ -119,7 +125,7 @@ Only reviewed via code reading — could not run the app in this environment.
 - [x] Error toasts surface Electron's raw IPC error text (`Error invoking remote method
 '…': Error: …`) instead of a clean message.
       Fixed: `use-ipc.ts`'s `toMessage` strips Electron's `Error invoking remote
-    handler/method '<channel>': Error: ` wrapper before showing the message. Note: I
+  handler/method '<channel>': Error: ` wrapper before showing the message. Note: I
       could not run a real IPC rejection in this sandbox to confirm the exact wrapper text
       Electron 44 produces — the regex is written from well-documented Electron behavior
       that's been stable across versions, and the fallback is safe either way (a
@@ -153,8 +159,8 @@ Only reviewed via code reading — could not run the app in this environment.
   `shared/print.ts`, `app/apply-exif-orientation.ts`).
 - No tests anywhere in the repo.
 - `DeliverScreen`'s unselected `useMediaPoolStore()` call.
-- Thumbnail cache eviction's full `readdir` + `stat` scan past ~2000 entries.
 
-All three UI/UX items (raw IPC error text, window min-size, first-run flow) are now `[x]`
-above — the first-run item is code-reviewed only, still not visually verified. The
+The thumbnail cache eviction item (Cache/performance section) is now `[x]` — fixed with
+batched pruning. All three UI/UX items (raw IPC error text, window min-size, first-run flow)
+are now `[x]` above — the first-run item is code-reviewed only, still not visually verified. The
 `image-decode.ts` RAW-orientation item is also `[x]` above (it was a real bug, fixed).

@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.8] - 2026-09-23
+
+### Fixed
+
+- Thumbnail disk cache pruning (`thumbnail-cache.ts`) no longer re-stats every cached file on every single write once the cache is full. Eviction now only triggers once the cache is 400 entries over its 2000-entry cap, then trims back down to the cap in one batch — the expensive per-file `stat` pass runs roughly once every 400 writes instead of every write.
+
 ## [3.9.7] - 2026-09-23
 
 ### Fixed
