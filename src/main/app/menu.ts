@@ -1,3 +1,4 @@
+import { is } from '@electron-toolkit/utils';
 import { app, BrowserWindow, Menu, type MenuItemConstructorOptions } from 'electron';
 
 import { IpcChannel } from '../../../shared/ipc';
@@ -91,10 +92,16 @@ export function setupAppMenu(): void {
     {
       label: 'View',
       submenu: [
-        { role: 'reload' },
-        { role: 'forceReload' },
-        { role: 'toggleDevTools' },
-        { type: 'separator' },
+        // Reload/DevTools stay dev-only — a packaged build has no dev server
+        // to reload from, and DevTools gives script access to the renderer.
+        ...(is.dev
+          ? ([
+              { role: 'reload' },
+              { role: 'forceReload' },
+              { role: 'toggleDevTools' },
+              { type: 'separator' }
+            ] satisfies MenuItemConstructorOptions[])
+          : []),
         { role: 'resetZoom' },
         { role: 'zoomIn' },
         { role: 'zoomOut' },

@@ -15,7 +15,10 @@ app.setName(APP_NAME);
 
 const icon = APP_ICON_PATH;
 
-if (process.env['REMOTE_DEBUGGING_PORT']) {
+// Only honor a remote-debugging request in development — accepting it from a
+// packaged app's environment would let anything on the machine attach a
+// devtools protocol client and drive the renderer/main process.
+if (is.dev && process.env['REMOTE_DEBUGGING_PORT']) {
   app.commandLine.appendSwitch('remote-debugging-port', process.env['REMOTE_DEBUGGING_PORT']);
 }
 
