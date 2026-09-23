@@ -1,22 +1,24 @@
 import { DragDropProvider, type DragEndEvent } from '@dnd-kit/react';
+import { IconLayoutSidebar, IconLayoutSidebarFilled } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 
+import { AlbumDetails } from '#/components/album-details';
 import { AlbumFormDialog } from '#/components/album-form-dialog';
 import { AlbumSidebarShell } from '#/components/album-sidebar';
 import { PhotoMetadata } from '#/components/photo-metadata';
 import { PhotoPreview, PhotoPreviewFullscreen } from '#/components/photo-preview';
+import { Button } from '#/components/ui/button';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '#/components/ui/resizable';
+import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip';
 import { PHOTO_PANE } from '#/constants/media';
 import { useMediaPhotoArrowSelection } from '#/hooks/use-media-photo-arrow-selection';
 import { useMediaPreviewFullscreen } from '#/hooks/use-media-preview-fullscreen';
 import { AlbumSchema } from '#/schemas/album.schema';
-import { useAlbumStore } from '#/stores/album.store';
+import { selectActiveAlbumPhotos, useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { Album } from '#/types';
 import { readDragString } from '#/utils/common';
 import { toPhotoItem } from '#/utils/photo/album-photo';
-
-import { CullDetails } from '../cull-details';
 
 export function CullScreen() {
   const albums = useAlbumStore((state) => state.albums);
@@ -28,12 +30,10 @@ export function CullScreen() {
   const movePhotoToAlbum = useAlbumStore((state) => state.movePhotoToAlbum);
   const [albumDialogOpen, setAlbumDialogOpen] = useState(false);
   const [editingAlbum, setEditingAlbum] = useState<Album | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const store = useMediaPoolStore();
-  const activeAlbumId = useAlbumStore((state) => state.activeAlbumId);
-  const activeAlbumPhotos = useAlbumStore(
-    (state) => state.albums.find((album) => album.id === activeAlbumId)?.photos ?? []
-  );
+  const activeAlbumPhotos = useAlbumStore(selectActiveAlbumPhotos);
   const selectedPhoto = getSelectedPhoto(store, activeAlbumPhotos.map(toPhotoItem));
   const { open: fullscreenOpen, setOpen: setFullscreenOpen } =
     useMediaPreviewFullscreen(selectedPhoto);
@@ -87,58 +87,78 @@ export function CullScreen() {
     closeAlbumDialog();
   };
 
+  const sidebarToggle = (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <Button
+            variant={sidebarCollapsed ? 'ghost' : 'secondary'}
+            size="icon-xs"
+            aria-pressed={!sidebarCollapsed}
+            onClick={() => setSidebarCollapsed((value) => !value)}
+          />
+        }
+      >
+        {sidebarCollapsed ? <IconLayoutSidebar /> : <IconLayoutSidebarFilled />}
+      </TooltipTrigger>
+      <TooltipContent>{sidebarCollapsed ? 'Show panel' : 'Hide panel'}</TooltipContent>
+    </Tooltip>
+  );
+
+  const main = (
+    <ResizablePanelGroup orientation="vertical" className="min-h-0">
+      <ResizablePanel defaultSize="80%" minSize="20%" className="min-h-0 min-w-0">
+        <PhotoPreview
+          photo={selectedPhoto}
+          toolbarLeading={sidebarToggle}
+          toolbarClassName="shrink-0 border-border bg-sidebar-accent"
+        />
+      </ResizablePanel>
+      <ResizablePanel defaultSize="20%" minSize="15%" maxSize="30%" className="min-h-0 min-w-0">
+        <div className="h-full min-h-0 overflow-hidden">
+          <AlbumDetails />
+        </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  );
+
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
-      <ResizablePanelGroup
-        orientation="horizontal"
-        className="min-h-0 flex-1 bg-background text-foreground"
-      >
-        <ResizablePanel defaultSize="15%" minSize="10%" maxSize="30%" className="min-h-0 min-w-0">
-          <ResizablePanelGroup orientation="vertical" className="min-h-0">
-            <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
-              <AlbumSidebarShell
-                albums={albums}
-                selectedId={selectedId}
-                onSelect={onSelect}
-                onAddAlbum={() => {
-                  setEditingAlbum(null);
-                  setAlbumDialogOpen(true);
-                }}
-                onRenameAlbum={(album) => {
-                  setEditingAlbum(album);
-                  setAlbumDialogOpen(true);
-                }}
-                onRemoveAlbum={removeAlbum}
-              />
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
-              <PhotoMetadata photo={selectedPhoto} />
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </ResizablePanel>
-        <ResizableHandle />
-        <ResizablePanel defaultSize="85%" minSize="10%" className="min-h-0 min-w-0">
-          <ResizablePanelGroup orientation="vertical" className="min-h-0">
-            <ResizablePanel defaultSize="80%" minSize="20%" className="min-h-0 min-w-0">
-              <PhotoPreview
-                photo={selectedPhoto}
-                toolbarClassName="shrink-0 border-border bg-sidebar-accent"
-              />
-            </ResizablePanel>
-            <ResizablePanel
-              defaultSize="20%"
-              minSize="15%"
-              maxSize="30%"
-              className="min-h-0 min-w-0"
-            >
-              <div className="h-full min-h-0 overflow-hidden">
-                <CullDetails />
-              </div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+      {sidebarCollapsed ? (
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{main}</div>
+      ) : (
+        <ResizablePanelGroup orientation="horizontal" className="min-h-0 flex-1">
+          <ResizablePanel defaultSize="15%" minSize="10%" maxSize="30%" className="min-h-0 min-w-0">
+            <ResizablePanelGroup orientation="vertical" className="min-h-0">
+              <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
+                <AlbumSidebarShell
+                  albums={albums}
+                  title="Albums"
+                  selectedId={selectedId}
+                  onSelect={onSelect}
+                  onAddAlbum={() => {
+                    setEditingAlbum(null);
+                    setAlbumDialogOpen(true);
+                  }}
+                  onRenameAlbum={(album) => {
+                    setEditingAlbum(album);
+                    setAlbumDialogOpen(true);
+                  }}
+                  onRemoveAlbum={removeAlbum}
+                />
+              </ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel defaultSize="50%" minSize="20%" className="min-h-0 min-w-0">
+                <PhotoMetadata photo={selectedPhoto} />
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel defaultSize="85%" minSize="10%" className="min-h-0 min-w-0">
+            {main}
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      )}
 
       <AlbumFormDialog
         open={albumDialogOpen}

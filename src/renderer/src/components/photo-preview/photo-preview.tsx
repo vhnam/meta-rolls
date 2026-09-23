@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { Spinner } from '#/components/ui/spinner';
 import { getApi } from '#/hooks/use-ipc';
@@ -7,7 +7,7 @@ import { useMediaPhotoRotate } from '#/hooks/use-media-photo-rotate';
 import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type Album, type PhotoItem, type PhotoRotateDirection } from '#/types';
-import { toMediaFileUrl } from '#/utils';
+import { resolvePhotoRevision, toMediaFileUrl } from '#/utils';
 import { cn } from '#/utils/common';
 import {
   PHOTO_ROTATE_MS,
@@ -36,6 +36,7 @@ const findAlbumIdForPhoto = (
 
 type PhotoPreviewProps = {
   photo: PhotoItem | null;
+  toolbarLeading?: ReactNode;
   toolbarClassName?: string;
 };
 
@@ -46,7 +47,7 @@ type PreviewSpin = {
   animate: boolean;
 };
 
-export function PhotoPreview({ photo, toolbarClassName }: PhotoPreviewProps) {
+export function PhotoPreview({ photo, toolbarLeading, toolbarClassName }: PhotoPreviewProps) {
   const [viewport, setViewport] = useState<HTMLDivElement | null>(null);
   const [imageEl, setImageEl] = useState<HTMLImageElement | null>(null);
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
@@ -56,7 +57,7 @@ export function PhotoPreview({ photo, toolbarClassName }: PhotoPreviewProps) {
   const activeAlbumId = useAlbumStore((state) => state.activeAlbumId);
   const rateAlbumPhoto = useAlbumStore((state) => state.rateAlbumPhoto);
   const photoRevision = useMediaPoolStore((state) =>
-    photo ? (state.photoRevisions[photo.id] ?? 0) : 0
+    photo ? resolvePhotoRevision(state.photoRevisions, photo) : 0
   );
   const ratingAlbumId = photo ? findAlbumIdForPhoto(albums, activeAlbumId, photo.id) : null;
   const src = photo?.path ? toMediaFileUrl(photo.path, photoRevision) : null;
@@ -183,6 +184,7 @@ export function PhotoPreview({ photo, toolbarClassName }: PhotoPreviewProps) {
         zoomDisabled={!canPanzoom}
         zoomValue={zoomValue}
         onZoomChange={applyZoom}
+        leading={toolbarLeading}
         className={toolbarClassName}
       />
       <div
@@ -222,7 +224,7 @@ export function PhotoPreview({ photo, toolbarClassName }: PhotoPreviewProps) {
         )}
         {isRotating ? (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-background/40">
-            <Spinner className="size-6 text-muted-foreground" />
+            <Spinner className="size-6" />
           </div>
         ) : null}
       </div>

@@ -12,7 +12,8 @@
     "jsx": "react-jsx",
     "paths": {
       "#/*": ["./src/renderer/src/*"],
-      "@/resources/*": ["./resources/*"]
+      "#/resources/*": ["./resources/*"],
+      "#/shared/*": ["./shared/*"]
     }
   }
 }

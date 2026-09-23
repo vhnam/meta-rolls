@@ -1,14 +1,12 @@
 import { readFile, stat } from 'node:fs/promises';
-import { extname } from 'node:path';
-import { pathToFileURL } from 'node:url';
 
-import { nativeImage, net, protocol, type NativeImage } from 'electron';
+import { protocol } from 'electron';
 
 import { MEDIA_FILE_SCHEME } from '../../../shared/media';
-import { extractRawPreviewJpeg, readImageOrientation } from '../services/exif-reader';
-import { readImageDimensions } from '../services/image-dimensions';
-import { isRawImageFile } from '../services/media-library';
-import { applyExifOrientation } from './apply-exif-orientation';
+import { readImageOrientation } from '../services/exif-reader';
+import { isImageFile, isRawImageFile } from '../services/media-library';
+import { encodeDisplayImage, loadDisplayImage, mimeForPath } from './image-decode';
+import { readThumbnailBytes } from './thumbnail';
 
 const DISPLAY_CACHE_LIMIT = 16;
 
@@ -19,20 +17,6 @@ type CachedDisplay = {
 };
 
 const displayCache = new Map<string, CachedDisplay>();
-
-const mimeForPath = (filePath: string) => {
-  const extension = extname(filePath).toLowerCase();
-  if (extension === '.png') {
-    return 'image/png';
-  }
-  if (extension === '.webp') {
-    return 'image/webp';
-  }
-  if (extension === '.gif') {
-    return 'image/gif';
-  }
-  return 'image/jpeg';
-};
 
 const rememberDisplay = (filePath: string, cached: CachedDisplay) => {
   displayCache.delete(filePath);
@@ -49,47 +33,13 @@ export const forgetMediaDisplay = (filePath: string) => {
   displayCache.delete(filePath);
 };
 
-const encodeDisplayImage = (filePath: string, image: NativeImage) => {
-  if (extname(filePath).toLowerCase() === '.png') {
-    return { body: image.toPNG(), mime: 'image/png' };
-  }
-  return { body: image.toJPEG(92), mime: 'image/jpeg' };
-};
-
-const loadDisplayImage = async (filePath: string, orientation: number) => {
-  if (isRawImageFile(filePath)) {
-    const jpeg = await extractRawPreviewJpeg(filePath);
-    if (!jpeg) {
-      return null;
-    }
-    const image = nativeImage.createFromBuffer(jpeg);
-    if (image.isEmpty()) {
-      return null;
-    }
-    return applyExifOrientation(image, orientation);
-  }
-
-  const image = nativeImage.createFromPath(filePath);
-  if (image.isEmpty()) {
+export const readDisplayBytes = async (filePath: string): Promise<CachedDisplay | null> => {
+  // Guard here, not just at the protocol handler's entry — pdf-export.ts
+  // calls this directly with paths from a print request, bypassing that
+  // gate.
+  if (!isImageFile(filePath)) {
     return null;
   }
-  if (orientation <= 1) {
-    return image;
-  }
-
-  const swaps = orientation >= 5;
-  if (swaps) {
-    const { width, height } = image.getSize();
-    const original = await readImageDimensions(filePath);
-    if (width === original.height && height === original.width) {
-      return image;
-    }
-  }
-
-  return applyExifOrientation(image, orientation);
-};
-
-const readDisplayBytes = async (filePath: string): Promise<CachedDisplay | null> => {
   const mtimeMs = (await stat(filePath)).mtimeMs;
   const cached = displayCache.get(filePath);
   if (cached && cached.mtimeMs === mtimeMs) {
@@ -123,33 +73,53 @@ export const registerMediaScheme = () => {
         secure: true,
         supportFetchAPI: true,
         corsEnabled: true,
-        stream: true,
-        bypassCSP: true
+        stream: true
+        // No bypassCSP: index.html's CSP already allowlists this scheme in
+        // img-src, which is the only directive anything in the app needs it
+        // for. Bypassing CSP entirely here would let it load scripts/styles
+        // too, past script-src 'self'.
       }
     }
   ]);
 };
 
+const parseRequestedWidth = (url: URL): number | null => {
+  const raw = url.searchParams.get('w');
+  if (!raw) {
+    return null;
+  }
+  const width = Number(raw);
+  return Number.isFinite(width) && width > 0 ? width : null;
+};
+
 export const handleMediaProtocol = () => {
   protocol.handle(MEDIA_FILE_SCHEME, async (request) => {
-    const filePath = new URL(request.url).searchParams.get('path');
-    if (!filePath) {
+    const url = new URL(request.url);
+    const filePath = url.searchParams.get('path');
+    if (!filePath || !isImageFile(filePath)) {
       return new Response('Not found', { status: 404 });
     }
+    const requestedWidth = parseRequestedWidth(url);
 
     try {
-      const display = await readDisplayBytes(filePath);
-      if (display) {
-        return new Response(Uint8Array.from(display.body), {
-          headers: {
-            'content-type': display.mime,
-            'content-length': String(display.body.length),
-            'cache-control': 'no-cache'
-          }
-        });
+      const display = requestedWidth
+        ? await readThumbnailBytes(filePath, requestedWidth)
+        : await readDisplayBytes(filePath);
+      if (!display) {
+        return new Response('Not found', { status: 404 });
       }
-
-      return await net.fetch(pathToFileURL(filePath).href);
+      // Every caller of toMediaFileUrl passes a `v` revision that changes
+      // whenever the file's content does (see media-file-url.ts), so a given
+      // URL's bytes never change — safe for the renderer to cache forever.
+      // Fall back to no-cache for the (unused) bare path, just in case.
+      const cacheControl = url.searchParams.has('v') ? 'max-age=31536000, immutable' : 'no-cache';
+      return new Response(Uint8Array.from(display.body), {
+        headers: {
+          'content-type': display.mime,
+          'content-length': String(display.body.length),
+          'cache-control': cacheControl
+        }
+      });
     } catch {
       return new Response('Not found', { status: 404 });
     }

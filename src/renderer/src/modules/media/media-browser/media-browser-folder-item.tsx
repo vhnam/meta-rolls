@@ -42,21 +42,21 @@ type FolderKindIconProps = {
 
 function FolderKindIcon({ kind, selected, isOpen }: FolderKindIconProps) {
   const className = cn(
-    'size-3.5 shrink-0',
+    'size-4 shrink-0',
     selected && 'text-accent-foreground',
     !selected && kind === 'disk' && 'text-sidebar-primary',
     !selected && kind !== 'disk' && 'text-muted-foreground'
   );
 
   if (kind === 'disk') {
-    return <IconDeviceDesktop className={className} />;
+    return <IconDeviceDesktop size={16} className={className} />;
   }
 
   if (selected || isOpen) {
-    return <IconFolderOpenFilled className={className} />;
+    return <IconFolderOpenFilled size={16} className={className} />;
   }
 
-  return <IconFolder className={className} />;
+  return <IconFolder size={16} className={className} />;
 }
 
 export function MediaBrowserFolderItem({ node, style }: NodeRendererProps<PhotoFolder>) {
@@ -105,9 +105,9 @@ export function MediaBrowserFolderItem({ node, style }: NodeRendererProps<PhotoF
           onClick={handleToggle}
         >
           {node.isOpen ? (
-            <IconChevronDown className="size-3" />
+            <IconChevronDown size={12} className="size-3" />
           ) : (
-            <IconChevronRight className="size-3" />
+            <IconChevronRight size={12} className="size-3" />
           )}
         </span>
       ) : (

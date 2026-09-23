@@ -1,7 +1,11 @@
-import { ElectronAPI } from '@electron-toolkit/preload';
-
-import { type Album, type AlbumPhoto, type PhotoRating } from '../../shared/album';
+import {
+  type Album,
+  type AlbumPhoto,
+  type AlbumPrintConfig,
+  type PhotoRating
+} from '../../shared/album';
 import { type PhotoExif, type PhotoRotateDirection } from '../../shared/media';
+import { type DeliverPdfExportRequest } from '../../shared/print';
 
 export type SettingsStorageApi = {
   getItem: (name: string) => Promise<string | null>;
@@ -21,6 +25,7 @@ export type MediaFileEntry = {
   name: string;
   path: string;
   createdAt: string;
+  mtimeMs: number;
   size: number;
   width: number;
   height: number;
@@ -51,6 +56,7 @@ export type AlbumsApi = {
   ) => Promise<{ from: Album; to: Album } | null>;
   removePhoto: (albumId: string, photoId: string) => Promise<Album | null>;
   ratePhoto: (albumId: string, photoId: string, rating: PhotoRating) => Promise<Album | null>;
+  updatePrintConfig: (albumId: string, printConfig: AlbumPrintConfig) => Promise<Album | null>;
 };
 
 export type MenuApi = {
@@ -65,17 +71,22 @@ export type WindowApi = {
   onLeaveFullScreen: (callback: () => void) => () => void;
 };
 
+export type DeliverApi = {
+  exportPdf: (request: DeliverPdfExportRequest) => Promise<string | null>;
+  openExportedFile: (filePath: string) => Promise<boolean>;
+};
+
 export type RendererApi = {
   settings: SettingsStorageApi;
   media: MediaLibraryApi;
   albums: AlbumsApi;
   menu: MenuApi;
   window: WindowApi;
+  deliver: DeliverApi;
 };
 
 declare global {
   interface Window {
-    electron: ElectronAPI;
     api: RendererApi;
   }
 }

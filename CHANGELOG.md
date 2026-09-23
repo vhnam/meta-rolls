@@ -5,6 +5,295 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.12] - 2026-09-24
+
+### Changed
+
+- Grouped `docs/` by category: product context lives under `docs/product/`, dated audits under `docs/reviews/`.
+
+## [3.9.11] - 2026-09-23
+
+### Fixed
+
+- `DeliverScreen` subscribed to the entire media pool store (`useMediaPoolStore()` with no selector) just to compute the selected photo, so it re-rendered on every unrelated media-pool change (search query, zoom, folder scans elsewhere). It now selects `getSelectedPhoto(state, albumPhotoItems)` directly.
+
+## [3.9.10] - 2026-09-23
+
+### Added
+
+- Vitest for unit tests (`pnpm test` / `pnpm test:watch`), scoped to pure logic in `shared/` and `src/main/` — no DOM or Electron dependency needed. First suite: `shared/print.test.ts`, covering rotation normalization, slot layout, folio numbering, and `parseDeliverPdfExportRequest`'s validation (valid input, the legacy `firstPageIsLeftHand` alias, and every rejection path). Wired into the pre-commit hook alongside format/lint.
+
+## [3.9.9] - 2026-09-23
+
+### Changed
+
+- Moved `services/pdf-export.ts` to `app/pdf-export.ts`. It creates a `BrowserWindow` and imports from `app/media-protocol.ts`, which violated AGENTS.md's rule that `services/` holds pure Node logic with no Electron APIs. No behavior change.
+
+## [3.9.8] - 2026-09-23
+
+### Fixed
+
+- Thumbnail disk cache pruning (`thumbnail-cache.ts`) no longer re-stats every cached file on every single write once the cache is full. Eviction now only triggers once the cache is 400 entries over its 2000-entry cap, then trims back down to the cap in one batch — the expensive per-file `stat` pass runs roughly once every 400 writes instead of every write.
+
+## [3.9.7] - 2026-09-23
+
+### Fixed
+
+- Error toasts no longer show Electron's raw IPC rejection text (`Error invoking remote method '…': Error: …`) — `use-ipc.ts` strips that wrapper down to the message the IPC handler actually threw.
+- The main window now has a `minWidth`/`minHeight` (760×480), so the resizable browser/preview/albums panels can't be dragged into an unusably small layout.
+
+## [3.9.6] - 2026-09-23
+
+### Fixed
+
+- `isOrientationAlreadyBaked`'s already-baked-rotation heuristic now skips RAW files instead of running against them. It compares the decoded image's dimensions to the file's own header dimensions to detect whether a camera already baked rotation into the pixels — for a RAW file, the decoded image is the embedded preview JPEG, not the sensor data, so that comparison isn't valid and could spuriously skip rotation on a portrait RAW photo. RAW previews (full-resolution and thumbnails) now always rotate unconditionally when the EXIF orientation calls for it, matching the behavior before the `image-decode.ts` extraction.
+
+## [3.9.5] - 2026-09-23
+
+### Fixed
+
+- The `v` (revision) param used to build `meta-rolls-media://` URLs only ever changed when a photo was rotated inside the app — otherwise it stayed `0` for the life of the install. Combined with the immutable HTTP cache header added earlier, editing a photo in another app while (or before) it's shown in Meta Rolls could leave Chromium's disk cache serving the pre-edit image indefinitely, even across app restarts. `FileEntry`/`PhotoItem` now carry the file's `mtimeMs` from the folder scan, and a shared `resolvePhotoRevision` helper prefers the in-app rotation counter when present and otherwise falls back to that mtime, so the URL changes whenever the file's on-disk mtime does.
+
+## [3.9.4] - 2026-09-23
+
+### Fixed
+
+- `mediaReadExif` and `mediaRotateImage` (IPC) now reject paths that aren't recognized image/RAW extensions. `mediaRotateImage` runs an exiftool _write_, so this closes off using it to modify arbitrary files the app process can reach.
+- `readDisplayBytes` and `readThumbnailBytes` now check the extension themselves instead of relying on the protocol handler's gate — `pdf-export.ts` calls `readDisplayBytes` directly with paths from a print request, bypassing that gate entirely before this fix.
+- The `will-navigate` guard now compares the navigated URL's path against the app's actual built `index.html`, instead of allowing any `file:` URL in production.
+- Removed `bypassCSP: true` from the `meta-rolls-media` scheme registration — the page's CSP already allowlists the scheme in `img-src`, which is the only directive anything in the app needs it for.
+
+## [3.9.3] - 2026-09-23
+
+### Added
+
+- A top-level error boundary: `router.tsx` sets a `defaultErrorComponent` (`AppErrorFallback`), so a render error in a screen is replaced by a recoverable "Something went wrong" panel with a Try again button, instead of a blank white window. It applies per-route, so a crash inside one screen leaves the title bar and preferences dialog (rendered by the root layout) usable.
+
+## [3.9.2] - 2026-09-23
+
+### Fixed
+
+- Media, Cull, and Deliver screens each selected active-album photos as `state.albums.find(...)?.photos ?? []` directly inside a Zustand selector. Returning a fresh `[]` from a selector on every store notification is a known `useSyncExternalStore` re-render (and potential loop) trigger — a fresh install with zero albums hit this exact path. Replaced with a shared `selectActiveAlbumPhotos` selector backed by one stable empty-array constant.
+
+## [3.9.1] - 2026-09-23
+
+### Fixed
+
+- `electron-builder.yml`'s `files` list is now an allowlist (`out/**` minus sourcemaps, `resources/**`, `package.json`, `node_modules/**`) instead of a denylist. The denylist form let every dev-only directory in the repo root — `.gitnexus` (a full source index, ~83 MB), `.agents`, `.claude`, `.cursor`, `.pnpm-store`, `AGENTS.md`, `CLAUDE.md`, `*.tsbuildinfo` — into `app.asar`. The packaged asar drops from ~101 MB to ~7.3 MB (plus ~21 MB unpacked for exiftool's bundled Perl runtime).
+
+## [3.9.0] - 2026-09-23
+
+### Added
+
+- Grid/strip photo thumbnails now request a downscaled image instead of the full-resolution decode: `meta-rolls-media://` accepts a `w` (width) param, resizes with `nativeImage.resize`, re-encodes as JPEG, and caches the result on disk under `userData/thumbnails` (evicted by least-recently-read once the cache passes ~2000 entries). Rotation is applied after the resize rather than before, so a JS-level EXIF-rotation pass runs against the small thumbnail bitmap instead of the full-resolution one. Preview/fullscreen/print paths are unaffected — they still request full resolution.
+
+## [3.8.11] - 2026-09-23
+
+### Fixed
+
+- `toMediaFileUrl` only appended its `v` revision param when the revision was truthy, so the common case (an untouched photo, revision `0`) never got a cache-busting param. It now appends `v` for any defined revision, including `0`.
+- The two `deliver` canvas render paths (`deliver-canvas.tsx`, `deliver-canvas-slot.tsx`) now pass a revision to `toMediaFileUrl`, matching the other four call sites, so every media request is uniquely keyed by content.
+- The `meta-rolls-media://` protocol now serves `cache-control: max-age=31536000, immutable` whenever the request carries a `v` param (all requests, after the two fixes above), instead of `no-cache` on every request. Scrolling the grid or the deliver canvas no longer re-reads/re-encodes photos the browser already has cached.
+
+## [3.8.10] - 2026-09-23
+
+### Changed
+
+- `appId` no longer uses the electron-builder boilerplate `com.electron.app`; Linux `maintainer` no longer says `electronjs.org`.
+- Dropped the macOS camera/microphone usage-description entries — the app never requests either.
+- Removed the `publish` block pointing at a placeholder `example.com` update feed; nothing in the app reads it now that the unused `electron-updater` dependency is gone.
+
+### Fixed
+
+- Dropped `com.apple.security.cs.allow-dyld-environment-variables` from the macOS entitlements — it enables `DYLD_INSERT_LIBRARIES`-style dylib injection into the signed app and nothing in the app needs it.
+
+## [3.8.9] - 2026-09-23
+
+### Changed
+
+- Moved every package the renderer bundles or that only runs at build/dev time (Tabler icons, TanStack, shadcn CLI, Tailwind, Vite plugins, `dayjs`, `zustand`, …) from `dependencies` to `devDependencies`. `dependencies` now only lists what the packaged main process actually `require()`s at runtime (`@electron-toolkit/utils`, `exiftool-vendored`, `image-size`). This shrinks `app.asar` from ~219 MB to ~98 MB, since electron-builder no longer copies the renderer's already-bundled `node_modules` into the installer.
+- Removed the unused `electron-updater` dependency (never wired up to any update flow).
+
+## [3.8.8] - 2026-09-23
+
+### Fixed
+
+- `REMOTE_DEBUGGING_PORT` is now only honored in development; a packaged build ignores it instead of opening a devtools-protocol port to anything on the machine.
+- Reload/Force Reload/Toggle DevTools are removed from the View menu in production builds.
+
+## [3.8.7] - 2026-09-23
+
+### Fixed
+
+- Upgraded `image-size` to 2.0.4, patching two high-severity DoS advisories (infinite loops parsing crafted HEIF/JXL headers) that ran against every photo the app reads dimensions for.
+
+## [3.8.6] - 2026-09-23
+
+### Removed
+
+- Dropped the unused `window.electron` bridge (`@electron-toolkit/preload`'s `electronAPI`), which exposed raw `ipcRenderer.send`/`invoke`/`sendSync` on every channel to the renderer with no consumer in the app.
+
+## [3.8.5] - 2026-09-23
+
+### Fixed
+
+- The renderer's `BrowserWindow` now runs with Chromium's OS-level sandbox enabled (`sandbox: false` removed). The preload script only touches `contextBridge`/`ipcRenderer`, so nothing depended on the unsandboxed renderer process.
+
+## [3.8.4] - 2026-09-23
+
+### Fixed
+
+- Restricted `shell.openExternal` (from window-open) to `https:` URLs, and blocked in-page navigation to anything outside the app's own renderer.
+
+## [3.8.3] - 2026-09-23
+
+### Fixed
+
+- `deliver.openExportedFile` now only opens paths this session actually wrote through `deliver.exportPdf`, instead of any path the renderer passes to `shell.openPath`.
+
+## [3.8.2] - 2026-09-23
+
+### Fixed
+
+- The `meta-rolls-media://` protocol only serves files with a recognized image/RAW extension and no longer falls back to reading arbitrary files from disk via `net.fetch(file://…)`.
+
+## [3.8.1] - 2026-09-22
+
+### Added
+
+- Lefthook pre-commit runs `pnpm format` then `pnpm lint`. `pnpm install` installs the hook via `prepare`.
+
+### Changed
+
+- `.gitignore` matches Skills CLI copies when they are symlinks (Claude links into `.agents`), so those trees stay untracked.
+
+## [3.8.0] - 2026-09-22
+
+### Added
+
+- Albums persist whole-spread rotation in 90° steps. Deliver animates that rotation, can collapse the albums panel and print settings, and a post-export toast can open the saved PDF.
+
+### Changed
+
+- Deliver page strip uses a titled Pages header, and the print sidebar groups page vs layout fields.
+
+## [3.7.0] - 2026-09-22
+
+### Added
+
+- Cull can hide the albums and metadata sidebar from a toggle on the preview toolbar. The album list header shows an Albums title.
+
+## [3.6.7] - 2026-09-22
+
+### Changed
+
+- `.gitignore` excludes Skills CLI vendor trees (`banner-design`, `brand`, `design`, and the other locked installs). `skills-lock.json` records which skills `npx skills add` restored.
+
+## [3.6.6] - 2026-09-22
+
+### Changed
+
+- AGENTS.md's commit rules now say not to add `Co-Authored-By` or other AI-attribution trailers to commit messages or PR descriptions.
+
+## [3.6.5] - 2026-09-22
+
+### Changed
+
+- Media/Cull/Deliver screens, the album form dialog, photo previews, the preview zoom select, and the deliver canvas sidebar now use the new UI variants instead of one-off `className` overrides. Preferences dialog's title also renders the section's label instead of capitalizing its raw id via CSS.
+
+## [3.6.4] - 2026-09-22
+
+### Changed
+
+- `ResizablePanelGroup`, `Spinner`, `FieldGroup`, `FieldLabel`, `DialogContent`, `ContextMenuShortcut`, and `Select{Trigger,Value,Item}` gained variant props (`tone`, `size`, `variant`, `indicatorPosition`) for the color/spacing/typography treatments consumers were previously overriding via `className`, fixing `shadcn/no-restyle` violations at the source.
+
+## [3.6.3] - 2026-09-22
+
+### Added
+
+- `@shadcn/lint` oxlint plugin: enforces shadcn/ui components keep their own color, spacing, typography, and effects (`no-restyle`), flags raw Tailwind palette colors, arbitrary values, inline styles, and unknown classes. `no-restyle` and `no-arbitrary-values` are off inside `components/ui/**` (the primitives' own source).
+
+## [3.6.2] - 2026-09-22
+
+### Changed
+
+- Renderer sorts `#/shared` imports with the other `#/` aliases.
+
+## [3.6.1] - 2026-09-22
+
+### Changed
+
+- Switch uses Tailwind’s `group-has-focus-visible` variant and `h-3.5` for the small size.
+
+## [3.6.0] - 2026-09-22
+
+### Added
+
+- Clicking empty space in a thumbnail pane clears the photo selection.
+
+### Changed
+
+- Folder icons in the album sidebar and media browser use a 16px size, and the thumbnail pane uses a card background with a divider.
+
+## [3.5.0] - 2026-09-22
+
+### Added
+
+- Deliver reads print settings from the album, supports drag-to-slot placement, slot image rotate/remove, left-hand-first openings, and PDF export from the canvas sidebar.
+
+## [3.4.0] - 2026-09-22
+
+### Added
+
+- Deliver can export an Instax spread layout as a PDF through a save dialog (Mini/Wide on Auto, A4, A5, or Letter).
+
+## [3.3.0] - 2026-09-22
+
+### Added
+
+- Albums persist Instax preset, paper size, page numbers, and whether the first spread starts on the left leaf.
+
+## [3.2.2] - 2026-09-22
+
+### Changed
+
+- Renderer imports shared types and the app icon through `#/shared` and `#/resources`.
+
+## [3.2.1] - 2026-09-17
+
+### Fixed
+
+- Renderer assets use a relative base so the packaged `file://` build loads JS/CSS from the app bundle.
+
+## [3.2.0] - 2026-09-17
+
+### Added
+
+- **Deliver workspace** (title-bar tab, `/deliver`): album sidebar, Instax spread canvas with pan/zoom, page strip, album photo details, and a metadata pane.
+
+## [3.1.0] - 2026-09-17
+
+### Added
+
+- Canvas store tracks album spreads, slot swaps, and per-album Instax preset and paper size (A4, A5, Letter).
+- Instax Mini/Wide card geometry (print size, image window, and thicker bottom border) for layout.
+
+## [3.0.1] - 2026-09-17
+
+### Changed
+
+- Preview pan/zoom and the zoom menu live in shared helpers so the Deliver canvas can reuse them.
+
+## [3.0.0] - 2026-09-17
+
+### Changed
+
+- Cull’s album strip is the shared AlbumDetails panel so other workspaces can reuse it.
+
+### Added
+
+- Album list rows and thumbnails can show a check badge when a photo is placed on a layout.
+
 ## [2.6.0] - 2026-09-16
 
 ### Added

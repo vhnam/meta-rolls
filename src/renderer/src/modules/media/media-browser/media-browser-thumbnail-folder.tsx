@@ -20,6 +20,7 @@ export function MediaBrowserThumbnailFolder({
   return (
     <button
       type="button"
+      data-photo-thumbnail=""
       className="flex min-w-0 flex-col items-center gap-1"
       onClick={() => onHighlightFolder(folder.id)}
       onDoubleClick={() => onOpenFolder(folder.id)}

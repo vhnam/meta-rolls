@@ -1,7 +1,20 @@
 import { toast } from '#/components/ui/toast';
 
-const toMessage = (error: unknown) =>
-  error instanceof Error ? error.message : 'An unexpected error occurred';
+// ipcRenderer.invoke rejects with its own wrapper around whatever the main
+// process threw, e.g. "Error invoking remote method 'media:rotate': Error:
+// Rotate direction must be cw or ccw". Strip that down to the message the
+// IPC handler actually threw, so the toast reads like an app message
+// instead of an Electron internals dump.
+const IPC_INVOKE_ERROR_PREFIX =
+  /^Error invoking remote (?:handler|method) '[^']*':\s*(?:Error:\s*)?/;
+
+const toMessage = (error: unknown): string => {
+  if (!(error instanceof Error)) {
+    return 'An unexpected error occurred';
+  }
+  const message = error.message.replace(IPC_INVOKE_ERROR_PREFIX, '').trim();
+  return message.length > 0 ? message : 'An unexpected error occurred';
+};
 
 const withIpcErrorToast = <T>(value: T): T => {
   if (typeof value === 'function') {

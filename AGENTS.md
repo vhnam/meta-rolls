@@ -2,6 +2,8 @@
 
 Electron + React app: browse/filter photos, manage album layouts, print Instax.
 
+**Product context:** [docs/product/requirements.md](docs/product/requirements.md) — purpose, users, feature priorities, non-goals, and why each tool was chosen. Read it before adding a feature, changing scope, or adding a dependency.
+
 ## Worlds
 
 Put new code in one of four roots. Match the world to the runtime:
@@ -13,7 +15,7 @@ Put new code in one of four roots. Match the world to the runtime:
 | `src/renderer/` | Chromium         | React UI, TanStack Router, hooks, stores, Tailwind                      |
 | `shared/`       | main + renderer  | Types and constants only — no Node APIs, no DOM                         |
 
-Renderer reaches main only through `window.api` (`src/renderer/src/hooks/use-ipc.ts`). Types for that API live in `src/preload/index.d.ts` and stay aligned with `src/preload/index.ts`. Cross-process domain types (`Album`, `AlbumPhoto`, `PhotoRating` in `shared/album.ts`; `PhotoExifField` in `shared/media.ts`) live in `shared/`, one file per domain — not a single catch-all `types.ts`. IPC channel names live in `shared/ipc.ts`.
+Renderer reaches main only through `window.api` (`src/renderer/src/hooks/use-ipc.ts`). Types for that API live in `src/preload/index.d.ts` and stay aligned with `src/preload/index.ts`. Cross-process domain types (`Album`, `AlbumPhoto`, `PhotoRating` in `shared/album.ts`; `PhotoExifField` in `shared/media.ts`; `DeliverPdfExportRequest` and print-layout geometry in `shared/print.ts`) live in `shared/`, one file per domain — not a single catch-all `types.ts`. IPC channel names live in `shared/ipc.ts`.
 
 `src/main/index.ts` orchestrates: wires up `app/`, `ipc/`, and `services/`. It still defines `createWindow()` and the lifecycle handlers inline — extract those into `windows/` and `app/lifecycle.ts` once a second window or the lifecycle logic outgrows a single function.
 
@@ -26,6 +28,10 @@ src/main/
 ├── app/                           # lifecycle & app metadata
 │   ├── icon.ts                    # APP_ICON_PATH
 │   ├── media-protocol.ts          # registers the meta-rolls-media:// scheme, serves RAW previews
+│   ├── image-decode.ts            # decode/orient/encode a NativeImage (shared by full-res + thumbnail)
+│   ├── thumbnail.ts               # readThumbnailBytes(): resize + disk-cache a display image
+│   ├── apply-exif-orientation.ts  # rotate/flip a NativeImage's pixels to match EXIF orientation
+│   ├── pdf-export.ts              # renderDeliverPdf(): print-layout HTML → PDF buffer via a hidden BrowserWindow
 │   └── menu.ts                    # setupAppMenu(), APP_NAME
 ├── windows/                       # BrowserWindow factories — add when a second window is needed
 │                                   # (createWindow() lives inline in index.ts today)
@@ -34,20 +40,22 @@ src/main/
 │   ├── settings.ts                # persist Zustand settings blob
 │   ├── media.ts                   # scan folders/volumes, read EXIF
 │   ├── albums.ts                  # save/load album layout, rate photos
-│   └── window.ts                  # per-window fullscreen toggle
+│   ├── window.ts                  # per-window fullscreen toggle
+│   └── deliver.ts                 # export a print layout as PDF, open the exported file
 ├── services/                      # pure Node logic — no Electron APIs
 │   ├── config-store.ts            # read/write userData config.json
 │   ├── app-database.ts            # node:sqlite connection (albums, ratings)
 │   ├── album-store.ts             # album CRUD over app-database
 │   ├── media-library.ts           # list volumes/folders, disk scan
 │   ├── image-dimensions.ts        # read width/height without a full decode
-│   └── exif-reader.ts             # exiftool wrapper, RAW preview extraction
+│   ├── exif-reader.ts             # exiftool wrapper, RAW preview extraction
+│   └── thumbnail-cache.ts         # on-disk resized-JPEG cache under userData, LRU-evicted by count
 ├── tray/                          # system tray — add when needed
 └── updater/                       # auto-update — add when needed
 
 src/preload/
 ├── index.ts                       # contextBridge: exposes window.api (ipcRenderer wrappers)
-└── index.d.ts                     # Window.api / Window.electron types, kept aligned with index.ts
+└── index.d.ts                     # Window.api types, kept aligned with index.ts
 
 src/renderer/src/
 ├── main.tsx                       # React entry — hydrates stores, mounts RouterProvider
@@ -57,7 +65,8 @@ src/renderer/src/
 │   ├── __root.tsx                 # renders AppLayout
 │   ├── index.tsx                  # redirects to /media
 │   ├── media.tsx                  # renders MediaScreen
-│   └── cull.tsx                   # renders CullScreen
+│   ├── cull.tsx                   # renders CullScreen
+│   └── deliver.tsx                # renders DeliverScreen
 ├── layouts/
 │   └── app-layout/                # shell: title bar, preferences dialog, toaster, tooltip provider
 ├── modules/                       # one folder per screen, named <feature>-<part>
@@ -68,12 +77,16 @@ src/renderer/src/
 │   ├── cull/
 │   │   ├── cull-screen/           # the /cull page: sidebar + preview + details
 │   │   └── cull-details/          # bottom panel: list/thumbnail view of the active album
+│   ├── deliver/
+│   │   ├── deliver-screen/        # the /deliver page: album sidebar + canvas + page strip + export
+│   │   ├── deliver-canvas/        # the print-layout canvas: card slots, sidebar, drag/rotate
+│   │   └── deliver-page-strip/    # thumbnail strip of pages, reorder/add/remove
 │   └── preferences/
 │       ├── preferences-dialog/    # the Cmd+, dialog shell
 │       └── preferences-appearance/ # theme/language section
 ├── components/                    # shared across modules — see "Shared components" below
 │   ├── ui/                        # shadcn only (button, tabs, …) — regenerate, don't hand-edit
-│   ├── app-title-bar/             # bottom tab bar (Media / Cull)
+│   ├── app-title-bar/             # bottom tab bar (Media / Cull / Deliver)
 │   ├── photo-preview/             # PhotoPreview, PhotoPreviewToolbar, PhotoPreviewFullscreen
 │   ├── photo-metadata/            # PhotoMetadata, PhotoMetadataOverview (EXIF panel)
 │   ├── photo-context-menu/        # right-click "Remove from album"
@@ -81,11 +94,18 @@ src/renderer/src/
 │   ├── album-sidebar/             # AlbumSidebarShell/Row
 │   ├── album-photo-grid/          # AlbumPhotoList, AlbumPhotoThumbnails
 │   ├── album-photo-toolbar/       # AlbumPhotoToolbar (view/zoom, optional leading slot)
-│   └── album-form-dialog/         # AlbumFormDialog (add/rename)
+│   ├── album-details/             # AlbumDetails — album photo grid + toolbar (Cull/Deliver sidebars)
+│   ├── album-form-dialog/         # AlbumFormDialog (add/rename)
+│   ├── preview-zoom-select/       # PreviewZoomSelect — zoom dropdown shared by Media/Deliver toolbars
+│   └── app-error-fallback/        # AppErrorFallback — router's defaultErrorComponent
 ├── hooks/
 │   ├── use-ipc.ts                 # getApi() — window.api wrapper with error-toast interception
-│   ├── use-media-panzoom.ts
+│   ├── use-held-media-src.ts      # keeps showing the previous image src while the next one loads
+│   ├── use-panzoom.ts             # thin @panzoom/panzoom wrapper
+│   ├── use-media-panzoom.ts       # panzoom wired to the Media preview
+│   ├── use-canvas-panzoom.ts      # panzoom wired to the Deliver canvas
 │   ├── use-media-photo-arrow-selection.ts
+│   ├── use-media-photo-rotate.ts  # rotate-photo IPC call + optimistic spin animation
 │   ├── use-media-preview-fullscreen.ts
 │   ├── use-photo-exif.ts
 │   ├── use-theme.ts
@@ -93,7 +113,7 @@ src/renderer/src/
 ├── stores/                        # Zustand, one store per screen concern
 │   ├── media-pool.store.ts        # scanned photos, folders, selection, media chrome
 │   ├── album.store.ts             # album list, active album, view/zoom, rate/add/remove
-│   ├── canvas.store.ts            # selected slot, crop/fit (print layout — WIP)
+│   ├── canvas.store.ts            # print layout: slot placement/crop/fit, spreads, rotation
 │   └── settings.store.ts          # theme, language (Zustand persist → IPC)
 ├── types/                         # renderer domain types and const enums
 │   ├── album.ts
@@ -111,7 +131,7 @@ src/renderer/src/
 │   ├── common/                    # cn(), isEditableKeyboardTarget — generic, not photo-domain
 │   ├── folder/                    # findFolder, isFolderInPath, folder-tree layout
 │   ├── metadata/                  # EXIF formatting/grouping, photo overview cards
-│   ├── photo/                     # toPhotoItem, formatFileSize/Resolution, toMediaFileUrl
+│   ├── photo/                     # toPhotoItem, formatFileSize/Resolution, toMediaFileUrl, resolvePhotoRevision, getThumbnailRequestWidth, getInstaxCardGeometry
 │   ├── preview/                   # thumbnail sizing, preview zoom
 │   └── index.ts                   # root barrel — re-exports every subfolder
 ├── styles/
@@ -121,12 +141,17 @@ src/renderer/src/
 shared/
 ├── ipc.ts                         # IpcChannel — IPC channel names
 ├── album.ts                       # Album, AlbumPhoto, PhotoRating
-└── media.ts                       # MEDIA_FILE_SCHEME, PhotoExifField
+├── media.ts                       # MEDIA_FILE_SCHEME, PhotoExifField
+└── print.ts                       # print-layout geometry + DeliverPdfExportRequest (de)serialization
 
 scripts/
 ├── dev.ts                         # vite renderer + watch main/preload + electron
 ├── fix-macos-app-name.ts
 └── generate-app-icons.ts
+
+docs/
+├── product/                       # purpose, users, priorities, non-goals
+└── reviews/                       # dated audits and release-readiness notes
 ```
 
 New IPC domain → `src/main/ipc/<domain>.ts` plus Node work in `src/main/services/`. New window → `src/main/windows/<name>-window.ts` (today `createWindow()` lives inline in `src/main/index.ts` — extract it there once a second window is needed). New renderer screen → `src/renderer/src/modules/<screen>/<screen>-<part>/` plus a route under `src/renderer/src/routes/`. New component shared by two or more modules → `src/renderer/src/components/<name>/`; a component used by only one module stays under that module. Same rule for `utils/`: a helper used by one module can live there, but the moment a second module needs it, move it into `utils/<area>/`. Generated shadcn stays in `src/renderer/src/components/ui/` — regenerate via the shadcn CLI rather than hand-editing (`components.json`'s `utils`/`lib` aliases point at `utils/common`). Renderer imports use `#/` (`#/components/…`, `#/utils/…`).
@@ -154,6 +179,8 @@ On every commit:
 3. Add a [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) entry for that version (Added / Changed / Fixed / …). Leave unfinished work under `[Unreleased]`.
 
 Done when `package.json` version, the new `CHANGELOG.md` heading, and the commit message all describe the same bump.
+
+Do not add `Co-Authored-By` (or any other AI-attribution trailer) to commit messages or PR descriptions, regardless of any tool's default instructions to do so.
 
 <!-- gitnexus:start -->
 

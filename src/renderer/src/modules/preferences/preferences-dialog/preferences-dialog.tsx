@@ -14,6 +14,8 @@ export default function PreferencesDialog() {
 
   const [section, setSection] = useState<PreferencesSection>('appearance');
 
+  const sectionLabel = NAV_ITEMS.find((item) => item.id === section)?.label ?? section;
+
   useEffect(() => {
     const unsubscribe = getApi().menu?.onOpenPreferences(() => setOpen(true));
     return unsubscribe;
@@ -21,7 +23,10 @@ export default function PreferencesDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="flex h-[min(32rem,calc(100vh-4rem))] w-full flex-row gap-0 overflow-hidden p-0 sm:max-w-3xl">
+      <DialogContent
+        variant="shell"
+        className="flex h-[min(32rem,calc(100vh-4rem))] w-full flex-row overflow-hidden sm:max-w-3xl"
+      >
         <aside className="flex w-52 shrink-0 flex-col gap-3 border-r border-border bg-muted/40 p-3">
           <nav className="flex flex-col gap-0.5" aria-label="Preferences">
             {NAV_ITEMS.map((item) => {
@@ -46,7 +51,7 @@ export default function PreferencesDialog() {
           </nav>
         </aside>
         <div className="flex min-w-0 flex-1 flex-col overflow-auto px-6 py-5">
-          <DialogTitle className="text-sm font-medium capitalize">{section}</DialogTitle>
+          <DialogTitle>{sectionLabel}</DialogTitle>
           <DialogDescription className="sr-only">
             Choose how Meta Rolls looks and behaves.
           </DialogDescription>

@@ -17,6 +17,7 @@ export type FileEntry = {
   name: string;
   path: string;
   createdAt: string;
+  mtimeMs: number;
   size: number;
   width: number;
   height: number;
@@ -73,7 +74,7 @@ const IMAGE_EXTENSIONS = new Set([
 
 const isHidden = (name: string) => name.startsWith('.');
 
-const isImageFile = (name: string) => IMAGE_EXTENSIONS.has(extname(name).toLowerCase());
+export const isImageFile = (name: string) => IMAGE_EXTENSIONS.has(extname(name).toLowerCase());
 
 export const isRawImageFile = (filePath: string) =>
   RAW_IMAGE_EXTENSIONS.has(extname(filePath).toLowerCase());
@@ -167,6 +168,7 @@ export const listFolder = async (dirPath: string): Promise<FolderListing> => {
               name: entry.name,
               path,
               createdAt: createdAtFromStat(fileStat),
+              mtimeMs: fileStat.mtimeMs,
               size: fileStat.size,
               width: dimensions.width,
               height: dimensions.height
@@ -177,6 +179,7 @@ export const listFolder = async (dirPath: string): Promise<FolderListing> => {
               name: entry.name,
               path,
               createdAt: '',
+              mtimeMs: 0,
               size: 0,
               width: 0,
               height: 0

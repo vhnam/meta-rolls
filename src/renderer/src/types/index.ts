@@ -1,4 +1,10 @@
-export type { Album, AlbumPhoto, PhotoRating } from './album';
+export type {
+  Album,
+  AlbumPageRotationDeg,
+  AlbumPhoto,
+  AlbumPrintConfig,
+  PhotoRating
+} from './album';
 export type { SlotFit, SlotSettings } from './canvas';
 export type {
   FolderKind,
@@ -10,4 +16,10 @@ export type {
   PhotoExifField,
   PhotoRotateDirection
 } from './media';
-export type { LanguagePreference, PrintFormat, ThemePreference } from './settings';
+export type {
+  InstaxPrintFormat,
+  LanguagePreference,
+  PaperPrintFormat,
+  PrintFormat,
+  ThemePreference
+} from './settings';

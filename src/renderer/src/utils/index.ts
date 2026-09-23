@@ -18,7 +18,16 @@ export {
   type PhotoOverviewCell,
   type PhotoOverviewItem
 } from './metadata';
-export { toPhotoItem, formatFileSize, formatResolution, toMediaFileUrl } from './photo';
+export {
+  toPhotoItem,
+  formatFileSize,
+  formatResolution,
+  getInstaxCardGeometry,
+  type InstaxCardGeometry,
+  toMediaFileUrl,
+  getThumbnailRequestWidth,
+  resolvePhotoRevision
+} from './photo';
 export {
   getThumbnailColumnCount,
   getThumbnailStripWidth,

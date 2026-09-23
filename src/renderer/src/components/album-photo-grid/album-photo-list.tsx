@@ -10,6 +10,7 @@ type AlbumPhotoListProps = {
   album: Album;
   photos: AlbumPhoto[];
   selectedPhotoId: string | null;
+  placedPhotoIds?: ReadonlySet<string>;
   onSelectPhoto: (id: string) => void;
   onRatePhoto?: (photoId: string, rating: PhotoRating) => void;
 };
@@ -18,6 +19,7 @@ export function AlbumPhotoList({
   album,
   photos,
   selectedPhotoId,
+  placedPhotoIds,
   onSelectPhoto,
   onRatePhoto
 }: AlbumPhotoListProps) {
@@ -38,6 +40,7 @@ export function AlbumPhotoList({
           <PhotoListRow
             photo={toPhotoItem(photo)}
             selected={photo.id === selectedPhotoId}
+            placed={placedPhotoIds?.has(photo.id)}
             dragId={`album-photo:${album.id}:${photo.id}`}
             dragData={{ photoId: photo.id, sourceAlbumId: album.id }}
             onSelectPhoto={onSelectPhoto}

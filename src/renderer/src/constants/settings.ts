@@ -11,5 +11,8 @@ export const LANGUAGE_PREFERENCE = {
 
 export const PRINT_FORMAT = {
   instaxMini: 'instax-mini',
-  instaxWide: 'instax-wide'
+  instaxWide: 'instax-wide',
+  a4: 'a4',
+  a5: 'a5',
+  letter: 'letter'
 } as const;

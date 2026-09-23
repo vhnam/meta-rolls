@@ -1,9 +1,9 @@
-import { electronAPI } from '@electron-toolkit/preload';
 import { contextBridge, ipcRenderer } from 'electron';
 
-import { type AlbumPhoto, type PhotoRating } from '../../shared/album';
+import { type AlbumPhoto, type AlbumPrintConfig, type PhotoRating } from '../../shared/album';
 import { IpcChannel } from '../../shared/ipc';
 import { type PhotoRotateDirection } from '../../shared/media';
+import { type DeliverPdfExportRequest } from '../../shared/print';
 
 const api = {
   settings: {
@@ -32,7 +32,9 @@ const api = {
     removePhoto: (albumId: string, photoId: string) =>
       ipcRenderer.invoke(IpcChannel.albumsRemovePhoto, albumId, photoId),
     ratePhoto: (albumId: string, photoId: string, rating: PhotoRating) =>
-      ipcRenderer.invoke(IpcChannel.albumsRatePhoto, albumId, photoId, rating)
+      ipcRenderer.invoke(IpcChannel.albumsRatePhoto, albumId, photoId, rating),
+    updatePrintConfig: (albumId: string, printConfig: AlbumPrintConfig) =>
+      ipcRenderer.invoke(IpcChannel.albumsUpdatePrintConfig, albumId, printConfig)
   },
   menu: {
     onOpenPreferences: (callback: () => void) => {
@@ -74,16 +76,21 @@ const api = {
         ipcRenderer.removeListener(IpcChannel.windowLeaveFullScreen, handler);
       };
     }
+  },
+  deliver: {
+    exportPdf: (request: DeliverPdfExportRequest) =>
+      ipcRenderer.invoke(IpcChannel.deliverExportPdf, request),
+    openExportedFile: (filePath: string) =>
+      ipcRenderer.invoke(IpcChannel.deliverOpenExportedFile, filePath)
   }
 };
 
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI);
     contextBridge.exposeInMainWorld('api', api);
   } catch (error) {
     console.error(error);
   }
 } else {
-  Object.assign(window, { electron: electronAPI, api });
+  Object.assign(window, { api });
 }

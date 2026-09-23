@@ -36,14 +36,30 @@ function FieldLegend({
   );
 }
 
-function FieldGroup({ className, ...props }: React.ComponentProps<'div'>) {
+const fieldGroupVariants = cva(
+  'group/field-group @container/field-group flex w-full flex-col data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4',
+  {
+    variants: {
+      size: {
+        default: 'gap-5',
+        compact: 'gap-4'
+      }
+    },
+    defaultVariants: {
+      size: 'default'
+    }
+  }
+);
+
+function FieldGroup({
+  className,
+  size,
+  ...props
+}: React.ComponentProps<'div'> & VariantProps<typeof fieldGroupVariants>) {
   return (
     <div
       data-slot="field-group"
-      className={cn(
-        'group/field-group @container/field-group flex w-full flex-col gap-5 data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4',
-        className
-      )}
+      className={cn(fieldGroupVariants({ size }), className)}
       {...props}
     />
   );
@@ -90,15 +106,30 @@ function FieldContent({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>) {
+const fieldLabelVariants = cva(
+  'group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-data-checked:border-primary/30 has-data-checked:bg-primary/5 has-[>[data-slot=field]]:rounded-none has-[>[data-slot=field]]:border has-[>[data-slot=field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 has-[>[data-slot=field]]:has-focus-visible:border-ring has-[>[data-slot=field]]:has-focus-visible:ring-1 has-[>[data-slot=field]]:has-focus-visible:ring-ring/50 *:data-[slot=field]:p-2 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col',
+  {
+    variants: {
+      size: {
+        default: '',
+        compact: 'text-tiny text-muted-foreground'
+      }
+    },
+    defaultVariants: {
+      size: 'default'
+    }
+  }
+);
+
+function FieldLabel({
+  className,
+  size,
+  ...props
+}: React.ComponentProps<typeof Label> & VariantProps<typeof fieldLabelVariants>) {
   return (
     <Label
       data-slot="field-label"
-      className={cn(
-        'group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-data-checked:border-primary/30 has-data-checked:bg-primary/5 has-[>[data-slot=field]]:rounded-none has-[>[data-slot=field]]:border has-[>[data-slot=field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 has-[>[data-slot=field]]:has-focus-visible:border-ring has-[>[data-slot=field]]:has-focus-visible:ring-1 has-[>[data-slot=field]]:has-focus-visible:ring-ring/50 *:data-[slot=field]:p-2 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10',
-        'has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col',
-        className
-      )}
+      className={cn(fieldLabelVariants({ size }), className)}
       {...props}
     />
   );

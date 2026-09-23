@@ -7,7 +7,7 @@ import { isPhotoRotateDirection } from '../../../shared/media';
 import { forgetMediaDisplay } from '../app/media-protocol';
 import { swapPhotoDimensionsByPath } from '../services/album-store';
 import { readPhotoExif, rotateImage } from '../services/exif-reader';
-import { listFolder, listVolumes } from '../services/media-library';
+import { isImageFile, listFolder, listVolumes } from '../services/media-library';
 
 const albumsFilePath = () => join(app.getPath('userData'), 'meta-rolls.sqlite');
 
@@ -18,6 +18,18 @@ const assertPath = (value: unknown): string => {
   return value;
 };
 
+// mediaReadExif and mediaRotateImage run exiftool reads/writes against
+// whatever path the renderer sends — scope both to files this app would
+// have shown as photos, so a compromised renderer can't use them to read
+// or (via rotate) mutate arbitrary files on disk.
+const assertImagePath = (value: unknown): string => {
+  const path = assertPath(value);
+  if (!isImageFile(path)) {
+    throw new Error('Path is not a recognized image file');
+  }
+  return path;
+};
+
 export const registerMediaIpc = () => {
   ipcMain.handle(IpcChannel.mediaListVolumes, async () => listVolumes());
 
@@ -26,7 +38,7 @@ export const registerMediaIpc = () => {
   );
 
   ipcMain.handle(IpcChannel.mediaReadExif, async (_event, filePath: unknown) =>
-    readPhotoExif(assertPath(filePath))
+    readPhotoExif(assertImagePath(filePath))
   );
 
   ipcMain.handle(
@@ -35,7 +47,7 @@ export const registerMediaIpc = () => {
       if (!isPhotoRotateDirection(direction)) {
         throw new Error('Rotate direction must be cw or ccw');
       }
-      const path = assertPath(filePath);
+      const path = assertImagePath(filePath);
       const result = await rotateImage(path, direction);
       forgetMediaDisplay(path);
       swapPhotoDimensionsByPath(albumsFilePath(), path);
