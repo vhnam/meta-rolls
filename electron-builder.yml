@@ -2,17 +2,18 @@ appId: com.metarolls.app
 productName: Meta Rolls
 directories:
   buildResources: build
+# Allowlist, not a denylist: electron-builder's implicit default is
+# "everything not excluded", which previously let dev-only directories
+# (.gitnexus, .claude, .agents, .cursor, .pnpm-store, …) into app.asar.
+# A custom `files` list replaces electron-builder's automatic node_modules
+# inclusion too, so runtime dependencies must be listed explicitly.
 files:
-  - '!**/.vscode/*'
-  - '!src/*'
-  - '!scripts/*'
-  - '!vite.config.{js,ts,mjs,cjs,mts}'
-  - '!vite.main.config.{js,ts,mjs,cjs,mts}'
-  - '!vite.preload.config.{js,ts,mjs,cjs,mts}'
-  - '!components.json'
-  - '!{.oxlintrc.json,.oxfmtrc.json,dev-app-update.yml,CHANGELOG.md,README.md}'
-  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
-  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!**/*'
+  - 'out/**/*'
+  - '!out/**/*.map'
+  - 'resources/**/*'
+  - 'package.json'
+  - 'node_modules/**/*'
 asarUnpack:
   - resources/**
   - node_modules/exiftool-vendored.*/**/*

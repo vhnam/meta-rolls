@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.1] - 2026-09-23
+
+### Fixed
+
+- `electron-builder.yml`'s `files` list is now an allowlist (`out/**` minus sourcemaps, `resources/**`, `package.json`, `node_modules/**`) instead of a denylist. The denylist form let every dev-only directory in the repo root — `.gitnexus` (a full source index, ~83 MB), `.agents`, `.claude`, `.cursor`, `.pnpm-store`, `AGENTS.md`, `CLAUDE.md`, `*.tsbuildinfo` — into `app.asar`. The packaged asar drops from ~101 MB to ~7.3 MB (plus ~21 MB unpacked for exiftool's bundled Perl runtime).
+
 ## [3.9.0] - 2026-09-23
 
 ### Added
