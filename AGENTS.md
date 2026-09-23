@@ -76,6 +76,7 @@ src/renderer/src/
 │   ├── media/
 │   │   ├── media-screen/          # the /media page: browser + preview + albums panel + metadata
 │   │   ├── media-browser/         # folder tree + file list/thumbnails (Media-only)
+│   │   ├── media-link-roll/       # "Link to roll…" dialog for a folder (opens the scan-link preview)
 │   │   └── media-albums/          # album panel embedded in the Media screen
 │   ├── rolls/
 │   │   ├── rolls-screen/          # the /rolls page: list + detail
@@ -111,6 +112,7 @@ src/renderer/src/
 │   ├── album-photo-toolbar/       # AlbumPhotoToolbar (view/zoom, optional leading slot)
 │   ├── album-details/             # AlbumDetails — album photo grid + toolbar (Cull/Deliver sidebars)
 │   ├── album-form-dialog/         # AlbumFormDialog (add/rename)
+│   ├── scan-link-dialog/          # ScanLinkDialog — preview how a folder's files map onto a roll's frames
 │   ├── option-select/             # OptionSelect — value/label Select wrapper (Rolls, Media)
 │   ├── preview-zoom-select/       # PreviewZoomSelect — zoom dropdown shared by Media/Deliver toolbars
 │   └── app-error-fallback/        # AppErrorFallback — router's defaultErrorComponent

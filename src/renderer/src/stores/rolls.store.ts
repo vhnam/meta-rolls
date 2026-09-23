@@ -20,6 +20,8 @@ type RollsState = {
   lenses: Lens[];
   rolls: Roll[];
   selectedRollId: string | null;
+  /** Folder the Media screen asked to link to a roll ('Link to roll…'), or null. */
+  linkFolderRequest: string | null;
   selectedFrameIds: string[];
   frameAnchorId: string | null;
   statusFilter: string;
@@ -33,6 +35,7 @@ type RollsActions = {
   loadRolls: () => Promise<void>;
   selectRoll: (rollId: string | null) => void;
   /** Click selects one frame, `toggle` (⌘/Ctrl) adds or removes it, `range` (Shift) extends from the anchor. */
+  requestLinkFolder: (folder: string | null) => void;
   selectFrame: (frameId: string, mode: 'single' | 'toggle' | 'range', orderedIds: string[]) => void;
   updateFrames: (frameIds: string[], patch: Partial<RollFrame>) => Promise<void>;
   addFrame: (rollId: string) => Promise<void>;
@@ -76,6 +79,7 @@ export const useRollsStore = create<RollsStore>((set, get) => ({
   lenses: [],
   rolls: [],
   selectedRollId: null,
+  linkFolderRequest: null,
   selectedFrameIds: [],
   frameAnchorId: null,
   statusFilter: ALL_FILTER,
@@ -98,6 +102,7 @@ export const useRollsStore = create<RollsStore>((set, get) => ({
   },
   selectRoll: (selectedRollId) =>
     set({ selectedRollId, selectedFrameIds: [], frameAnchorId: null }),
+  requestLinkFolder: (linkFolderRequest) => set({ linkFolderRequest }),
   selectFrame: (frameId, mode, orderedIds) =>
     set((state) => {
       if (mode === 'toggle') {

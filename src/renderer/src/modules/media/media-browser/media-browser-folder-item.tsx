@@ -4,11 +4,19 @@ import {
   IconDeviceDesktop,
   IconFolder,
   IconFolderOpenFilled,
-  IconLoader2
+  IconLoader2,
+  IconMovie
 } from '@tabler/icons-react';
 import { createContext, useContext, type CSSProperties, type MouseEvent } from 'react';
 import { type NodeApi, type NodeRendererProps } from 'react-arborist';
 
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger
+} from '#/components/ui/context-menu';
+import { useRollsStore } from '#/stores/rolls.store';
 import { type FolderKind, type PhotoFolder } from '#/types';
 import { folderTreePaddingLeft } from '#/utils';
 import { cn } from '#/utils/common';
@@ -62,6 +70,10 @@ function FolderKindIcon({ kind, selected, isOpen }: FolderKindIconProps) {
 export function MediaBrowserFolderItem({ node, style }: NodeRendererProps<PhotoFolder>) {
   const ui = useContext(MediaBrowserFolderTreeUiContext);
   const folder = node.data;
+  const linkedRoll = useRollsStore((state) =>
+    folder.path ? state.rolls.find((roll) => roll.scanFolder === folder.path) : undefined
+  );
+  const requestLinkFolder = useRollsStore((state) => state.requestLinkFolder);
   const selected = node.isSelected;
   const hasChildren = node.isInternal;
   const showSpinner = ui?.loadingIds.has(folder.id) ?? false;
@@ -87,34 +99,56 @@ export function MediaBrowserFolderItem({ node, style }: NodeRendererProps<PhotoF
   };
 
   return (
-    <div
-      className={cn(
-        'flex h-6 w-full items-center gap-1 pr-2 text-left cursor-pointer',
-        selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground'
+    <ContextMenu>
+      <ContextMenuTrigger
+        render={
+          <div
+            className={cn(
+              'flex h-6 w-full items-center gap-1 pr-2 text-left cursor-pointer',
+              selected ? 'bg-accent text-accent-foreground' : 'hover:bg-muted text-muted-foreground'
+            )}
+            style={rowStyle}
+            aria-busy={showSpinner}
+          />
+        }
+      >
+        {showSpinner ? (
+          <span className="flex size-4 items-center justify-center text-muted-foreground">
+            <IconLoader2 className="size-3 animate-spin" />
+          </span>
+        ) : hasChildren ? (
+          <span
+            className="flex size-4 items-center justify-center text-muted-foreground"
+            onClick={handleToggle}
+          >
+            {node.isOpen ? (
+              <IconChevronDown size={12} className="size-3" />
+            ) : (
+              <IconChevronRight size={12} className="size-3" />
+            )}
+          </span>
+        ) : (
+          <span className="size-4" />
+        )}
+        <FolderKindIcon kind={folder.kind} selected={selected} isOpen={node.isOpen} />
+        <span className="truncate font-mono text-tiny">{folder.name}</span>
+        {linkedRoll && (
+          <span
+            className="ml-auto flex shrink-0 items-center gap-1 text-tiny text-muted-foreground"
+            title={`Linked to roll ${linkedRoll.name}`}
+          >
+            <IconMovie className="size-3" />
+            {linkedRoll.name}
+          </span>
+        )}
+      </ContextMenuTrigger>
+      {folder.path && (
+        <ContextMenuContent>
+          <ContextMenuItem onClick={() => requestLinkFolder(folder.path ?? null)}>
+            <IconMovie /> Link to roll…
+          </ContextMenuItem>
+        </ContextMenuContent>
       )}
-      style={rowStyle}
-      aria-busy={showSpinner}
-    >
-      {showSpinner ? (
-        <span className="flex size-4 items-center justify-center text-muted-foreground">
-          <IconLoader2 className="size-3 animate-spin" />
-        </span>
-      ) : hasChildren ? (
-        <span
-          className="flex size-4 items-center justify-center text-muted-foreground"
-          onClick={handleToggle}
-        >
-          {node.isOpen ? (
-            <IconChevronDown size={12} className="size-3" />
-          ) : (
-            <IconChevronRight size={12} className="size-3" />
-          )}
-        </span>
-      ) : (
-        <span className="size-4" />
-      )}
-      <FolderKindIcon kind={folder.kind} selected={selected} isOpen={node.isOpen} />
-      <span className="truncate font-mono text-tiny">{folder.name}</span>
-    </div>
+    </ContextMenu>
   );
 }

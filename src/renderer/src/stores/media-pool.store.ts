@@ -46,6 +46,8 @@ type MediaPoolActions = {
   refresh: () => Promise<void>;
   loadFolderChildren: (folder: PhotoFolder) => Promise<void>;
   restoreOpenFolders: () => Promise<void>;
+  /** Loads and opens every ancestor of a folder, then selects it. Returns false if no mounted volume contains it. */
+  revealFolder: (folderId: string) => Promise<boolean>;
 };
 
 export type MediaPoolStore = MediaPoolState & MediaPoolActions;
@@ -359,6 +361,23 @@ export const useMediaPoolStore = create<MediaPoolStore>()(
           folders: setChildrenInTree(state.folders, folder.id, children),
           photos: replaceFolderPhotos(state.photos, folder.id, photos)
         }));
+      },
+      revealFolder: async (folderId) => {
+        const volume = get().folders.find((item) => isFolderInPath(item.id, folderId));
+        if (!volume) {
+          return false;
+        }
+        const ancestorIds = folderAncestorIds(folderId, volume.id);
+        for (const id of ancestorIds) {
+          const folder = findFolder(get().folders, id);
+          if (!folder) {
+            return false;
+          }
+          await get().loadFolderChildren(folder);
+        }
+        get().setOpenFolderIds([...get().openFolderIds, ...ancestorIds]);
+        get().setSelectedFolderId(folderId);
+        return true;
       },
       restoreOpenFolders: async () => {
         const volumes = get().folders;

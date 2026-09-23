@@ -1,12 +1,13 @@
-import { IconAlertTriangle, IconFolder } from '@tabler/icons-react';
+import { IconAlertTriangle, IconExternalLink, IconFolder } from '@tabler/icons-react';
+import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
+import { ScanLinkDialog } from '#/components/scan-link-dialog';
 import { Button } from '#/components/ui/button';
 import { getApi } from '#/hooks/use-ipc';
 import { type Roll, type RollScanStatus } from '#/shared/rolls';
+import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { useRollsStore } from '#/stores/rolls.store';
-
-import { ScanLinkDialog } from './scan-link-dialog';
 
 type RollScansProps = {
   roll: Roll;
@@ -17,8 +18,18 @@ type Pending = { folder: string; files: { name: string; path: string }[] };
 
 export function RollScans({ roll, status }: RollScansProps) {
   const unlinkScans = useRollsStore((state) => state.unlinkScans);
+  const navigate = useNavigate();
+  const revealFolder = useMediaPoolStore((state) => state.revealFolder);
   const [pending, setPending] = useState<Pending | null>(null);
   const linked = roll.frames.filter((frame) => frame.scanPath).length;
+
+  const showInMedia = async () => {
+    if (!roll.scanFolder) {
+      return;
+    }
+    await navigate({ to: '/media' });
+    await revealFolder(roll.scanFolder);
+  };
 
   const chooseFolder = async () => {
     const folder = await getApi().rolls.chooseScanFolder();
@@ -40,6 +51,11 @@ export function RollScans({ roll, status }: RollScansProps) {
           <Button size="xs" variant="outline" onClick={() => void chooseFolder()}>
             <IconFolder /> {roll.scanFolder ? 'Change folder' : 'Link scans'}
           </Button>
+          {roll.scanFolder && !status?.folderMissing && (
+            <Button size="xs" variant="outline" onClick={() => void showInMedia()}>
+              <IconExternalLink /> Show in Media
+            </Button>
+          )}
           {roll.scanFolder && (
             <Button size="xs" variant="ghost" onClick={() => void unlinkScans(roll.id)}>
               Unlink

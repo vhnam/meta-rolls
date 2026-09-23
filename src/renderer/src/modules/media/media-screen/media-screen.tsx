@@ -7,6 +7,7 @@ import { useMediaPhotoArrowSelection } from '#/hooks/use-media-photo-arrow-selec
 import { useMediaPreviewFullscreen } from '#/hooks/use-media-preview-fullscreen';
 import { MediaAlbums } from '#/modules/media/media-albums';
 import { MediaBrowser } from '#/modules/media/media-browser';
+import { MediaLinkRoll } from '#/modules/media/media-link-roll';
 import { selectActiveAlbumPhotos, useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { readDragString, toPhotoItem } from '#/utils';
@@ -58,6 +59,7 @@ export default function MediaScreen() {
 
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
+      <MediaLinkRoll />
       <ResizablePanelGroup orientation="vertical" className="min-h-0 flex-1">
         <ResizablePanel defaultSize="55%" minSize="20%" className="min-h-0 min-w-0">
           <ResizablePanelGroup orientation="horizontal" className="min-h-0">
