@@ -20,6 +20,10 @@ export type PhotoItem = {
   folderId: string;
   name: string;
   createdAt: string;
+  // Populated for photos scanned from disk (media pool); album-derived
+  // PhotoItems (see toPhotoItem in utils/photo/album-photo.ts) don't carry
+  // one, since AlbumPhoto doesn't persist a file mtime today.
+  mtimeMs?: number;
   size: number;
   width: number;
   height: number;

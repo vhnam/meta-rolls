@@ -137,6 +137,7 @@ const toPhotoItems = (folderId: string, files: PhotoItem[]): PhotoItem[] =>
     folderId,
     name: file.name,
     createdAt: file.createdAt,
+    mtimeMs: file.mtimeMs,
     size: file.size,
     width: file.width,
     height: file.height,

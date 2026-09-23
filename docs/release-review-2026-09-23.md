@@ -11,12 +11,18 @@ first public release. Checked items are done; the rest is the work queue.
       pushed history.
 - [x] **Bundle size claim was wrong.** I said the ~98 MB asar was "legitimately exiftool".
       It's actually dominated by shipped developer tooling (`.gitnexus`, etc.) — see Blocker 1.
-- [ ] **Cache correctness claim was wrong.** My immutable-cache commit says the `v` param
+- [x] **Cache correctness claim was wrong.** My immutable-cache commit says the `v` param
       "changes whenever the file's content changes." It doesn't — `v` is `0` until the photo
       is rotated inside the app. Editing a file in another app while Meta Rolls is open can
       leave a stale cached image showing until restart. Fix: derive `v` from the file's mtime
       (already returned by `listFolder`/`FileEntry`) instead of only the in-app rotation
       counter.
+      Fixed: `FileEntry`/`MediaFileEntry`/`PhotoItem` now carry `mtimeMs` from the folder
+      scan; `resolvePhotoRevision` prefers the in-app rotation counter when present, else
+      falls back to that mtime, at all 5 selector call sites. Still only refreshed on the
+      next folder scan (no live file-watching) — and album-derived `PhotoItem`s (Deliver
+      canvas, album grid) still have no `mtimeMs` since `AlbumPhoto` doesn't persist one,
+      so they keep relying solely on the in-app rotation counter as before.
 - [ ] **Refactor claim was imprecise.** I called the `image-decode.ts` extraction
       behavior-preserving. It isn't quite: RAW previews now also run through the
       already-baked-orientation check that previously only applied to non-RAW files. Low

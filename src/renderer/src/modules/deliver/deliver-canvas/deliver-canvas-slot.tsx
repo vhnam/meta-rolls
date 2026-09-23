@@ -21,7 +21,7 @@ import {
   type SlotFit
 } from '#/types';
 import { cn } from '#/utils/common';
-import { getInstaxCardGeometry, toMediaFileUrl } from '#/utils/photo';
+import { getInstaxCardGeometry, resolvePhotoRevision, toMediaFileUrl } from '#/utils/photo';
 
 type DeliverCanvasSlotProps = {
   slotId: string;
@@ -77,7 +77,7 @@ export function DeliverCanvasSlot({
     collisionPriority: CollisionPriority.High
   });
   const photoRevision = useMediaPoolStore((state) =>
-    photo ? (state.photoRevisions[photo.id] ?? 0) : 0
+    photo ? resolvePhotoRevision(state.photoRevisions, photo) : 0
   );
   const src = photo?.path ? toMediaFileUrl(photo.path, photoRevision) : null;
   const setRefs = (element: Element | null) => {

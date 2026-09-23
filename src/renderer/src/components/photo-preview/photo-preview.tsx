@@ -7,7 +7,7 @@ import { useMediaPhotoRotate } from '#/hooks/use-media-photo-rotate';
 import { useAlbumStore } from '#/stores/album.store';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type Album, type PhotoItem, type PhotoRotateDirection } from '#/types';
-import { toMediaFileUrl } from '#/utils';
+import { resolvePhotoRevision, toMediaFileUrl } from '#/utils';
 import { cn } from '#/utils/common';
 import {
   PHOTO_ROTATE_MS,
@@ -57,7 +57,7 @@ export function PhotoPreview({ photo, toolbarLeading, toolbarClassName }: PhotoP
   const activeAlbumId = useAlbumStore((state) => state.activeAlbumId);
   const rateAlbumPhoto = useAlbumStore((state) => state.rateAlbumPhoto);
   const photoRevision = useMediaPoolStore((state) =>
-    photo ? (state.photoRevisions[photo.id] ?? 0) : 0
+    photo ? resolvePhotoRevision(state.photoRevisions, photo) : 0
   );
   const ratingAlbumId = photo ? findAlbumIdForPhoto(albums, activeAlbumId, photo.id) : null;
   const src = photo?.path ? toMediaFileUrl(photo.path, photoRevision) : null;

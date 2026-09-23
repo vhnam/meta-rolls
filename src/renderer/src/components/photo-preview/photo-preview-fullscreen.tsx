@@ -6,7 +6,7 @@ import { useHeldMediaSrc } from '#/hooks/use-held-media-src';
 import { getApi } from '#/hooks/use-ipc';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoItem } from '#/types';
-import { toMediaFileUrl } from '#/utils';
+import { resolvePhotoRevision, toMediaFileUrl } from '#/utils';
 
 type PhotoPreviewFullscreenProps = {
   photo: PhotoItem | null;
@@ -16,7 +16,7 @@ type PhotoPreviewFullscreenProps = {
 
 export function PhotoPreviewFullscreen({ photo, open, onOpenChange }: PhotoPreviewFullscreenProps) {
   const photoRevision = useMediaPoolStore((state) =>
-    photo ? (state.photoRevisions[photo.id] ?? 0) : 0
+    photo ? resolvePhotoRevision(state.photoRevisions, photo) : 0
   );
   const isRotating = useMediaPoolStore((state) =>
     photo ? state.rotatingPhotoId === photo.id : false

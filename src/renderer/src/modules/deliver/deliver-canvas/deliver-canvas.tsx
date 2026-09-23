@@ -20,7 +20,7 @@ import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { useSettingsStore } from '#/stores/settings.store';
 import { type PhotoItem } from '#/types';
 import { cn, readDragString } from '#/utils/common';
-import { getInstaxCardGeometry, toMediaFileUrl } from '#/utils/photo';
+import { getInstaxCardGeometry, resolvePhotoRevision, toMediaFileUrl } from '#/utils/photo';
 import { PREVIEW_ZOOM_FIT } from '#/utils/preview';
 
 import { DeliverCanvasSidebar } from './deliver-canvas-sidebar';
@@ -326,7 +326,7 @@ export function DeliverCanvas({ albumId, photos, sidebarToggle }: DeliverCanvasP
                 return null;
               }
               const src = photo.path
-                ? toMediaFileUrl(photo.path, photoRevisions[photo.id] ?? 0)
+                ? toMediaFileUrl(photo.path, resolvePhotoRevision(photoRevisions, photo))
                 : null;
               const fit =
                 (slotId ? slotSettings[slotId]?.fit : undefined) ?? DEFAULT_SLOT_SETTINGS.fit;

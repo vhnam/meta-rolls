@@ -25,6 +25,7 @@ export type MediaFileEntry = {
   name: string;
   path: string;
   createdAt: string;
+  mtimeMs: number;
   size: number;
   width: number;
   height: number;

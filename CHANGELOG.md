@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.5] - 2026-09-23
+
+### Fixed
+
+- The `v` (revision) param used to build `meta-rolls-media://` URLs only ever changed when a photo was rotated inside the app — otherwise it stayed `0` for the life of the install. Combined with the immutable HTTP cache header added earlier, editing a photo in another app while (or before) it's shown in Meta Rolls could leave Chromium's disk cache serving the pre-edit image indefinitely, even across app restarts. `FileEntry`/`PhotoItem` now carry the file's `mtimeMs` from the folder scan, and a shared `resolvePhotoRevision` helper prefers the in-app rotation counter when present and otherwise falls back to that mtime, so the URL changes whenever the file's on-disk mtime does.
+
 ## [3.9.4] - 2026-09-23
 
 ### Fixed
