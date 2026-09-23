@@ -19,6 +19,25 @@ if (process.env['REMOTE_DEBUGGING_PORT']) {
   app.commandLine.appendSwitch('remote-debugging-port', process.env['REMOTE_DEBUGGING_PORT']);
 }
 
+const isExternalHttpUrl = (url: string): boolean => {
+  try {
+    return new URL(url).protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
+const isAppNavigationUrl = (url: string): boolean => {
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    return url.startsWith(process.env['ELECTRON_RENDERER_URL']);
+  }
+  try {
+    return new URL(url).protocol === 'file:';
+  } catch {
+    return false;
+  }
+};
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -41,8 +60,19 @@ function createWindow(): void {
   void mainWindow.webContents.setVisualZoomLevelLimits(1, 1);
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
+    if (isExternalHttpUrl(details.url)) {
+      shell.openExternal(details.url);
+    }
     return { action: 'deny' };
+  });
+
+  // Block in-page navigation to anything but the app's own renderer entry —
+  // a compromised/loaded remote page could otherwise navigate the window
+  // itself instead of going through setWindowOpenHandler.
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    if (!isAppNavigationUrl(url)) {
+      event.preventDefault();
+    }
   });
 
   // Load the Vite dev server URL in development, or the built HTML file in production.
