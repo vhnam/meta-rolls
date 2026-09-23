@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.3] - 2026-09-23
+
+### Added
+
+- A top-level error boundary: `router.tsx` sets a `defaultErrorComponent` (`AppErrorFallback`), so a render error in a screen is replaced by a recoverable "Something went wrong" panel with a Try again button, instead of a blank white window. It applies per-route, so a crash inside one screen leaves the title bar and preferences dialog (rendered by the root layout) usable.
+
 ## [3.9.2] - 2026-09-23
 
 ### Fixed
