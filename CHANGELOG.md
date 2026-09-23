@@ -5,13 +5,13 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.23.1] - 2026-09-24
+## [4.13.1] - 2026-09-24
 
 ### Changed
 
 - Updated `docs/product/rolls/requirements.md` to reflect what is built and what is still open.
 
-## [3.23.0] - 2026-09-24
+## [4.13.0] - 2026-09-24
 
 ### Added
 
@@ -20,19 +20,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-lab totals under a roll's dev jobs: number of jobs, total spent per currency (currencies are never summed together), and average days from sent to received, across all rolls.
 - Built-in offline list of 25 common 135 stocks (`shared/common-film-stocks.ts`). "Start from a common stock" fills the new-stock form and the add-roll dialog's new-stock fields; format and exposures can be changed afterwards (e.g. for 120).
 
-## [3.22.0] - 2026-09-24
+## [4.12.0] - 2026-09-24
 
 ### Added
 
 - Rolls section in Preferences (⌘,): a switch to hide the Rolls workspace for digital-only users (removes the tab and redirects `/rolls` to Media; stored rolls are kept) and a default currency, which new dev jobs start with instead of the hard-coded VND. Both persist with the other settings.
 
-## [3.21.0] - 2026-09-24
+## [4.11.0] - 2026-09-24
 
 ### Added
 
 - "From roll" section in the metadata panel (Media, Cull, and Deliver) for any photo whose file is linked to a roll frame: roll and frame number, film stock, shot ISO with push/pull, camera, lens (the frame's override or the roll default), aperture, and shutter. Photos not linked to a roll are unchanged. `findFrameByScanPath` added to `shared/rolls.ts`.
 
-## [3.20.0] - 2026-09-24
+## [4.10.0] - 2026-09-24
 
 ### Added
 
@@ -40,13 +40,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "Show in Media" on a roll's Scans section: opens the Media tab with the linked folder's ancestors loaded and the folder selected (`revealFolder` in the media pool store).
 - The scan-link preview dialog moved to `components/scan-link-dialog`, shared by Rolls and Media.
 
-## [3.19.1] - 2026-09-24
+## [4.9.1] - 2026-09-24
 
 ### Changed
 
 - Moved the value/label select wrapper from `modules/rolls/rolls-option-select` to `components/option-select` (`OptionSelect`, `SelectOption`), since the Media screen is about to use it too. No behavior change.
 
-## [3.19.0] - 2026-09-24
+## [4.9.0] - 2026-09-24
 
 ### Added
 
@@ -58,20 +58,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed a stray unused `saveDevJob` call from the roll-store test.
 
-## [3.18.0] - 2026-09-24
+## [4.8.0] - 2026-09-24
 
 ### Added
 
 - Scan-linking backend for Rolls (no UI yet): `planScanLink` matches files to frames in natural filename order and reports extra files / empty frames; `linkScans` (optionally adds frames so every file has one), `unlinkScans`, `moveFrameScan` (move or swap), and `checkRollScans` (flags a missing folder or files) in `roll-store.ts`; IPC and `window.api.rolls` for choosing a folder and each operation. Linking is read-only on disk, and scan paths must be recognized image files.
 
-## [3.17.0] - 2026-09-24
+## [4.7.0] - 2026-09-24
 
 ### Added
 
 - Gear and Stocks sections on `/rolls`, switched from a `Rolls · Gear · Stocks` bar at the top of the screen: add, edit, and archive cameras (brand, model, format, notes), lenses (name, focal length, max aperture, mount), and film stocks (brand, name, ISO, format, exposures, process, type). Archived items are dimmed in their lists, hidden from pickers, and still shown on rolls that use them; they can be restored.
 - Lenses created here now appear in the roll detail and frame inspector pickers.
 
-## [3.16.0] - 2026-09-24
+## [4.6.0] - 2026-09-24
 
 ### Added
 
@@ -82,37 +82,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The shared save-on-blur input moved from `roll-detail-field` to `modules/rolls/rolls-field`, since the detail and inspector both use it.
 
-## [3.15.0] - 2026-09-24
+## [4.5.0] - 2026-09-24
 
 ### Added
 
 - Frame selection and frame actions in `useRollsStore`: click, ⌘/Ctrl-click and Shift-click selection, bulk `updateFrames`, `addFrame`, and `removeLastFrame`. `isFrameEmpty` moved to `shared/rolls.ts` (with a test) so the renderer can tell when the last frame is removable.
 
-## [3.14.0] - 2026-09-24
+## [4.4.0] - 2026-09-24
 
 ### Added
 
 - Dev jobs on the roll detail: a Development section listing a roll's lab trips (newest first) with add, edit, and delete; a dev job dialog (lab with autocomplete from labs used before, price, currency, sent/received dates, process defaulting to the stock's, scan resolution, notes). Sending a roll to `developing` opens the dialog for a first job (skippable), and a received date offers "Mark as developed".
 
-## [3.13.0] - 2026-09-24
+## [4.3.0] - 2026-09-24
 
 ### Added
 
 - Rolls tab and `/rolls` route: the bottom tab bar is now `Rolls · Media · Cull · Deliver`, and the Rolls screen shows the roll list beside the roll detail. ⌘/Ctrl+N opens the add-roll dialog.
 
-## [3.12.0] - 2026-09-24
+## [4.2.0] - 2026-09-24
 
 ### Added
 
 - Rolls components (not yet routed): `RollsList` (grouped by status with counts, search, status/stock/camera filters, sort), `RollDetail` (editable name, stock/camera/lens, exposures, shot ISO with push/pull, dates, notes, status control with next-step button, format-mismatch warning, duplicate, delete with confirm), and `RollFormDialog` (pick or create a stock, optional camera, quantity).
 
-## [3.11.0] - 2026-09-24
+## [4.1.0] - 2026-09-24
 
 ### Added
 
 - `useRollsStore` (Zustand) holding the rolls snapshot, list filters/sort, and roll actions (create, duplicate, update, set status, delete), hydrated at startup. `RollPatch` moved to `shared/rolls.ts`. Status/format/process/sort labels in `constants/rolls.ts`.
 
-## [3.10.0] - 2026-09-24
+## [4.0.0] - 2026-09-24
 
 ### Added
 

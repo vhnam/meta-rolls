@@ -5,7 +5,7 @@ This document is for people. It explains **why** the Rolls workspace exists, **w
 It extends the app-wide [requirements.md](../requirements.md); read that first. Instructions for
 coding agents live in [AGENTS.md](../../../AGENTS.md).
 
-Last updated: 2026-09-24 (app version 3.23.1).
+Last updated: 2026-09-24 (app version 4.13.1).
 
 ---
 
@@ -227,7 +227,7 @@ reasons when needed._
 
 ### Where we are
 
-- Every must-have and nice-to-have above is built, in versions 3.10.0 to 3.23.0. It has been checked by typecheck, lint, and unit tests (the data layer and pure logic), but not yet by a full manual pass in the running app.
+- Every must-have and nice-to-have above is built, in versions 4.0.0 to 4.13.0. It has been checked by typecheck, lint, and unit tests (the data layer and pure logic), but not yet by a full manual pass in the running app.
 - Not done: Vietnamese text. The app has no translation layer yet, so all Rolls text is English.
 - Known gaps: the camera and lens pickers on a roll can't create a new item inline (add it in Gear first); the roll list summary says "unused" rather than "in fridge", because the app doesn't track where a roll is stored.
 
