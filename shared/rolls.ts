@@ -229,3 +229,70 @@ export const findFrameByScanPath = (
   }
   return null;
 };
+
+/** Header line above the roll list, e.g. "3 loaded · 2 at lab · 14 unused". Empty when nothing to report. */
+export const summarizeRolls = (rolls: Roll[]): string => {
+  const count = (status: RollStatus) => rolls.filter((roll) => roll.status === status).length;
+  const parts: [number, string][] = [
+    [count('loaded'), 'loaded'],
+    [count('developing'), 'at lab'],
+    [count('unused'), 'unused']
+  ];
+  return parts
+    .filter(([n]) => n > 0)
+    .map(([n, label]) => `${n} ${label}`)
+    .join(' · ');
+};
+
+/** Whether an unused roll's expiry needs a warning: past, or within `withinDays`. */
+export const isExpiryWarning = (roll: Roll, now: Date, withinDays = 30): boolean => {
+  if (roll.status !== 'unused') {
+    return false;
+  }
+  const days = daysUntilExpiry(roll.expiryAt, now);
+  return days !== null && days <= withinDays;
+};
+
+export type LabSummary = {
+  lab: string;
+  jobs: number;
+  /** Total spent per currency; prices in different currencies are never added together. */
+  spent: Record<string, number>;
+  /** Average days from sent to received, over jobs with both dates. Null if none. */
+  averageDays: number | null;
+};
+
+const DAY_MS = 86_400_000;
+
+/** Per-lab totals and turnaround across all rolls. Jobs without a lab name are skipped. */
+export const summarizeLabs = (rolls: Roll[]): LabSummary[] => {
+  const byLab = new Map<string, { jobs: number; spent: Record<string, number>; days: number[] }>();
+  for (const job of rolls.flatMap((roll) => roll.devJobs)) {
+    const lab = job.lab.trim();
+    if (!lab) {
+      continue;
+    }
+    const entry = byLab.get(lab) ?? { jobs: 0, spent: {}, days: [] };
+    entry.jobs += 1;
+    if (job.price !== null) {
+      entry.spent[job.currency] = (entry.spent[job.currency] ?? 0) + job.price;
+    }
+    if (job.sentAt && job.receivedAt) {
+      const days = (Date.parse(job.receivedAt) - Date.parse(job.sentAt)) / DAY_MS;
+      if (Number.isFinite(days) && days >= 0) {
+        entry.days.push(days);
+      }
+    }
+    byLab.set(lab, entry);
+  }
+  return [...byLab.entries()]
+    .map(([lab, entry]) => ({
+      lab,
+      jobs: entry.jobs,
+      spent: entry.spent,
+      averageDays: entry.days.length
+        ? Math.round(entry.days.reduce((a, b) => a + b, 0) / entry.days.length)
+        : null
+    }))
+    .sort((a, b) => b.jobs - a.jobs || a.lab.localeCompare(b.lab));
+};

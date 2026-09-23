@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { CommonStockSelect } from '#/components/common-stock-select';
 import { OptionSelect } from '#/components/option-select';
 import { Button } from '#/components/ui/button';
 import {
@@ -13,6 +14,7 @@ import {
 import { Field, FieldGroup, FieldLabel } from '#/components/ui/field';
 import { Input } from '#/components/ui/input';
 import { FILM_FORMAT_LABEL } from '#/constants/rolls';
+import { type CommonFilmStock } from '#/shared/common-film-stocks';
 import { FILM_FORMATS, type FilmFormat, type FilmStock } from '#/shared/rolls';
 import { useRollsStore } from '#/stores/rolls.store';
 
@@ -52,6 +54,14 @@ export function RollFormDialog({ open, onOpenChange }: RollFormDialogProps) {
   }, [open]);
 
   const creatingStock = stockId === NEW_STOCK;
+  const fillFromCommon = (common: CommonFilmStock) =>
+    setDraft({
+      brand: common.brand,
+      name: common.name,
+      iso: String(common.iso),
+      format: common.format,
+      exposures: String(common.exposures)
+    });
   const canSubmit = !saving && (!creatingStock || draft.brand.trim() || draft.name.trim());
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -108,6 +118,9 @@ export function RollFormDialog({ open, onOpenChange }: RollFormDialogProps) {
               </Field>
               {creatingStock && (
                 <div className="grid grid-cols-2 gap-2">
+                  <div className="col-span-2">
+                    <CommonStockSelect onPick={fillFromCommon} />
+                  </div>
                   <Field>
                     <FieldLabel htmlFor="stock-brand">Brand</FieldLabel>
                     <Input

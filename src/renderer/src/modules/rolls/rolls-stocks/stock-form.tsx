@@ -1,9 +1,11 @@
 import { useState } from 'react';
 
+import { CommonStockSelect } from '#/components/common-stock-select';
 import { OptionSelect } from '#/components/option-select';
 import { Field, FieldLabel } from '#/components/ui/field';
 import { Input } from '#/components/ui/input';
 import { FILM_FORMAT_LABEL, FILM_PROCESS_LABEL, FILM_TYPE_LABEL } from '#/constants/rolls';
+import { type CommonFilmStock } from '#/shared/common-film-stocks';
 import {
   FILM_FORMATS,
   FILM_PROCESSES,
@@ -34,6 +36,16 @@ export function StockForm({ stock, onSaved }: StockFormProps) {
   const [process, setProcess] = useState<FilmProcess>(stock?.process ?? 'c41');
   const [type, setType] = useState<FilmType>(stock?.type ?? 'color-negative');
   const [saving, setSaving] = useState(false);
+
+  const fillFromCommon = (common: CommonFilmStock) => {
+    setBrand(common.brand);
+    setName(common.name);
+    setIso(String(common.iso));
+    setExposures(String(common.exposures));
+    setFormat(common.format);
+    setProcess(common.process);
+    setType(common.type);
+  };
 
   const save = async () => {
     setSaving(true);
@@ -69,6 +81,7 @@ export function StockForm({ stock, onSaved }: StockFormProps) {
         stock ? () => void archiveGear('stock', stock.id, !stock.archived) : undefined
       }
     >
+      {!stock && <CommonStockSelect onPick={fillFromCommon} />}
       <Field>
         <FieldLabel htmlFor="stock-brand">Brand</FieldLabel>
         <Input

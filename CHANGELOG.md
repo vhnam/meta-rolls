@@ -5,6 +5,15 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.23.0] - 2026-09-24
+
+### Added
+
+- Roll list summary line above the filters (e.g. "3 loaded · 2 at lab · 14 unused").
+- Expiry warning on `unused` rolls that are expired or expire within 30 days: an icon on the list row and a message on the roll detail.
+- Per-lab totals under a roll's dev jobs: number of jobs, total spent per currency (currencies are never summed together), and average days from sent to received, across all rolls.
+- Built-in offline list of 25 common 135 stocks (`shared/common-film-stocks.ts`). "Start from a common stock" fills the new-stock form and the add-roll dialog's new-stock fields; format and exposures can be changed afterwards (e.g. for 120).
+
 ## [3.22.0] - 2026-09-24
 
 ### Added

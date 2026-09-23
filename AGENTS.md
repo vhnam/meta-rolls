@@ -113,6 +113,7 @@ src/renderer/src/
 │   ├── album-photo-toolbar/       # AlbumPhotoToolbar (view/zoom, optional leading slot)
 │   ├── album-details/             # AlbumDetails — album photo grid + toolbar (Cull/Deliver sidebars)
 │   ├── album-form-dialog/         # AlbumFormDialog (add/rename)
+│   ├── common-stock-select/       # CommonStockSelect — fill a new-stock form from the built-in stock list
 │   ├── scan-link-dialog/          # ScanLinkDialog — preview how a folder's files map onto a roll's frames
 │   ├── option-select/             # OptionSelect — value/label Select wrapper (Rolls, Media)
 │   ├── preview-zoom-select/       # PreviewZoomSelect — zoom dropdown shared by Media/Deliver toolbars
@@ -162,6 +163,7 @@ shared/
 ├── ipc.ts                         # IpcChannel — IPC channel names
 ├── album.ts                       # Album, AlbumPhoto, PhotoRating
 ├── media.ts                       # MEDIA_FILE_SCHEME, PhotoExifField
+├── common-film-stocks.ts         # COMMON_FILM_STOCKS — built-in offline list of common 135 stocks
 ├── rolls.ts                       # Roll, FilmStock, Camera, Lens, DevJob, RollFrame + status/push-pull helpers
 └── print.ts                       # print-layout geometry + DeliverPdfExportRequest (de)serialization
 

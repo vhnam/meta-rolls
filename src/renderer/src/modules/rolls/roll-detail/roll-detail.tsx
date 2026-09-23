@@ -11,7 +11,9 @@ import {
   ROLL_STATUSES,
   type DevJob,
   type Roll,
+  daysUntilExpiry,
   formatPushPull,
+  isExpiryWarning,
   isFormatMismatch,
   nextRollStatus,
   pushPullStops
@@ -69,6 +71,8 @@ function RollDetailBody({ roll }: { roll: Roll }) {
       setDevJobDialog(null);
     }
   };
+  const [now] = useState(() => new Date());
+  const expiryDays = isExpiryWarning(roll, now) ? daysUntilExpiry(roll.expiryAt, now) : null;
   const pushPull = formatPushPull(stops);
   const mismatch = stock && camera && isFormatMismatch(stock.format, camera.format);
 
@@ -133,6 +137,15 @@ function RollDetailBody({ roll }: { roll: Roll }) {
             </Button>
           )}
         </section>
+
+        {expiryDays !== null && (
+          <p className="flex items-center gap-1.5 text-xs text-destructive">
+            <IconAlertTriangle className="size-3.5" />
+            {expiryDays < 0
+              ? `This film expired ${-expiryDays} ${-expiryDays === 1 ? 'day' : 'days'} ago.`
+              : `This film expires in ${expiryDays} ${expiryDays === 1 ? 'day' : 'days'}.`}
+          </p>
+        )}
 
         {mismatch && (
           <p className="flex items-center gap-1.5 text-xs text-destructive">

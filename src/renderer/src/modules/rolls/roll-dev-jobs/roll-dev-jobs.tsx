@@ -1,8 +1,9 @@
 import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import { useMemo } from 'react';
 
 import { Button } from '#/components/ui/button';
 import { FILM_PROCESS_LABEL } from '#/constants/rolls';
-import { type DevJob, type Roll } from '#/shared/rolls';
+import { type DevJob, type LabSummary, type Roll, summarizeLabs } from '#/shared/rolls';
 import { useRollsStore } from '#/stores/rolls.store';
 
 type RollDevJobsProps = {
@@ -14,9 +15,27 @@ type RollDevJobsProps = {
 const formatPrice = (job: DevJob) =>
   job.price === null ? null : `${job.price.toLocaleString()} ${job.currency}`;
 
+const formatLabSummary = (lab: LabSummary) =>
+  [
+    lab.lab,
+    `${lab.jobs} ${lab.jobs === 1 ? 'job' : 'jobs'}`,
+    ...Object.entries(lab.spent).map(
+      ([currency, total]) => `${total.toLocaleString()} ${currency}`
+    ),
+    lab.averageDays !== null ? `about ${lab.averageDays} days` : null
+  ]
+    .filter(Boolean)
+    .join(' · ');
+
 export function RollDevJobs({ roll, onAdd, onEdit }: RollDevJobsProps) {
   const deleteDevJob = useRollsStore((state) => state.deleteDevJob);
   const setRollStatus = useRollsStore((state) => state.setRollStatus);
+  const allRolls = useRollsStore((state) => state.rolls);
+  // Totals across every roll, shown for the labs this roll used.
+  const labSummaries = useMemo(() => {
+    const used = new Set(roll.devJobs.map((job) => job.lab.trim()));
+    return summarizeLabs(allRolls).filter((lab) => used.has(lab.lab));
+  }, [allRolls, roll.devJobs]);
 
   // A received date means the lab returned the roll; offer the matching status.
   const canMarkDeveloped =
@@ -81,6 +100,13 @@ export function RollDevJobs({ roll, onAdd, onEdit }: RollDevJobsProps) {
                 </Button>
               </div>
             </li>
+          ))}
+        </ul>
+      )}
+      {labSummaries.length > 0 && (
+        <ul className="text-xs text-muted-foreground">
+          {labSummaries.map((lab) => (
+            <li key={lab.lab}>{formatLabSummary(lab)}</li>
           ))}
         </ul>
       )}

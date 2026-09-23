@@ -1,5 +1,5 @@
-import { IconPlus, IconMovie } from '@tabler/icons-react';
-import { useMemo } from 'react';
+import { IconAlertTriangle, IconPlus, IconMovie } from '@tabler/icons-react';
+import { useMemo, useState } from 'react';
 
 import { OptionSelect } from '#/components/option-select';
 import { Button } from '#/components/ui/button';
@@ -13,7 +13,7 @@ import {
   ROLL_STATUS_LABEL,
   type RollSort
 } from '#/constants/rolls';
-import { ROLL_STATUSES } from '#/shared/rolls';
+import { ROLL_STATUSES, isExpiryWarning, summarizeRolls } from '#/shared/rolls';
 import { useRollsStore } from '#/stores/rolls.store';
 import { cn } from '#/utils/common';
 
@@ -46,6 +46,8 @@ export function RollsList({ onAddRoll }: RollsListProps) {
   const setSearch = useRollsStore((state) => state.setSearch);
   const setSort = useRollsStore((state) => state.setSort);
 
+  const [now] = useState(() => new Date());
+  const summary = useMemo(() => summarizeRolls(rolls), [rolls]);
   const groups = useMemo(
     () =>
       groupByStatus(
@@ -79,6 +81,12 @@ export function RollsList({ onAddRoll }: RollsListProps) {
           </TooltipContent>
         </Tooltip>
       </div>
+
+      {summary && (
+        <p className="shrink-0 border-b border-border px-2 py-1 text-tiny text-muted-foreground">
+          {summary}
+        </p>
+      )}
 
       <div className="flex shrink-0 flex-col gap-1 border-b border-border p-1">
         <div>
@@ -144,7 +152,15 @@ export function RollsList({ onAddRoll }: RollsListProps) {
                   >
                     <span className="flex items-center justify-between gap-2">
                       <span className="truncate font-medium">{roll.name}</span>
-                      {date && <span className="shrink-0 text-muted-foreground">{date}</span>}
+                      <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
+                        {isExpiryWarning(roll, now) && (
+                          <IconAlertTriangle
+                            aria-label="Expiry warning"
+                            className="size-3 text-destructive"
+                          />
+                        )}
+                        {date}
+                      </span>
                     </span>
                     <span className="truncate text-muted-foreground">
                       {stockLabel(stockById.get(roll.stockId))} · ISO {roll.shotIso}
