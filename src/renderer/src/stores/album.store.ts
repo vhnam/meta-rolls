@@ -39,6 +39,14 @@ type AlbumActions = {
 
 export type AlbumStore = AlbumState & AlbumActions;
 
+// Stable reference so a selector can return "no photos" without handing back
+// a new array identity every call — Zustand/React compare by reference, so a
+// fresh `[]` per call would re-render (and can loop) on every store change.
+const EMPTY_ALBUM_PHOTOS: AlbumPhoto[] = [];
+
+export const selectActiveAlbumPhotos = (state: AlbumStore): AlbumPhoto[] =>
+  state.albums.find((album) => album.id === state.activeAlbumId)?.photos ?? EMPTY_ALBUM_PHOTOS;
+
 const nextActiveAlbumId = (albums: Album[], currentId: string | null) => {
   if (currentId && albums.some((album) => album.id === currentId)) {
     return currentId;

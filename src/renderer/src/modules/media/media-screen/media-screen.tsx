@@ -7,16 +7,13 @@ import { useMediaPhotoArrowSelection } from '#/hooks/use-media-photo-arrow-selec
 import { useMediaPreviewFullscreen } from '#/hooks/use-media-preview-fullscreen';
 import { MediaAlbums } from '#/modules/media/media-albums';
 import { MediaBrowser } from '#/modules/media/media-browser';
-import { useAlbumStore } from '#/stores/album.store';
+import { selectActiveAlbumPhotos, useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { readDragString, toPhotoItem } from '#/utils';
 
 export default function MediaScreen() {
   const store = useMediaPoolStore();
-  const activeAlbumId = useAlbumStore((state) => state.activeAlbumId);
-  const activeAlbumPhotos = useAlbumStore(
-    (state) => state.albums.find((album) => album.id === activeAlbumId)?.photos ?? []
-  );
+  const activeAlbumPhotos = useAlbumStore(selectActiveAlbumPhotos);
   const selectedPhoto = getSelectedPhoto(store, activeAlbumPhotos.map(toPhotoItem));
   const { open: fullscreenOpen, setOpen: setFullscreenOpen } =
     useMediaPreviewFullscreen(selectedPhoto);

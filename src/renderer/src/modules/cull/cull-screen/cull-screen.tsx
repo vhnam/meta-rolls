@@ -14,7 +14,7 @@ import { PHOTO_PANE } from '#/constants/media';
 import { useMediaPhotoArrowSelection } from '#/hooks/use-media-photo-arrow-selection';
 import { useMediaPreviewFullscreen } from '#/hooks/use-media-preview-fullscreen';
 import { AlbumSchema } from '#/schemas/album.schema';
-import { useAlbumStore } from '#/stores/album.store';
+import { selectActiveAlbumPhotos, useAlbumStore } from '#/stores/album.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { Album } from '#/types';
 import { readDragString } from '#/utils/common';
@@ -33,10 +33,7 @@ export function CullScreen() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const store = useMediaPoolStore();
-  const activeAlbumId = useAlbumStore((state) => state.activeAlbumId);
-  const activeAlbumPhotos = useAlbumStore(
-    (state) => state.albums.find((album) => album.id === activeAlbumId)?.photos ?? []
-  );
+  const activeAlbumPhotos = useAlbumStore(selectActiveAlbumPhotos);
   const selectedPhoto = getSelectedPhoto(store, activeAlbumPhotos.map(toPhotoItem));
   const { open: fullscreenOpen, setOpen: setFullscreenOpen } =
     useMediaPreviewFullscreen(selectedPhoto);

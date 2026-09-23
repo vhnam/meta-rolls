@@ -12,7 +12,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '#/components/ui/tooltip
 import { PHOTO_PANE } from '#/constants/media';
 import { useMediaPhotoArrowSelection } from '#/hooks/use-media-photo-arrow-selection';
 import { AlbumSchema } from '#/schemas/album.schema';
-import { useAlbumStore } from '#/stores/album.store';
+import { selectActiveAlbumPhotos, useAlbumStore } from '#/stores/album.store';
 import { useCanvasStore } from '#/stores/canvas.store';
 import { getSelectedPhoto, useMediaPoolStore } from '#/stores/media-pool.store';
 import { Album } from '#/types';
@@ -36,9 +36,7 @@ export function DeliverScreen() {
 
   const store = useMediaPoolStore();
   const activeAlbumId = useAlbumStore((state) => state.activeAlbumId);
-  const activeAlbumPhotos = useAlbumStore(
-    (state) => state.albums.find((album) => album.id === activeAlbumId)?.photos ?? []
-  );
+  const activeAlbumPhotos = useAlbumStore(selectActiveAlbumPhotos);
   const albumPhotoItems = activeAlbumPhotos.map(toPhotoItem);
   const selectedPhoto = getSelectedPhoto(store, albumPhotoItems);
   const spreadPhotoIds = useCanvasStore((state) => state.spreadPhotoIds);

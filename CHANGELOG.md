@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.2] - 2026-09-23
+
+### Fixed
+
+- Media, Cull, and Deliver screens each selected active-album photos as `state.albums.find(...)?.photos ?? []` directly inside a Zustand selector. Returning a fresh `[]` from a selector on every store notification is a known `useSyncExternalStore` re-render (and potential loop) trigger — a fresh install with zero albums hit this exact path. Replaced with a shared `selectActiveAlbumPhotos` selector backed by one stable empty-array constant.
+
 ## [3.9.1] - 2026-09-23
 
 ### Fixed
