@@ -5,6 +5,18 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.10] - 2026-09-23
+
+### Changed
+
+- `appId` no longer uses the electron-builder boilerplate `com.electron.app`; Linux `maintainer` no longer says `electronjs.org`.
+- Dropped the macOS camera/microphone usage-description entries — the app never requests either.
+- Removed the `publish` block pointing at a placeholder `example.com` update feed; nothing in the app reads it now that the unused `electron-updater` dependency is gone.
+
+### Fixed
+
+- Dropped `com.apple.security.cs.allow-dyld-environment-variables` from the macOS entitlements — it enables `DYLD_INSERT_LIBRARIES`-style dylib injection into the signed app and nothing in the app needs it.
+
 ## [3.8.9] - 2026-09-23
 
 ### Changed
