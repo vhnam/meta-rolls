@@ -5,6 +5,13 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.9] - 2026-09-23
+
+### Changed
+
+- Moved every package the renderer bundles or that only runs at build/dev time (Tabler icons, TanStack, shadcn CLI, Tailwind, Vite plugins, `dayjs`, `zustand`, …) from `dependencies` to `devDependencies`. `dependencies` now only lists what the packaged main process actually `require()`s at runtime (`@electron-toolkit/utils`, `exiftool-vendored`, `image-size`). This shrinks `app.asar` from ~219 MB to ~98 MB, since electron-builder no longer copies the renderer's already-bundled `node_modules` into the installer.
+- Removed the unused `electron-updater` dependency (never wired up to any update flow).
+
 ## [3.8.8] - 2026-09-23
 
 ### Fixed
