@@ -10,6 +10,7 @@ import {
   type Roll,
   type RollFrame,
   type RollStatus,
+  type RollPatch,
   type RollsSnapshot,
   DEFAULT_CURRENCY,
   STATUS_ENTRY_DATE,
@@ -309,7 +310,7 @@ const ROLL_PATCH_COLUMNS = {
   scanFolder: 'scan_folder'
 } as const;
 
-export type RollPatch = Partial<Pick<Roll, keyof typeof ROLL_PATCH_COLUMNS | 'exposures'>>;
+export type { RollPatch };
 
 const syncFrameCount = (db: DatabaseSync, rollId: string, exposures: number) => {
   const current = num(

@@ -149,3 +149,21 @@ export const daysUntilExpiry = (expiryAt: string | null, now: Date): number | nu
   }
   return Math.ceil((expiry - now.getTime()) / 86_400_000);
 };
+
+/** Fields of a roll that can be edited in place (frames and dev jobs have their own calls). */
+export type RollPatch = Partial<
+  Pick<
+    Roll,
+    | 'name'
+    | 'stockId'
+    | 'cameraId'
+    | 'lensId'
+    | 'exposures'
+    | 'shotIso'
+    | 'loadedAt'
+    | 'finishedAt'
+    | 'expiryAt'
+    | 'notes'
+    | 'scanFolder'
+  >
+>;
