@@ -131,7 +131,8 @@ export const registerMediaScheme = () => {
 
 export const handleMediaProtocol = () => {
   protocol.handle(MEDIA_FILE_SCHEME, async (request) => {
-    const filePath = new URL(request.url).searchParams.get('path');
+    const url = new URL(request.url);
+    const filePath = url.searchParams.get('path');
     if (!filePath || !isImageFile(filePath)) {
       return new Response('Not found', { status: 404 });
     }
@@ -141,11 +142,16 @@ export const handleMediaProtocol = () => {
       if (!display) {
         return new Response('Not found', { status: 404 });
       }
+      // Every caller of toMediaFileUrl passes a `v` revision that changes
+      // whenever the file's content does (see media-file-url.ts), so a given
+      // URL's bytes never change — safe for the renderer to cache forever.
+      // Fall back to no-cache for the (unused) bare path, just in case.
+      const cacheControl = url.searchParams.has('v') ? 'max-age=31536000, immutable' : 'no-cache';
       return new Response(Uint8Array.from(display.body), {
         headers: {
           'content-type': display.mime,
           'content-length': String(display.body.length),
-          'cache-control': 'no-cache'
+          'cache-control': cacheControl
         }
       });
     } catch {

@@ -5,6 +5,14 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.11] - 2026-09-23
+
+### Fixed
+
+- `toMediaFileUrl` only appended its `v` revision param when the revision was truthy, so the common case (an untouched photo, revision `0`) never got a cache-busting param. It now appends `v` for any defined revision, including `0`.
+- The two `deliver` canvas render paths (`deliver-canvas.tsx`, `deliver-canvas-slot.tsx`) now pass a revision to `toMediaFileUrl`, matching the other four call sites, so every media request is uniquely keyed by content.
+- The `meta-rolls-media://` protocol now serves `cache-control: max-age=31536000, immutable` whenever the request carries a `v` param (all requests, after the two fixes above), instead of `no-cache` on every request. Scrolling the grid or the deliver canvas no longer re-reads/re-encodes photos the browser already has cached.
+
 ## [3.8.10] - 2026-09-23
 
 ### Changed

@@ -16,6 +16,7 @@ import { getApi } from '#/hooks/use-ipc';
 import { bookPageFolio } from '#/shared/print';
 import { useAlbumStore } from '#/stores/album.store';
 import { useCanvasStore } from '#/stores/canvas.store';
+import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { useSettingsStore } from '#/stores/settings.store';
 import { type PhotoItem } from '#/types';
 import { cn, readDragString } from '#/utils/common';
@@ -115,6 +116,7 @@ export function DeliverCanvas({ albumId, photos, sidebarToggle }: DeliverCanvasP
   const rotateSlotImage = useCanvasStore((state) => state.rotateSlotImage);
   const clearSpreadSlot = useCanvasStore((state) => state.clearSpreadSlot);
   const syncSpreadsWithPhotos = useCanvasStore((state) => state.syncSpreadsWithPhotos);
+  const photoRevisions = useMediaPoolStore((state) => state.photoRevisions);
 
   const photoIds = useMemo(() => photos.map((photo) => photo.id), [photos]);
   const leadEmptySlots = leadingEmptySlots(leftHandFirst);
@@ -323,7 +325,9 @@ export function DeliverCanvas({ albumId, photos, sidebarToggle }: DeliverCanvasP
               if (!photo) {
                 return null;
               }
-              const src = photo.path ? toMediaFileUrl(photo.path) : null;
+              const src = photo.path
+                ? toMediaFileUrl(photo.path, photoRevisions[photo.id] ?? 0)
+                : null;
               const fit =
                 (slotId ? slotSettings[slotId]?.fit : undefined) ?? DEFAULT_SLOT_SETTINGS.fit;
               const imageRotationDeg =

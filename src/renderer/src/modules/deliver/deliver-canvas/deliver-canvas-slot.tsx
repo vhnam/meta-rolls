@@ -13,6 +13,7 @@ import {
   ContextMenuTrigger
 } from '#/components/ui/context-menu';
 import { slotImageLayout } from '#/shared/print';
+import { useMediaPoolStore } from '#/stores/media-pool.store';
 import {
   type InstaxPrintFormat,
   type PhotoItem,
@@ -75,7 +76,10 @@ export function DeliverCanvasSlot({
     collisionDetector: pointerIntersection,
     collisionPriority: CollisionPriority.High
   });
-  const src = photo?.path ? toMediaFileUrl(photo.path) : null;
+  const photoRevision = useMediaPoolStore((state) =>
+    photo ? (state.photoRevisions[photo.id] ?? 0) : 0
+  );
+  const src = photo?.path ? toMediaFileUrl(photo.path, photoRevision) : null;
   const setRefs = (element: Element | null) => {
     dragRef(element);
     dropRef(element);
