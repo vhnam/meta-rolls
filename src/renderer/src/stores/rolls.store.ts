@@ -8,6 +8,7 @@ import {
   type FilmStock,
   type Lens,
   type Roll,
+  type RollFrame,
   type RollPatch,
   type RollStatus
 } from '#/shared/rolls';
@@ -18,6 +19,8 @@ type RollsState = {
   lenses: Lens[];
   rolls: Roll[];
   selectedRollId: string | null;
+  selectedFrameIds: string[];
+  frameAnchorId: string | null;
   statusFilter: string;
   stockFilter: string;
   cameraFilter: string;
@@ -28,6 +31,11 @@ type RollsState = {
 type RollsActions = {
   loadRolls: () => Promise<void>;
   selectRoll: (rollId: string | null) => void;
+  /** Click selects one frame, `toggle` (⌘/Ctrl) adds or removes it, `range` (Shift) extends from the anchor. */
+  selectFrame: (frameId: string, mode: 'single' | 'toggle' | 'range', orderedIds: string[]) => void;
+  updateFrames: (frameIds: string[], patch: Partial<RollFrame>) => Promise<void>;
+  addFrame: (rollId: string) => Promise<void>;
+  removeLastFrame: (rollId: string) => Promise<void>;
   setStatusFilter: (value: string) => void;
   setStockFilter: (value: string) => void;
   setCameraFilter: (value: string) => void;
@@ -57,6 +65,8 @@ export const useRollsStore = create<RollsStore>((set, get) => ({
   lenses: [],
   rolls: [],
   selectedRollId: null,
+  selectedFrameIds: [],
+  frameAnchorId: null,
   statusFilter: ALL_FILTER,
   stockFilter: ALL_FILTER,
   cameraFilter: ALL_FILTER,
@@ -65,13 +75,50 @@ export const useRollsStore = create<RollsStore>((set, get) => ({
   loadRolls: async () => {
     const snapshot = await getApi().rolls.snapshot();
     const selected = get().selectedRollId;
+    const frameIds = new Set(snapshot.rolls.flatMap((roll) => roll.frames.map((f) => f.id)));
+    const rollStillExists = selected && snapshot.rolls.some((roll) => roll.id === selected);
     set({
       ...snapshot,
-      selectedRollId:
-        selected && snapshot.rolls.some((roll) => roll.id === selected) ? selected : null
+      selectedRollId: rollStillExists ? selected : null,
+      selectedFrameIds: rollStillExists
+        ? get().selectedFrameIds.filter((id) => frameIds.has(id))
+        : []
     });
   },
-  selectRoll: (selectedRollId) => set({ selectedRollId }),
+  selectRoll: (selectedRollId) =>
+    set({ selectedRollId, selectedFrameIds: [], frameAnchorId: null }),
+  selectFrame: (frameId, mode, orderedIds) =>
+    set((state) => {
+      if (mode === 'toggle') {
+        const has = state.selectedFrameIds.includes(frameId);
+        return {
+          selectedFrameIds: has
+            ? state.selectedFrameIds.filter((id) => id !== frameId)
+            : [...state.selectedFrameIds, frameId],
+          frameAnchorId: frameId
+        };
+      }
+      const anchor = state.frameAnchorId;
+      if (mode === 'range' && anchor && orderedIds.includes(anchor)) {
+        const from = orderedIds.indexOf(anchor);
+        const to = orderedIds.indexOf(frameId);
+        const [start, end] = from < to ? [from, to] : [to, from];
+        return { selectedFrameIds: orderedIds.slice(start, end + 1) };
+      }
+      return { selectedFrameIds: [frameId], frameAnchorId: frameId };
+    }),
+  updateFrames: async (frameIds, patch) => {
+    await getApi().rolls.updateFrames(frameIds, patch);
+    await get().loadRolls();
+  },
+  addFrame: async (rollId) => {
+    await getApi().rolls.addFrame(rollId);
+    await get().loadRolls();
+  },
+  removeLastFrame: async (rollId) => {
+    await getApi().rolls.removeLastFrame(rollId);
+    await get().loadRolls();
+  },
   setStatusFilter: (statusFilter) => set({ statusFilter }),
   setStockFilter: (stockFilter) => set({ stockFilter }),
   setCameraFilter: (cameraFilter) => set({ cameraFilter }),

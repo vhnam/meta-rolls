@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  type RollFrame,
   daysUntilExpiry,
   defaultRollName,
   formatPushPull,
+  isFrameEmpty,
   nextRollStatus,
   pushPullStops
 } from './rolls';
@@ -32,5 +34,25 @@ describe('rolls helpers', () => {
     expect(daysUntilExpiry('2026-01-11', now)).toBe(10);
     expect(daysUntilExpiry('2025-12-25', now)).toBeLessThan(0);
     expect(daysUntilExpiry(null, now)).toBeNull();
+  });
+
+  it('treats only scan-less, detail-less frames as empty', () => {
+    const frame: RollFrame = {
+      id: 'f',
+      rollId: 'r',
+      number: 1,
+      aperture: '',
+      shutter: '',
+      lensId: null,
+      shotAt: null,
+      location: '',
+      notes: '',
+      blank: false,
+      scanPath: null
+    };
+    expect(isFrameEmpty(frame)).toBe(true);
+    expect(isFrameEmpty({ ...frame, blank: true })).toBe(true);
+    expect(isFrameEmpty({ ...frame, notes: 'x' })).toBe(false);
+    expect(isFrameEmpty({ ...frame, scanPath: '/a.jpg' })).toBe(false);
   });
 });

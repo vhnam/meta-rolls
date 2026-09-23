@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.15.0] - 2026-09-24
+
+### Added
+
+- Frame selection and frame actions in `useRollsStore`: click, ⌘/Ctrl-click and Shift-click selection, bulk `updateFrames`, `addFrame`, and `removeLastFrame`. `isFrameEmpty` moved to `shared/rolls.ts` (with a test) so the renderer can tell when the last frame is removable.
+
 ## [3.14.0] - 2026-09-24
 
 ### Added

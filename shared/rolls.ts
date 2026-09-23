@@ -167,3 +167,13 @@ export type RollPatch = Partial<
     | 'scanFolder'
   >
 >;
+
+/** A frame with no scan and no shot details; only these may be removed from the end of a roll. */
+export const isFrameEmpty = (frame: RollFrame): boolean =>
+  frame.scanPath === null &&
+  !frame.aperture &&
+  !frame.shutter &&
+  !frame.lensId &&
+  !frame.shotAt &&
+  !frame.location &&
+  !frame.notes;

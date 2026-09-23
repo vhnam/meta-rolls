@@ -14,7 +14,8 @@ import {
   type RollsSnapshot,
   DEFAULT_CURRENCY,
   STATUS_ENTRY_DATE,
-  defaultRollName
+  defaultRollName,
+  isFrameEmpty
 } from '../../../shared/rolls';
 import { getAppDatabase } from './app-database';
 
@@ -490,15 +491,7 @@ export const removeLastFrame = (filePath: string, rollId: string): boolean => {
     return false;
   }
   const frame = toFrame(last);
-  const empty =
-    frame.scanPath === null &&
-    !frame.aperture &&
-    !frame.shutter &&
-    !frame.lensId &&
-    !frame.shotAt &&
-    !frame.location &&
-    !frame.notes;
-  if (!empty) {
+  if (!isFrameEmpty(frame)) {
     return false;
   }
   db.prepare('DELETE FROM roll_frames WHERE id = ?').run(frame.id);
