@@ -6,6 +6,17 @@ import {
 } from '../../shared/album';
 import { type PhotoExif, type PhotoRotateDirection } from '../../shared/media';
 import { type DeliverPdfExportRequest } from '../../shared/print';
+import {
+  type Camera,
+  type DevJob,
+  type FilmStock,
+  type GearKind,
+  type Lens,
+  type Roll,
+  type RollFrame,
+  type RollStatus,
+  type RollsSnapshot
+} from '../../shared/rolls';
 
 export type SettingsStorageApi = {
   getItem: (name: string) => Promise<string | null>;
@@ -66,6 +77,32 @@ export type MenuApi = {
   onRotatePhotoCcw: (callback: () => void) => () => void;
 };
 
+export type RollsApi = {
+  snapshot: () => Promise<RollsSnapshot>;
+  saveGear: (
+    input:
+      | { kind: 'stock'; value: Partial<FilmStock> }
+      | { kind: 'camera'; value: Partial<Camera> }
+      | { kind: 'lens'; value: Partial<Lens> }
+  ) => Promise<string>;
+  archiveGear: (kind: GearKind, id: string, archived: boolean) => Promise<void>;
+  createRoll: (input: {
+    stockId: string;
+    cameraId?: string | null;
+    lensId?: string | null;
+    name?: string;
+    quantity?: number;
+  }) => Promise<string[]>;
+  updateRoll: (rollId: string, patch: Partial<Roll>) => Promise<void>;
+  setStatus: (rollId: string, status: RollStatus) => Promise<void>;
+  deleteRoll: (rollId: string) => Promise<void>;
+  saveDevJob: (input: Partial<DevJob> & { rollId: string }) => Promise<string>;
+  deleteDevJob: (id: string) => Promise<void>;
+  updateFrames: (frameIds: string[], patch: Partial<RollFrame>) => Promise<void>;
+  addFrame: (rollId: string) => Promise<string>;
+  removeLastFrame: (rollId: string) => Promise<boolean>;
+};
+
 export type WindowApi = {
   setFullScreen: (enabled: boolean) => Promise<void>;
   onLeaveFullScreen: (callback: () => void) => () => void;
@@ -80,6 +117,7 @@ export type RendererApi = {
   settings: SettingsStorageApi;
   media: MediaLibraryApi;
   albums: AlbumsApi;
+  rolls: RollsApi;
   menu: MenuApi;
   window: WindowApi;
   deliver: DeliverApi;

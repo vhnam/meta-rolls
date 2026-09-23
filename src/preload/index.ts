@@ -4,6 +4,16 @@ import { type AlbumPhoto, type AlbumPrintConfig, type PhotoRating } from '../../
 import { IpcChannel } from '../../shared/ipc';
 import { type PhotoRotateDirection } from '../../shared/media';
 import { type DeliverPdfExportRequest } from '../../shared/print';
+import {
+  type Camera,
+  type DevJob,
+  type FilmStock,
+  type GearKind,
+  type Lens,
+  type Roll,
+  type RollFrame,
+  type RollStatus
+} from '../../shared/rolls';
 
 const api = {
   settings: {
@@ -35,6 +45,36 @@ const api = {
       ipcRenderer.invoke(IpcChannel.albumsRatePhoto, albumId, photoId, rating),
     updatePrintConfig: (albumId: string, printConfig: AlbumPrintConfig) =>
       ipcRenderer.invoke(IpcChannel.albumsUpdatePrintConfig, albumId, printConfig)
+  },
+  rolls: {
+    snapshot: () => ipcRenderer.invoke(IpcChannel.rollsSnapshot),
+    saveGear: (
+      input:
+        | { kind: 'stock'; value: Partial<FilmStock> }
+        | { kind: 'camera'; value: Partial<Camera> }
+        | { kind: 'lens'; value: Partial<Lens> }
+    ) => ipcRenderer.invoke(IpcChannel.rollsSaveGear, input),
+    archiveGear: (kind: GearKind, id: string, archived: boolean) =>
+      ipcRenderer.invoke(IpcChannel.rollsArchiveGear, kind, id, archived),
+    createRoll: (input: {
+      stockId: string;
+      cameraId?: string | null;
+      lensId?: string | null;
+      name?: string;
+      quantity?: number;
+    }) => ipcRenderer.invoke(IpcChannel.rollsCreateRoll, input),
+    updateRoll: (rollId: string, patch: Partial<Roll>) =>
+      ipcRenderer.invoke(IpcChannel.rollsUpdateRoll, rollId, patch),
+    setStatus: (rollId: string, status: RollStatus) =>
+      ipcRenderer.invoke(IpcChannel.rollsSetStatus, rollId, status),
+    deleteRoll: (rollId: string) => ipcRenderer.invoke(IpcChannel.rollsDeleteRoll, rollId),
+    saveDevJob: (input: Partial<DevJob> & { rollId: string }) =>
+      ipcRenderer.invoke(IpcChannel.rollsSaveDevJob, input),
+    deleteDevJob: (id: string) => ipcRenderer.invoke(IpcChannel.rollsDeleteDevJob, id),
+    updateFrames: (frameIds: string[], patch: Partial<RollFrame>) =>
+      ipcRenderer.invoke(IpcChannel.rollsUpdateFrame, frameIds, patch),
+    addFrame: (rollId: string) => ipcRenderer.invoke(IpcChannel.rollsAddFrame, rollId),
+    removeLastFrame: (rollId: string) => ipcRenderer.invoke(IpcChannel.rollsRemoveFrame, rollId)
   },
   menu: {
     onOpenPreferences: (callback: () => void) => {

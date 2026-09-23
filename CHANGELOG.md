@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.10.0] - 2026-09-24
+
+### Added
+
+- Rolls data layer (first slice of the Rolls workspace, see `docs/product/rolls/requirements.md`): SQLite tables for film stocks, cameras, lenses, rolls, dev jobs, and frames; `services/roll-store.ts` with CRUD, status changes that stamp the entry date, frame generation from the exposure count, bulk frame edit, and archive-instead-of-delete for gear; `ipc/rolls.ts` and `window.api.rolls`; and pure helpers in `shared/rolls.ts` (push/pull stops, default roll name, expiry). No UI yet.
+
 ## [3.9.12] - 2026-09-24
 
 ### Changed

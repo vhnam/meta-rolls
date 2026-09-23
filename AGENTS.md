@@ -41,7 +41,8 @@ src/main/
 │   ├── media.ts                   # scan folders/volumes, read EXIF
 │   ├── albums.ts                  # save/load album layout, rate photos
 │   ├── window.ts                  # per-window fullscreen toggle
-│   └── deliver.ts                 # export a print layout as PDF, open the exported file
+│   ├── deliver.ts                 # export a print layout as PDF, open the exported file
+│   └── rolls.ts                   # film rolls: gear, rolls, dev jobs, frames
 ├── services/                      # pure Node logic — no Electron APIs
 │   ├── config-store.ts            # read/write userData config.json
 │   ├── app-database.ts            # node:sqlite connection (albums, ratings)
@@ -49,6 +50,7 @@ src/main/
 │   ├── media-library.ts           # list volumes/folders, disk scan
 │   ├── image-dimensions.ts        # read width/height without a full decode
 │   ├── exif-reader.ts             # exiftool wrapper, RAW preview extraction
+│   ├── roll-store.ts              # film stocks, cameras, lenses, rolls, dev jobs, frames over app-database
 │   └── thumbnail-cache.ts         # on-disk resized-JPEG cache under userData, LRU-evicted by count
 ├── tray/                          # system tray — add when needed
 └── updater/                       # auto-update — add when needed
@@ -142,6 +144,7 @@ shared/
 ├── ipc.ts                         # IpcChannel — IPC channel names
 ├── album.ts                       # Album, AlbumPhoto, PhotoRating
 ├── media.ts                       # MEDIA_FILE_SCHEME, PhotoExifField
+├── rolls.ts                       # Roll, FilmStock, Camera, Lens, DevJob, RollFrame + status/push-pull helpers
 └── print.ts                       # print-layout geometry + DeliverPdfExportRequest (de)serialization
 
 scripts/

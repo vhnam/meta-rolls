@@ -21,6 +21,18 @@ export const IpcChannel = {
   menuRotatePhotoCcw: 'menu:rotate-photo-ccw',
   windowSetFullScreen: 'window:set-full-screen',
   windowLeaveFullScreen: 'window:leave-full-screen',
+  rollsSnapshot: 'rolls:snapshot',
+  rollsSaveGear: 'rolls:save-gear',
+  rollsArchiveGear: 'rolls:archive-gear',
+  rollsCreateRoll: 'rolls:create-roll',
+  rollsUpdateRoll: 'rolls:update-roll',
+  rollsSetStatus: 'rolls:set-status',
+  rollsDeleteRoll: 'rolls:delete-roll',
+  rollsSaveDevJob: 'rolls:save-dev-job',
+  rollsDeleteDevJob: 'rolls:delete-dev-job',
+  rollsUpdateFrame: 'rolls:update-frame',
+  rollsAddFrame: 'rolls:add-frame',
+  rollsRemoveFrame: 'rolls:remove-frame',
   deliverExportPdf: 'deliver:export-pdf',
   deliverOpenExportedFile: 'deliver:open-exported-file'
 } as const;
