@@ -5,6 +5,13 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.17.0] - 2026-09-24
+
+### Added
+
+- Gear and Stocks sections on `/rolls`, switched from a `Rolls · Gear · Stocks` bar at the top of the screen: add, edit, and archive cameras (brand, model, format, notes), lenses (name, focal length, max aperture, mount), and film stocks (brand, name, ISO, format, exposures, process, type). Archived items are dimmed in their lists, hidden from pickers, and still shown on rolls that use them; they can be restored.
+- Lenses created here now appear in the roll detail and frame inspector pickers.
+
 ## [3.16.0] - 2026-09-24
 
 ### Added

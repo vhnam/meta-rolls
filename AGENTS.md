@@ -84,6 +84,9 @@ src/renderer/src/
 │   │   ├── roll-dev-jobs/         # Development section + dev job dialog
 │   │   ├── roll-frames/           # frame grid (selection, add/remove) + frame inspector
 │   │   ├── rolls-field/           # save-on-blur input shared by detail and inspector
+│   │   ├── rolls-gear/            # Gear section: cameras + lenses list and forms
+│   │   ├── rolls-stocks/          # Stocks section: film stock list and form
+│   │   ├── rolls-form-shell/      # shared form layout (save, archive/restore)
 │   │   ├── roll-form-dialog/      # add roll (pick/create stock, camera, quantity)
 │   │   └── rolls-option-select/   # small value/label Select wrapper for the Rolls module
 │   ├── cull/

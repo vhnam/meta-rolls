@@ -1,4 +1,4 @@
-import { type FilmFormat, type FilmProcess, type RollStatus } from '#/shared/rolls';
+import { type FilmFormat, type FilmProcess, type FilmType, type RollStatus } from '#/shared/rolls';
 
 export const ROLL_STATUS_LABEL: Record<RollStatus, string> = {
   unused: 'Unused',
@@ -27,6 +27,12 @@ export const FILM_FORMAT_LABEL: Record<FilmFormat, string> = {
 export const FILM_PROCESS_LABEL: Record<FilmProcess, string> = {
   c41: 'C-41',
   e6: 'E-6',
+  bw: 'B&W'
+};
+
+export const FILM_TYPE_LABEL: Record<FilmType, string> = {
+  'color-negative': 'Color negative',
+  slide: 'Slide',
   bw: 'B&W'
 };
 

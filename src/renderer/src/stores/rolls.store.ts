@@ -6,6 +6,7 @@ import {
   type Camera,
   type DevJob,
   type FilmStock,
+  type GearKind,
   type Lens,
   type Roll,
   type RollFrame,
@@ -47,6 +48,13 @@ type RollsActions = {
     name?: string;
     quantity?: number;
   }) => Promise<string[]>;
+  saveGear: (
+    input:
+      | { kind: 'stock'; value: Partial<FilmStock> }
+      | { kind: 'camera'; value: Partial<Camera> }
+      | { kind: 'lens'; value: Partial<Lens> }
+  ) => Promise<string>;
+  archiveGear: (kind: GearKind, id: string, archived: boolean) => Promise<void>;
   createStock: (stock: Partial<FilmStock>) => Promise<string>;
   createCamera: (camera: Partial<Camera>) => Promise<string>;
   updateRoll: (rollId: string, patch: RollPatch) => Promise<void>;
@@ -129,6 +137,15 @@ export const useRollsStore = create<RollsStore>((set, get) => ({
     await get().loadRolls();
     set({ selectedRollId: ids[0] ?? null });
     return ids;
+  },
+  saveGear: async (input) => {
+    const id = await getApi().rolls.saveGear(input);
+    await get().loadRolls();
+    return id;
+  },
+  archiveGear: async (kind, id, archived) => {
+    await getApi().rolls.archiveGear(kind, id, archived);
+    await get().loadRolls();
   },
   createStock: async (stock) => {
     const id = await getApi().rolls.saveGear({ kind: 'stock', value: stock });
