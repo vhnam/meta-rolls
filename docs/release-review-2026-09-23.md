@@ -91,18 +91,32 @@ first public release. Checked items are done; the rest is the work queue.
 
 ## Architecture
 
-- [ ] `src/main/services/pdf-export.ts` creates a `BrowserWindow` and imports from `app/` —
+- [x] `src/main/services/pdf-export.ts` creates a `BrowserWindow` and imports from `app/` —
       violates the AGENTS.md rule that `services/` holds pure Node logic with no Electron
       APIs. Should move under `app/` or `main/` directly, or the rule should be updated if
       this is accepted as a deliberate exception.
-- [ ] AGENTS.md's file tree is stale: missing the Deliver module, `ipc/deliver.ts`,
+      Fixed: moved to `app/pdf-export.ts`. No behavior change — only its two relative imports
+      needed updating (`shared/print` stays the same depth; `media-protocol.ts` becomes a
+      sibling import).
+- [x] AGENTS.md's file tree is stale: missing the Deliver module, `ipc/deliver.ts`,
       `services/pdf-export.ts`, `shared/print.ts`, `app/apply-exif-orientation.ts`. (My
       thumbnail-feature commit already patched in the 3 files I added; the pre-existing gaps
       remain.)
-- [ ] No tests anywhere in the repo. `shared/print.ts` (page/folio layout, rotation math) is
+      Fixed, and went further while auditing it: also added the Deliver route/module tree,
+      `shared/print.ts`, `ipc/deliver.ts`, `app/pdf-export.ts`, several undocumented hooks
+      (`use-canvas-panzoom`, `use-held-media-src`, `use-media-photo-rotate`, `use-panzoom`)
+      and components (`album-details`, `preview-zoom-select`, `app-error-fallback`), corrected
+      the stale `Window.electron` mention in the preload comment (removed earlier this
+      session), updated `canvas.store.ts`'s description off "WIP", and added the "Media / Cull
+      / Deliver" third tab to the title-bar description.
+- [x] No tests anywhere in the repo. `shared/print.ts` (page/folio layout, rotation math) is
       pure and easy to unit test — good first target.
-- [ ] `DeliverScreen` calls `useMediaPoolStore()` with no selector, so it re-renders on every
+      Fixed: added vitest + a `shared/print.test.ts` suite (30 tests), wired into
+      lefthook's pre-commit.
+- [x] `DeliverScreen` calls `useMediaPoolStore()` with no selector, so it re-renders on every
       store change instead of just the slices it needs.
+      Fixed: selects `getSelectedPhoto(state, albumPhotoItems)` directly. `media-screen.tsx`
+      and `cull-screen.tsx` have the same pattern — left as a follow-up, out of scope here.
 
 ## Cache / performance
 
@@ -125,7 +139,7 @@ Only reviewed via code reading — could not run the app in this environment.
 - [x] Error toasts surface Electron's raw IPC error text (`Error invoking remote method
 '…': Error: …`) instead of a clean message.
       Fixed: `use-ipc.ts`'s `toMessage` strips Electron's `Error invoking remote
-  handler/method '<channel>': Error: ` wrapper before showing the message. Note: I
+handler/method '<channel>': Error: ` wrapper before showing the message. Note: I
       could not run a real IPC rejection in this sandbox to confirm the exact wrapper text
       Electron 44 produces — the regex is written from well-documented Electron behavior
       that's been stable across versions, and the fallback is safe either way (a
@@ -154,13 +168,14 @@ Only reviewed via code reading — could not run the app in this environment.
 
 ### Still open, not in the original numbered list
 
-- `src/main/services/pdf-export.ts`'s `services/` + Electron-API layering violation.
-- AGENTS.md's stale file tree (Deliver module, `ipc/deliver.ts`, `services/pdf-export.ts`,
-  `shared/print.ts`, `app/apply-exif-orientation.ts`).
-- No tests anywhere in the repo.
-- `DeliverScreen`'s unselected `useMediaPoolStore()` call.
+All four Architecture items (`pdf-export.ts` layering, stale AGENTS.md tree, no tests,
+`DeliverScreen`'s unselected store call) are now `[x]` above. The thumbnail cache eviction
+item (Cache/performance section) is now `[x]` — fixed with batched pruning. All three UI/UX
+items (raw IPC error text, window min-size, first-run flow) are now `[x]` above — the
+first-run item is code-reviewed only, still not visually verified. The `image-decode.ts`
+RAW-orientation item is also `[x]` above (it was a real bug, fixed).
 
-The thumbnail cache eviction item (Cache/performance section) is now `[x]` — fixed with
-batched pruning. All three UI/UX items (raw IPC error text, window min-size, first-run flow)
-are now `[x]` above — the first-run item is code-reviewed only, still not visually verified. The
-`image-decode.ts` RAW-orientation item is also `[x]` above (it was a real bug, fixed).
+Every item in this doc is now checked off except the two that need you: the manual smoke
+test (Blocker 3) and code signing/notarization (Blocker 4), both in "Suggested order" below.
+`media-screen.tsx`/`cull-screen.tsx`'s unselected `useMediaPoolStore()` call (same pattern as
+the fixed `DeliverScreen` one) is a known follow-up, not tracked as a checklist item here.
