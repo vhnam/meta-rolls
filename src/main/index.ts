@@ -1,4 +1,5 @@
 import { join } from 'path';
+import { pathToFileURL } from 'url';
 
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { app, shell, BrowserWindow } from 'electron';
@@ -30,12 +31,19 @@ const isExternalHttpUrl = (url: string): boolean => {
   }
 };
 
+const rendererEntryPath = join(__dirname, '../renderer/index.html');
+const rendererEntryPathname = pathToFileURL(rendererEntryPath).pathname;
+
 const isAppNavigationUrl = (url: string): boolean => {
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     return url.startsWith(process.env['ELECTRON_RENDERER_URL']);
   }
+  // Scope to the app's own built index.html specifically — allowing any
+  // file: URL would let a compromised renderer navigate to arbitrary local
+  // files (e.g. file:///etc/passwd) instead of just reloading itself.
   try {
-    return new URL(url).protocol === 'file:';
+    const parsed = new URL(url);
+    return parsed.protocol === 'file:' && parsed.pathname === rendererEntryPathname;
   } catch {
     return false;
   }
@@ -81,7 +89,7 @@ function createWindow(): void {
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
+    mainWindow.loadFile(rendererEntryPath);
   }
 }
 

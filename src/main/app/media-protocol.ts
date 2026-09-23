@@ -34,6 +34,12 @@ export const forgetMediaDisplay = (filePath: string) => {
 };
 
 export const readDisplayBytes = async (filePath: string): Promise<CachedDisplay | null> => {
+  // Guard here, not just at the protocol handler's entry — pdf-export.ts
+  // calls this directly with paths from a print request, bypassing that
+  // gate.
+  if (!isImageFile(filePath)) {
+    return null;
+  }
   const mtimeMs = (await stat(filePath)).mtimeMs;
   const cached = displayCache.get(filePath);
   if (cached && cached.mtimeMs === mtimeMs) {
@@ -67,8 +73,11 @@ export const registerMediaScheme = () => {
         secure: true,
         supportFetchAPI: true,
         corsEnabled: true,
-        stream: true,
-        bypassCSP: true
+        stream: true
+        // No bypassCSP: index.html's CSP already allowlists this scheme in
+        // img-src, which is the only directive anything in the app needs it
+        // for. Bypassing CSP entirely here would let it load scripts/styles
+        // too, past script-src 'self'.
       }
     }
   ]);

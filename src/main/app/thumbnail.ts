@@ -3,6 +3,7 @@ import { stat } from 'node:fs/promises';
 import { app } from 'electron';
 
 import { readImageOrientation } from '../services/exif-reader';
+import { isImageFile } from '../services/media-library';
 import { readThumbnailCache, writeThumbnailCache } from '../services/thumbnail-cache';
 import { applyExifOrientation } from './apply-exif-orientation';
 import { decodeSourceImage, isOrientationAlreadyBaked } from './image-decode';
@@ -58,6 +59,9 @@ export const readThumbnailBytes = async (
   filePath: string,
   requestedWidth: number
 ): Promise<ThumbnailBytes | null> => {
+  if (!isImageFile(filePath)) {
+    return null;
+  }
   const mtimeMs = (await stat(filePath)).mtimeMs;
   const width = Math.min(Math.max(Math.round(requestedWidth), 1), THUMBNAIL_MAX_WIDTH_PX);
   const userDataPath = app.getPath('userData');

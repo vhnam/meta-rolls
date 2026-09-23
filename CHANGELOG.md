@@ -5,6 +5,15 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.4] - 2026-09-23
+
+### Fixed
+
+- `mediaReadExif` and `mediaRotateImage` (IPC) now reject paths that aren't recognized image/RAW extensions. `mediaRotateImage` runs an exiftool _write_, so this closes off using it to modify arbitrary files the app process can reach.
+- `readDisplayBytes` and `readThumbnailBytes` now check the extension themselves instead of relying on the protocol handler's gate — `pdf-export.ts` calls `readDisplayBytes` directly with paths from a print request, bypassing that gate entirely before this fix.
+- The `will-navigate` guard now compares the navigated URL's path against the app's actual built `index.html`, instead of allowing any `file:` URL in production.
+- Removed `bypassCSP: true` from the `meta-rolls-media` scheme registration — the page's CSP already allowlists the scheme in `img-src`, which is the only directive anything in the app needs it for.
+
 ## [3.9.3] - 2026-09-23
 
 ### Added

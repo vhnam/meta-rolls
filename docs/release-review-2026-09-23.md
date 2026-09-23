@@ -47,18 +47,25 @@ first public release. Checked items are done; the rest is the work queue.
       built only — need a manual smoke test of the packaged app.
 - [ ] **4. No code signing / notarization.** `notarize: false`, no signing identity. Other
       Macs will refuse to open the app ("damaged"). Needs your Apple Developer account.
-- [ ] **5. No top-level error boundary.** Any render error white-screens with no recovery.
+- [x] **5. No top-level error boundary.** Any render error white-screens with no recovery.
+      Fixed: `router.tsx`'s `defaultErrorComponent` (`AppErrorFallback`).
 
 ## Security (open items)
 
-- [ ] `mediaRotateImage` IPC handler runs an exiftool write against any path the renderer
+- [x] `mediaRotateImage` IPC handler runs an exiftool write against any path the renderer
       sends, with no image-extension check (unlike the media protocol, which now has one).
-- [ ] `pdf-export.ts`'s `readDisplayBytes(slot.path)` call has the same gap — no extension
+      Fixed: `assertImagePath` in `ipc/media.ts`, applied to both `mediaReadExif` and
+      `mediaRotateImage`.
+- [x] `pdf-export.ts`'s `readDisplayBytes(slot.path)` call has the same gap — no extension
       check before reading/encoding whatever path is in the print request.
-- [ ] The `will-navigate` guard added this session allows any `file:` URL in production —
+      Fixed: the `isImageFile` check moved inside `readDisplayBytes` and `readThumbnailBytes`
+      themselves, so every caller (protocol handler and pdf-export.ts) is covered.
+- [x] The `will-navigate` guard added this session allows any `file:` URL in production —
       should be scoped to the app's own `index.html` specifically.
-- [ ] `bypassCSP: true` on the `meta-rolls-media` scheme registration is likely no longer
+      Fixed: compares the navigated URL's pathname against the app's actual entry file path.
+- [x] `bypassCSP: true` on the `meta-rolls-media` scheme registration is likely no longer
       needed now that `index.html`'s CSP already allowlists `meta-rolls-media:` in `img-src`.
+      Fixed: removed.
 
 ## Architecture
 
