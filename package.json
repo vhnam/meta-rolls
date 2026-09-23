@@ -1,7 +1,7 @@
 {
   "name": "meta-rolls",
   "productName": "Meta Rolls",
-  "version": "3.8.6",
+  "version": "3.8.7",
   "description": "Browse your photo library and build albums.",
   "main": "./out/main/index.js",
   "author": "vhnam2504@gmail.com",
@@ -41,7 +41,7 @@
     "dayjs": "^1.11.23",
     "electron-updater": "^6.8.9",
     "exiftool-vendored": "^38.0.1",
-    "image-size": "^2.0.2",
+    "image-size": "^2.0.4",
     "react-arborist": "^3.16.0",
     "react-resizable-panels": "^4.12.4",
     "shadcn": "^4.21.0",
