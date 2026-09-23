@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.14.0] - 2026-09-24
+
+### Added
+
+- Dev jobs on the roll detail: a Development section listing a roll's lab trips (newest first) with add, edit, and delete; a dev job dialog (lab with autocomplete from labs used before, price, currency, sent/received dates, process defaulting to the stock's, scan resolution, notes). Sending a roll to `developing` opens the dialog for a first job (skippable), and a received date offers "Mark as developed".
+
 ## [3.13.0] - 2026-09-24
 
 ### Added

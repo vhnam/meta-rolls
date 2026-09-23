@@ -8,6 +8,7 @@ import { Field, FieldLabel } from '#/components/ui/field';
 import { ROLL_STATUS_ACTION, ROLL_STATUS_LABEL } from '#/constants/rolls';
 import {
   ROLL_STATUSES,
+  type DevJob,
   type Roll,
   formatPushPull,
   isFormatMismatch,
@@ -16,6 +17,7 @@ import {
 } from '#/shared/rolls';
 import { useRollsStore } from '#/stores/rolls.store';
 
+import { DevJobDialog, RollDevJobs } from '../roll-dev-jobs';
 import { cameraLabel, stockLabel } from '../rolls-list/rolls-list-model';
 import { RollsOptionSelect } from '../rolls-option-select';
 import { RollDetailField } from './roll-detail-field';
@@ -49,11 +51,20 @@ function RollDetailBody({ roll }: { roll: Roll }) {
   const duplicateRoll = useRollsStore((state) => state.duplicateRoll);
   const deleteRoll = useRollsStore((state) => state.deleteRoll);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  // `undefined` = closed, `null` = adding a new job, a job = editing it.
+  const [devJobDialog, setDevJobDialog] = useState<DevJob | null | undefined>(undefined);
 
   const stock = stocks.find((s) => s.id === roll.stockId);
   const camera = cameras.find((c) => c.id === roll.cameraId);
   const next = nextRollStatus(roll.status);
   const stops = stock ? pushPullStops(stock.iso, roll.shotIso) : 0;
+  const changeStatus = async (status: Roll['status']) => {
+    await setRollStatus(roll.id, status);
+    // Sending a roll to the lab is the moment to record the dev job; the user can skip it.
+    if (status === 'developing' && roll.devJobs.length === 0) {
+      setDevJobDialog(null);
+    }
+  };
   const pushPull = formatPushPull(stops);
   const mismatch = stock && camera && isFormatMismatch(stock.format, camera.format);
 
@@ -108,12 +119,12 @@ function RollDetailBody({ roll }: { roll: Roll }) {
             <FieldLabel>Status</FieldLabel>
             <RollsOptionSelect
               value={roll.status}
-              onChange={(status) => void setRollStatus(roll.id, status as Roll['status'])}
+              onChange={(status) => void changeStatus(status as Roll['status'])}
               options={ROLL_STATUSES.map((s) => ({ value: s, label: ROLL_STATUS_LABEL[s] }))}
             />
           </Field>
           {next && (
-            <Button size="sm" onClick={() => void setRollStatus(roll.id, next)}>
+            <Button size="sm" onClick={() => void changeStatus(next)}>
               {ROLL_STATUS_ACTION[next]}
             </Button>
           )}
@@ -212,6 +223,21 @@ function RollDetailBody({ roll }: { roll: Roll }) {
             />
           </div>
         </section>
+
+        <RollDevJobs
+          roll={roll}
+          onAdd={() => setDevJobDialog(null)}
+          onEdit={(job) => setDevJobDialog(job)}
+        />
+        {devJobDialog !== undefined && (
+          <DevJobDialog
+            key={devJobDialog?.id ?? 'new'}
+            rollId={roll.id}
+            job={devJobDialog}
+            defaultProcess={stock?.process ?? 'c41'}
+            onClose={() => setDevJobDialog(undefined)}
+          />
+        )}
 
         <p className="text-xs text-muted-foreground">
           {roll.frames.length} frames · {roll.frames.filter((f) => f.scanPath).length} scanned

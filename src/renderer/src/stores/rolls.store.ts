@@ -4,6 +4,7 @@ import { ALL_FILTER, ROLL_SORT, type RollSort } from '#/constants/rolls';
 import { getApi } from '#/hooks/use-ipc';
 import {
   type Camera,
+  type DevJob,
   type FilmStock,
   type Lens,
   type Roll,
@@ -44,6 +45,8 @@ type RollsActions = {
   setRollStatus: (rollId: string, status: RollStatus) => Promise<void>;
   duplicateRoll: (rollId: string, quantity: number) => Promise<void>;
   deleteRoll: (rollId: string) => Promise<void>;
+  saveDevJob: (job: Partial<DevJob> & { rollId: string }) => Promise<void>;
+  deleteDevJob: (id: string) => Promise<void>;
 };
 
 export type RollsStore = RollsState & RollsActions;
@@ -111,6 +114,14 @@ export const useRollsStore = create<RollsStore>((set, get) => ({
   },
   deleteRoll: async (rollId) => {
     await getApi().rolls.deleteRoll(rollId);
+    await get().loadRolls();
+  },
+  saveDevJob: async (job) => {
+    await getApi().rolls.saveDevJob(job);
+    await get().loadRolls();
+  },
+  deleteDevJob: async (id) => {
+    await getApi().rolls.deleteDevJob(id);
     await get().loadRolls();
   }
 }));
