@@ -1,9 +1,10 @@
 import { join } from 'node:path';
 
-import { app, ipcMain } from 'electron';
+import { BrowserWindow, app, dialog, ipcMain } from 'electron';
 
 import { IpcChannel } from '../../../shared/ipc';
 import { type GearKind, isRollStatus } from '../../../shared/rolls';
+import { isImageFile } from '../services/media-library';
 import {
   type CreateRollInput,
   type DevJobInput,
@@ -11,15 +12,19 @@ import {
   type GearInput,
   type RollPatch,
   addFrame,
+  checkRollScans,
   archiveGear,
   createRolls,
   deleteDevJob,
   deleteRoll,
+  linkScans,
+  moveFrameScan,
   readSnapshot,
   removeLastFrame,
   saveDevJob,
   saveGear,
   setRollStatus,
+  unlinkScans,
   updateFrames,
   updateRoll
 } from '../services/roll-store';
@@ -95,10 +100,15 @@ export const registerRollsIpc = () => {
     if (!Array.isArray(frameIds)) {
       throw new Error('Frame ids must be an array');
     }
+    const framePatch = assertObject<FramePatch>(patch, 'Frame patch');
+    // Scans are only ever image files; keep a compromised renderer from pointing a frame at anything else.
+    if (typeof framePatch.scanPath === 'string' && !isImageFile(framePatch.scanPath)) {
+      throw new Error('Scan path is not a recognized image file');
+    }
     return updateFrames(
       dbPath(),
       frameIds.map((id) => assertId(id, 'Frame id')),
-      assertObject<FramePatch>(patch, 'Frame patch')
+      framePatch
     );
   });
 
@@ -108,5 +118,46 @@ export const registerRollsIpc = () => {
 
   ipcMain.handle(IpcChannel.rollsRemoveFrame, (_event, rollId: unknown) =>
     removeLastFrame(dbPath(), assertId(rollId, 'Roll id'))
+  );
+
+  ipcMain.handle(IpcChannel.rollsChooseScanFolder, async (event) => {
+    const options = { properties: ['openDirectory' as const], title: 'Choose scan folder' };
+    const parent = BrowserWindow.fromWebContents(event.sender);
+    const result = parent
+      ? await dialog.showOpenDialog(parent, options)
+      : await dialog.showOpenDialog(options);
+    return result.canceled ? null : (result.filePaths[0] ?? null);
+  });
+
+  ipcMain.handle(
+    IpcChannel.rollsLinkScans,
+    (_event, rollId: unknown, folder: unknown, paths: unknown, addFrames: unknown) => {
+      if (!Array.isArray(paths)) {
+        throw new Error('Scan paths must be an array');
+      }
+      const scanPaths = paths.map((path) => assertId(path, 'Scan path'));
+      if (!scanPaths.every((path) => isImageFile(path))) {
+        throw new Error('Scan path is not a recognized image file');
+      }
+      return linkScans(
+        dbPath(),
+        assertId(rollId, 'Roll id'),
+        assertId(folder, 'Scan folder'),
+        scanPaths,
+        addFrames === true
+      );
+    }
+  );
+
+  ipcMain.handle(IpcChannel.rollsUnlinkScans, (_event, rollId: unknown) =>
+    unlinkScans(dbPath(), assertId(rollId, 'Roll id'))
+  );
+
+  ipcMain.handle(IpcChannel.rollsMoveFrameScan, (_event, fromId: unknown, toId: unknown) =>
+    moveFrameScan(dbPath(), assertId(fromId, 'Frame id'), assertId(toId, 'Frame id'))
+  );
+
+  ipcMain.handle(IpcChannel.rollsCheckScans, (_event, rollId: unknown) =>
+    checkRollScans(dbPath(), assertId(rollId, 'Roll id'))
   );
 };

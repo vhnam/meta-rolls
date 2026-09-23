@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.18.0] - 2026-09-24
+
+### Added
+
+- Scan-linking backend for Rolls (no UI yet): `planScanLink` matches files to frames in natural filename order and reports extra files / empty frames; `linkScans` (optionally adds frames so every file has one), `unlinkScans`, `moveFrameScan` (move or swap), and `checkRollScans` (flags a missing folder or files) in `roll-store.ts`; IPC and `window.api.rolls` for choosing a folder and each operation. Linking is read-only on disk, and scan paths must be recognized image files.
+
 ## [3.17.0] - 2026-09-24
 
 ### Added

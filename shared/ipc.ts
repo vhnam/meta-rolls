@@ -33,6 +33,11 @@ export const IpcChannel = {
   rollsUpdateFrame: 'rolls:update-frame',
   rollsAddFrame: 'rolls:add-frame',
   rollsRemoveFrame: 'rolls:remove-frame',
+  rollsChooseScanFolder: 'rolls:choose-scan-folder',
+  rollsLinkScans: 'rolls:link-scans',
+  rollsUnlinkScans: 'rolls:unlink-scans',
+  rollsMoveFrameScan: 'rolls:move-frame-scan',
+  rollsCheckScans: 'rolls:check-scans',
   deliverExportPdf: 'deliver:export-pdf',
   deliverOpenExportedFile: 'deliver:open-exported-file'
 } as const;

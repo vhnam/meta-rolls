@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { existsSync } from 'node:fs';
 import { type DatabaseSync, type SQLInputValue } from 'node:sqlite';
 
 import {
@@ -11,6 +12,7 @@ import {
   type RollFrame,
   type RollStatus,
   type RollPatch,
+  type RollScanStatus,
   type RollsSnapshot,
   DEFAULT_CURRENCY,
   STATUS_ENTRY_DATE,
@@ -496,4 +498,109 @@ export const removeLastFrame = (filePath: string, rollId: string): boolean => {
   }
   db.prepare('DELETE FROM roll_frames WHERE id = ?').run(frame.id);
   return true;
+};
+
+// ---- Scans ----------------------------------------------------------------
+
+/**
+ * Links a folder of scans to a roll. `paths` are in frame order; frame 1 gets `paths[0]`, and so on.
+ * Any previous links are cleared. With `addFrames`, frames are added so every file has one.
+ * Read-only on disk: only database rows change.
+ */
+export const linkScans = (
+  filePath: string,
+  rollId: string,
+  folder: string,
+  paths: string[],
+  addFrames: boolean,
+  now = new Date()
+) => {
+  const db = getAppDatabase(filePath);
+  db.exec('BEGIN');
+  try {
+    if (addFrames) {
+      const count = num(
+        rows(db, 'SELECT COUNT(*) AS count FROM roll_frames WHERE roll_id = ?', rollId)[0]?.count
+      );
+      if (paths.length > count) {
+        insertFrames(db, rollId, count + 1, paths.length);
+        db.prepare('UPDATE rolls SET exposures = MAX(exposures, ?) WHERE id = ?').run(
+          paths.length,
+          rollId
+        );
+      }
+    }
+    const frames = rows(
+      db,
+      'SELECT id FROM roll_frames WHERE roll_id = ? ORDER BY number ASC',
+      rollId
+    );
+    db.prepare('UPDATE roll_frames SET scan_path = NULL WHERE roll_id = ?').run(rollId);
+    const assign = db.prepare('UPDATE roll_frames SET scan_path = ? WHERE id = ?');
+    frames
+      .slice(0, paths.length)
+      .forEach((frame, index) => assign.run(paths[index], str(frame.id)));
+    db.prepare('UPDATE rolls SET scan_folder = ?, updated_at = ? WHERE id = ?').run(
+      folder,
+      now.getTime(),
+      rollId
+    );
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+};
+
+/** Forgets the linked folder and every frame's scan. Files on disk are untouched. */
+export const unlinkScans = (filePath: string, rollId: string, now = new Date()) => {
+  const db = getAppDatabase(filePath);
+  db.exec('BEGIN');
+  try {
+    db.prepare('UPDATE roll_frames SET scan_path = NULL WHERE roll_id = ?').run(rollId);
+    db.prepare('UPDATE rolls SET scan_folder = NULL, updated_at = ? WHERE id = ?').run(
+      now.getTime(),
+      rollId
+    );
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+};
+
+/** Drags a scan onto another frame of the same roll: moves it, or swaps if the target already has one. */
+export const moveFrameScan = (filePath: string, fromFrameId: string, toFrameId: string) => {
+  const db = getAppDatabase(filePath);
+  const [from] = rows(db, 'SELECT roll_id, scan_path FROM roll_frames WHERE id = ?', fromFrameId);
+  const [to] = rows(db, 'SELECT roll_id, scan_path FROM roll_frames WHERE id = ?', toFrameId);
+  if (!from || !to || from.roll_id !== to.roll_id) {
+    throw new Error('Frames must belong to the same roll');
+  }
+  const update = db.prepare('UPDATE roll_frames SET scan_path = ? WHERE id = ?');
+  db.exec('BEGIN');
+  try {
+    update.run(strOrNull(to.scan_path), fromFrameId);
+    update.run(strOrNull(from.scan_path), toFrameId);
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+};
+
+/** Which of a roll's linked folder and scan files no longer exist on disk. */
+export const checkRollScans = (filePath: string, rollId: string): RollScanStatus => {
+  const db = getAppDatabase(filePath);
+  const [roll] = rows(db, 'SELECT scan_folder FROM rolls WHERE id = ?', rollId);
+  const folder = strOrNull(roll?.scan_folder);
+  const scanPaths = rows(
+    db,
+    'SELECT scan_path FROM roll_frames WHERE roll_id = ? AND scan_path IS NOT NULL',
+    rollId
+  );
+  return {
+    folderMissing: folder !== null && !existsSync(folder),
+    missingPaths: scanPaths.map((r) => str(r.scan_path)).filter((path) => !existsSync(path))
+  };
 };

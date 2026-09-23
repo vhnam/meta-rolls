@@ -14,6 +14,7 @@ import {
   type Lens,
   type Roll,
   type RollFrame,
+  type RollScanStatus,
   type RollStatus,
   type RollsSnapshot
 } from '../../shared/rolls';
@@ -101,6 +102,11 @@ export type RollsApi = {
   updateFrames: (frameIds: string[], patch: Partial<RollFrame>) => Promise<void>;
   addFrame: (rollId: string) => Promise<string>;
   removeLastFrame: (rollId: string) => Promise<boolean>;
+  chooseScanFolder: () => Promise<string | null>;
+  linkScans: (rollId: string, folder: string, paths: string[], addFrames: boolean) => Promise<void>;
+  unlinkScans: (rollId: string) => Promise<void>;
+  moveFrameScan: (fromFrameId: string, toFrameId: string) => Promise<void>;
+  checkScans: (rollId: string) => Promise<RollScanStatus>;
 };
 
 export type WindowApi = {

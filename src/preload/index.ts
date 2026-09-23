@@ -74,7 +74,14 @@ const api = {
     updateFrames: (frameIds: string[], patch: Partial<RollFrame>) =>
       ipcRenderer.invoke(IpcChannel.rollsUpdateFrame, frameIds, patch),
     addFrame: (rollId: string) => ipcRenderer.invoke(IpcChannel.rollsAddFrame, rollId),
-    removeLastFrame: (rollId: string) => ipcRenderer.invoke(IpcChannel.rollsRemoveFrame, rollId)
+    removeLastFrame: (rollId: string) => ipcRenderer.invoke(IpcChannel.rollsRemoveFrame, rollId),
+    chooseScanFolder: () => ipcRenderer.invoke(IpcChannel.rollsChooseScanFolder),
+    linkScans: (rollId: string, folder: string, paths: string[], addFrames: boolean) =>
+      ipcRenderer.invoke(IpcChannel.rollsLinkScans, rollId, folder, paths, addFrames),
+    unlinkScans: (rollId: string) => ipcRenderer.invoke(IpcChannel.rollsUnlinkScans, rollId),
+    moveFrameScan: (fromFrameId: string, toFrameId: string) =>
+      ipcRenderer.invoke(IpcChannel.rollsMoveFrameScan, fromFrameId, toFrameId),
+    checkScans: (rollId: string) => ipcRenderer.invoke(IpcChannel.rollsCheckScans, rollId)
   },
   menu: {
     onOpenPreferences: (callback: () => void) => {

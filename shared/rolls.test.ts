@@ -7,6 +7,7 @@ import {
   formatPushPull,
   isFrameEmpty,
   nextRollStatus,
+  planScanLink,
   pushPullStops
 } from './rolls';
 
@@ -54,5 +55,29 @@ describe('rolls helpers', () => {
     expect(isFrameEmpty({ ...frame, blank: true })).toBe(true);
     expect(isFrameEmpty({ ...frame, notes: 'x' })).toBe(false);
     expect(isFrameEmpty({ ...frame, scanPath: '/a.jpg' })).toBe(false);
+  });
+
+  it('matches scan files to frames in natural filename order', () => {
+    const files = ['10.jpg', '2.jpg', '1.jpg'].map((name) => ({ name, path: `/s/${name}` }));
+    const frames = [1, 2, 3].map((number) => ({ id: `f${number}`, number }));
+    const plan = planScanLink(files, frames);
+    expect(plan.pairs.map((p) => [p.frameNumber, p.name])).toEqual([
+      [1, '1.jpg'],
+      [2, '2.jpg'],
+      [3, '10.jpg']
+    ]);
+    expect(plan.extraFiles).toEqual([]);
+    expect(plan.emptyFrameNumbers).toEqual([]);
+  });
+
+  it('reports extra files and empty frames when counts differ', () => {
+    const frames = [1, 2, 3].map((number) => ({ id: `f${number}`, number }));
+    const more = planScanLink(
+      ['a', 'b', 'c', 'd'].map((n) => ({ name: n, path: `/${n}` })),
+      frames
+    );
+    expect(more.extraFiles.map((f) => f.name)).toEqual(['d']);
+    const fewer = planScanLink([{ name: 'a', path: '/a' }], frames);
+    expect(fewer.emptyFrameNumbers).toEqual([2, 3]);
   });
 });

@@ -177,3 +177,41 @@ export const isFrameEmpty = (frame: RollFrame): boolean =>
   !frame.shotAt &&
   !frame.location &&
   !frame.notes;
+
+/** Filename order used to match scan files to frames: `2.jpg` before `10.jpg`. */
+export const compareScanNames = (a: string, b: string): number =>
+  a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+
+export type ScanLinkPlan = {
+  /** Files matched to frames, in frame order. */
+  pairs: { frameNumber: number; frameId: string; path: string; name: string }[];
+  /** Files left over when there are more files than frames. */
+  extraFiles: { path: string; name: string }[];
+  /** Numbers of frames left without a file when there are more frames than files. */
+  emptyFrameNumbers: number[];
+};
+
+/** Matches files to frames one-to-one in filename order, reporting whatever doesn't line up. */
+export const planScanLink = (
+  files: { path: string; name: string }[],
+  frames: { id: string; number: number }[]
+): ScanLinkPlan => {
+  const sortedFiles = [...files].sort((a, b) => compareScanNames(a.name, b.name));
+  const sortedFrames = [...frames].sort((a, b) => a.number - b.number);
+  const matched = Math.min(sortedFiles.length, sortedFrames.length);
+  return {
+    pairs: sortedFrames.slice(0, matched).map((frame, index) => ({
+      frameNumber: frame.number,
+      frameId: frame.id,
+      path: sortedFiles[index].path,
+      name: sortedFiles[index].name
+    })),
+    extraFiles: sortedFiles.slice(matched),
+    emptyFrameNumbers: sortedFrames.slice(matched).map((frame) => frame.number)
+  };
+};
+
+export type RollScanStatus = {
+  folderMissing: boolean;
+  missingPaths: string[];
+};
