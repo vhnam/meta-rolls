@@ -1,13 +1,12 @@
 import { readFile, stat } from 'node:fs/promises';
-import { extname } from 'node:path';
 
-import { nativeImage, protocol, type NativeImage } from 'electron';
+import { protocol } from 'electron';
 
 import { MEDIA_FILE_SCHEME } from '../../../shared/media';
-import { extractRawPreviewJpeg, readImageOrientation } from '../services/exif-reader';
-import { readImageDimensions } from '../services/image-dimensions';
+import { readImageOrientation } from '../services/exif-reader';
 import { isImageFile, isRawImageFile } from '../services/media-library';
-import { applyExifOrientation } from './apply-exif-orientation';
+import { encodeDisplayImage, loadDisplayImage, mimeForPath } from './image-decode';
+import { readThumbnailBytes } from './thumbnail';
 
 const DISPLAY_CACHE_LIMIT = 16;
 
@@ -18,20 +17,6 @@ type CachedDisplay = {
 };
 
 const displayCache = new Map<string, CachedDisplay>();
-
-const mimeForPath = (filePath: string) => {
-  const extension = extname(filePath).toLowerCase();
-  if (extension === '.png') {
-    return 'image/png';
-  }
-  if (extension === '.webp') {
-    return 'image/webp';
-  }
-  if (extension === '.gif') {
-    return 'image/gif';
-  }
-  return 'image/jpeg';
-};
 
 const rememberDisplay = (filePath: string, cached: CachedDisplay) => {
   displayCache.delete(filePath);
@@ -46,46 +31,6 @@ const rememberDisplay = (filePath: string, cached: CachedDisplay) => {
 
 export const forgetMediaDisplay = (filePath: string) => {
   displayCache.delete(filePath);
-};
-
-const encodeDisplayImage = (filePath: string, image: NativeImage) => {
-  if (extname(filePath).toLowerCase() === '.png') {
-    return { body: image.toPNG(), mime: 'image/png' };
-  }
-  return { body: image.toJPEG(92), mime: 'image/jpeg' };
-};
-
-const loadDisplayImage = async (filePath: string, orientation: number) => {
-  if (isRawImageFile(filePath)) {
-    const jpeg = await extractRawPreviewJpeg(filePath);
-    if (!jpeg) {
-      return null;
-    }
-    const image = nativeImage.createFromBuffer(jpeg);
-    if (image.isEmpty()) {
-      return null;
-    }
-    return applyExifOrientation(image, orientation);
-  }
-
-  const image = nativeImage.createFromPath(filePath);
-  if (image.isEmpty()) {
-    return null;
-  }
-  if (orientation <= 1) {
-    return image;
-  }
-
-  const swaps = orientation >= 5;
-  if (swaps) {
-    const { width, height } = image.getSize();
-    const original = await readImageDimensions(filePath);
-    if (width === original.height && height === original.width) {
-      return image;
-    }
-  }
-
-  return applyExifOrientation(image, orientation);
 };
 
 export const readDisplayBytes = async (filePath: string): Promise<CachedDisplay | null> => {
@@ -129,6 +74,15 @@ export const registerMediaScheme = () => {
   ]);
 };
 
+const parseRequestedWidth = (url: URL): number | null => {
+  const raw = url.searchParams.get('w');
+  if (!raw) {
+    return null;
+  }
+  const width = Number(raw);
+  return Number.isFinite(width) && width > 0 ? width : null;
+};
+
 export const handleMediaProtocol = () => {
   protocol.handle(MEDIA_FILE_SCHEME, async (request) => {
     const url = new URL(request.url);
@@ -136,9 +90,12 @@ export const handleMediaProtocol = () => {
     if (!filePath || !isImageFile(filePath)) {
       return new Response('Not found', { status: 404 });
     }
+    const requestedWidth = parseRequestedWidth(url);
 
     try {
-      const display = await readDisplayBytes(filePath);
+      const display = requestedWidth
+        ? await readThumbnailBytes(filePath, requestedWidth)
+        : await readDisplayBytes(filePath);
       if (!display) {
         return new Response('Not found', { status: 404 });
       }

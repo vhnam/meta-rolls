@@ -24,7 +24,8 @@ export {
   formatResolution,
   getInstaxCardGeometry,
   type InstaxCardGeometry,
-  toMediaFileUrl
+  toMediaFileUrl,
+  getThumbnailRequestWidth
 } from './photo';
 export {
   getThumbnailColumnCount,

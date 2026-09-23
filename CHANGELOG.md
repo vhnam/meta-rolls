@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.0] - 2026-09-23
+
+### Added
+
+- Grid/strip photo thumbnails now request a downscaled image instead of the full-resolution decode: `meta-rolls-media://` accepts a `w` (width) param, resizes with `nativeImage.resize`, re-encodes as JPEG, and caches the result on disk under `userData/thumbnails` (evicted by least-recently-read once the cache passes ~2000 entries). Rotation is applied after the resize rather than before, so a JS-level EXIF-rotation pass runs against the small thumbnail bitmap instead of the full-resolution one. Preview/fullscreen/print paths are unaffected — they still request full resolution.
+
 ## [3.8.11] - 2026-09-23
 
 ### Fixed

@@ -7,7 +7,7 @@ import { THUMBNAIL_ASPECT_RATIO } from '#/constants/media';
 import { useHeldMediaSrc } from '#/hooks/use-held-media-src';
 import { useMediaPoolStore } from '#/stores/media-pool.store';
 import { type PhotoItem, type PhotoRating } from '#/types';
-import { toMediaFileUrl } from '#/utils';
+import { getThumbnailRequestWidth, toMediaFileUrl } from '#/utils';
 import { cn } from '#/utils/common';
 
 import { PhotoRatingStars } from './photo-rating-stars';
@@ -36,7 +36,7 @@ export function PhotoThumbnailTile({
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const revision = useMediaPoolStore((state) => state.photoRevisions[photo.id] ?? 0);
   const isRotating = useMediaPoolStore((state) => state.rotatingPhotoId === photo.id);
-  const src = photo.path ? toMediaFileUrl(photo.path, revision) : null;
+  const src = photo.path ? toMediaFileUrl(photo.path, revision, getThumbnailRequestWidth()) : null;
   const heldSrc = useHeldMediaSrc(src);
   const failed = heldSrc !== null && failedSrc === heldSrc;
   const { ref, isDragging } = useDraggable({ id: dragId, data: dragData });

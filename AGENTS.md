@@ -26,6 +26,9 @@ src/main/
 ├── app/                           # lifecycle & app metadata
 │   ├── icon.ts                    # APP_ICON_PATH
 │   ├── media-protocol.ts          # registers the meta-rolls-media:// scheme, serves RAW previews
+│   ├── image-decode.ts            # decode/orient/encode a NativeImage (shared by full-res + thumbnail)
+│   ├── thumbnail.ts               # readThumbnailBytes(): resize + disk-cache a display image
+│   ├── apply-exif-orientation.ts  # rotate/flip a NativeImage's pixels to match EXIF orientation
 │   └── menu.ts                    # setupAppMenu(), APP_NAME
 ├── windows/                       # BrowserWindow factories — add when a second window is needed
 │                                   # (createWindow() lives inline in index.ts today)
@@ -41,7 +44,8 @@ src/main/
 │   ├── album-store.ts             # album CRUD over app-database
 │   ├── media-library.ts           # list volumes/folders, disk scan
 │   ├── image-dimensions.ts        # read width/height without a full decode
-│   └── exif-reader.ts             # exiftool wrapper, RAW preview extraction
+│   ├── exif-reader.ts             # exiftool wrapper, RAW preview extraction
+│   └── thumbnail-cache.ts         # on-disk resized-JPEG cache under userData, LRU-evicted by count
 ├── tray/                          # system tray — add when needed
 └── updater/                       # auto-update — add when needed
 
@@ -111,7 +115,7 @@ src/renderer/src/
 │   ├── common/                    # cn(), isEditableKeyboardTarget — generic, not photo-domain
 │   ├── folder/                    # findFolder, isFolderInPath, folder-tree layout
 │   ├── metadata/                  # EXIF formatting/grouping, photo overview cards
-│   ├── photo/                     # toPhotoItem, formatFileSize/Resolution, toMediaFileUrl
+│   ├── photo/                     # toPhotoItem, formatFileSize/Resolution, toMediaFileUrl, getThumbnailRequestWidth
 │   ├── preview/                   # thumbnail sizing, preview zoom
 │   └── index.ts                   # root barrel — re-exports every subfolder
 ├── styles/
