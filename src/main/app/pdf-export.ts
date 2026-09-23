@@ -11,7 +11,7 @@ import {
   folioFontMm,
   slotImageLayout
 } from '../../../shared/print';
-import { readDisplayBytes } from '../app/media-protocol';
+import { readDisplayBytes } from './media-protocol';
 
 const INSTAX_CARD_MM = {
   'instax-mini': { width: 54, height: 86 },

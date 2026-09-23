@@ -4,7 +4,7 @@ import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
 
 import { IpcChannel } from '../../../shared/ipc';
 import { parseDeliverPdfExportRequest } from '../../../shared/print';
-import { renderDeliverPdf } from '../services/pdf-export';
+import { renderDeliverPdf } from '../app/pdf-export';
 
 const windowFromEvent = (event: Electron.IpcMainInvokeEvent) =>
   BrowserWindow.fromWebContents(event.sender);

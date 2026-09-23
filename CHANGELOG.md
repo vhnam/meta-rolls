@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.9] - 2026-09-23
+
+### Changed
+
+- Moved `services/pdf-export.ts` to `app/pdf-export.ts`. It creates a `BrowserWindow` and imports from `app/media-protocol.ts`, which violated AGENTS.md's rule that `services/` holds pure Node logic with no Electron APIs. No behavior change.
+
 ## [3.9.8] - 2026-09-23
 
 ### Fixed
