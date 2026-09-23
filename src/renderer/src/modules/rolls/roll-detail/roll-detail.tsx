@@ -19,6 +19,7 @@ import { useRollsStore } from '#/stores/rolls.store';
 
 import { DevJobDialog, RollDevJobs } from '../roll-dev-jobs';
 import { RollFrameGrid } from '../roll-frames';
+import { RollScans, useRollScanStatus } from '../roll-scans';
 import { RollsField } from '../rolls-field';
 import { cameraLabel, stockLabel } from '../rolls-list/rolls-list-model';
 import { RollsOptionSelect } from '../rolls-option-select';
@@ -55,6 +56,8 @@ function RollDetailBody({ roll }: { roll: Roll }) {
   // `undefined` = closed, `null` = adding a new job, a job = editing it.
   const [devJobDialog, setDevJobDialog] = useState<DevJob | null | undefined>(undefined);
 
+  const scanStatus = useRollScanStatus(roll);
+  const missingPaths = new Set(scanStatus?.missingPaths ?? []);
   const stock = stocks.find((s) => s.id === roll.stockId);
   const camera = cameras.find((c) => c.id === roll.cameraId);
   const next = nextRollStatus(roll.status);
@@ -240,7 +243,8 @@ function RollDetailBody({ roll }: { roll: Roll }) {
           />
         )}
 
-        <RollFrameGrid roll={roll} />
+        <RollScans roll={roll} status={scanStatus} />
+        <RollFrameGrid roll={roll} missingPaths={missingPaths} />
       </div>
     </div>
   );

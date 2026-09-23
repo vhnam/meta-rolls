@@ -124,7 +124,6 @@ describe('rolls', () => {
     expect(roll.frames.filter((f) => f.scanPath).length).toBe(1);
 
     const short = createRolls(file, { stockId: readSnapshot(file).stocks[0].id })[0];
-    saveDevJob(file, { rollId: short });
     linkScans(
       file,
       short,

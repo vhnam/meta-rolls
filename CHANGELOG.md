@@ -5,6 +5,18 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.19.0] - 2026-09-24
+
+### Added
+
+- Scan linking on the roll detail: a Scans section with "Link scans" / "Change folder" / "Unlink". Choosing a folder opens a preview of how files map to frames in filename order, flags a file/frame count mismatch, and lets the user add frames and link, link only the matching files, or cancel. Nothing is written to the scan files.
+- Frame grid tiles show the linked scan's thumbnail (through the existing thumbnail cache), with the frame number overlaid. Dragging a scan onto another frame moves it there, or swaps if that frame already has one.
+- Missing files are flagged: the Scans section reports a missing folder or the number of missing files, and affected frames show a warning icon.
+
+### Fixed
+
+- Removed a stray unused `saveDevJob` call from the roll-store test.
+
 ## [3.18.0] - 2026-09-24
 
 ### Added

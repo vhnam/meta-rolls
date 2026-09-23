@@ -37,6 +37,9 @@ type RollsActions = {
   updateFrames: (frameIds: string[], patch: Partial<RollFrame>) => Promise<void>;
   addFrame: (rollId: string) => Promise<void>;
   removeLastFrame: (rollId: string) => Promise<void>;
+  linkScans: (rollId: string, folder: string, paths: string[], addFrames: boolean) => Promise<void>;
+  unlinkScans: (rollId: string) => Promise<void>;
+  moveFrameScan: (fromFrameId: string, toFrameId: string) => Promise<void>;
   setStatusFilter: (value: string) => void;
   setStockFilter: (value: string) => void;
   setCameraFilter: (value: string) => void;
@@ -121,6 +124,18 @@ export const useRollsStore = create<RollsStore>((set, get) => ({
   },
   addFrame: async (rollId) => {
     await getApi().rolls.addFrame(rollId);
+    await get().loadRolls();
+  },
+  linkScans: async (rollId, folder, paths, addFrames) => {
+    await getApi().rolls.linkScans(rollId, folder, paths, addFrames);
+    await get().loadRolls();
+  },
+  unlinkScans: async (rollId) => {
+    await getApi().rolls.unlinkScans(rollId);
+    await get().loadRolls();
+  },
+  moveFrameScan: async (fromFrameId, toFrameId) => {
+    await getApi().rolls.moveFrameScan(fromFrameId, toFrameId);
     await get().loadRolls();
   },
   removeLastFrame: async (rollId) => {
