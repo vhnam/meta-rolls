@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.5] - 2026-09-23
+
+### Fixed
+
+- The renderer's `BrowserWindow` now runs with Chromium's OS-level sandbox enabled (`sandbox: false` removed). The preload script only touches `contextBridge`/`ipcRenderer`, so nothing depended on the unsandboxed renderer process.
+
 ## [3.8.4] - 2026-09-23
 
 ### Fixed

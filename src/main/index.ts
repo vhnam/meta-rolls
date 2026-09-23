@@ -48,8 +48,7 @@ function createWindow(): void {
     autoHideMenuBar: process.platform !== 'darwin',
     icon,
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      preload: join(__dirname, '../preload/index.js')
     }
   });
 
