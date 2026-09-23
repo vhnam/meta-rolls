@@ -1,6 +1,7 @@
 import { IconPlus, IconMovie } from '@tabler/icons-react';
 import { useMemo } from 'react';
 
+import { OptionSelect } from '#/components/option-select';
 import { Button } from '#/components/ui/button';
 import { Empty, EmptyContent, EmptyDescription, EmptyMedia } from '#/components/ui/empty';
 import { Input } from '#/components/ui/input';
@@ -16,7 +17,6 @@ import { ROLL_STATUSES } from '#/shared/rolls';
 import { useRollsStore } from '#/stores/rolls.store';
 import { cn } from '#/utils/common';
 
-import { RollsOptionSelect } from '../rolls-option-select';
 import {
   cameraLabel,
   filterRolls,
@@ -90,7 +90,7 @@ export function RollsList({ onAddRoll }: RollsListProps) {
           />
         </div>
         <div className="grid grid-cols-2 gap-1">
-          <RollsOptionSelect
+          <OptionSelect
             value={statusFilter}
             onChange={setStatusFilter}
             options={[
@@ -98,12 +98,12 @@ export function RollsList({ onAddRoll }: RollsListProps) {
               ...ROLL_STATUSES.map((s) => ({ value: s, label: ROLL_STATUS_LABEL[s] }))
             ]}
           />
-          <RollsOptionSelect
+          <OptionSelect
             value={sort}
             onChange={(value) => setSort(value as RollSort)}
             options={Object.values(ROLL_SORT).map((s) => ({ value: s, label: ROLL_SORT_LABEL[s] }))}
           />
-          <RollsOptionSelect
+          <OptionSelect
             value={stockFilter}
             onChange={setStockFilter}
             options={[
@@ -111,7 +111,7 @@ export function RollsList({ onAddRoll }: RollsListProps) {
               ...stocks.map((s) => ({ value: s.id, label: stockLabel(s) }))
             ]}
           />
-          <RollsOptionSelect
+          <OptionSelect
             value={cameraFilter}
             onChange={setCameraFilter}
             options={[

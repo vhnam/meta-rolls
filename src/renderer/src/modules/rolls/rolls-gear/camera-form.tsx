@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { OptionSelect } from '#/components/option-select';
 import { Field, FieldLabel } from '#/components/ui/field';
 import { Input } from '#/components/ui/input';
 import { FILM_FORMAT_LABEL } from '#/constants/rolls';
@@ -7,7 +8,6 @@ import { FILM_FORMATS, type Camera, type FilmFormat } from '#/shared/rolls';
 import { useRollsStore } from '#/stores/rolls.store';
 
 import { RollsFormShell } from '../rolls-form-shell';
-import { RollsOptionSelect } from '../rolls-option-select';
 
 type CameraFormProps = {
   camera: Camera | null;
@@ -69,7 +69,7 @@ export function CameraForm({ camera, onSaved }: CameraFormProps) {
       </Field>
       <Field>
         <FieldLabel>Format</FieldLabel>
-        <RollsOptionSelect
+        <OptionSelect
           value={format}
           onChange={(value) => setFormat(value as FilmFormat)}
           options={FILM_FORMATS.map((f) => ({ value: f, label: FILM_FORMAT_LABEL[f] }))}

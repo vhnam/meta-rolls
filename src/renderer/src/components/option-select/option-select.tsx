@@ -7,23 +7,23 @@ import {
 } from '#/components/ui/select';
 import { cn } from '#/utils/common';
 
-export type RollsOption = { value: string; label: string };
+export type SelectOption = { value: string; label: string };
 
-type RollsOptionSelectProps = {
+type OptionSelectProps = {
   value: string;
-  options: RollsOption[];
+  options: SelectOption[];
   placeholder?: string;
   className?: string;
   onChange: (value: string) => void;
 };
 
-export function RollsOptionSelect({
+export function OptionSelect({
   value,
   options,
   placeholder,
   className,
   onChange
-}: RollsOptionSelectProps) {
+}: OptionSelectProps) {
   const label = options.find((option) => option.value === value)?.label;
   return (
     <Select items={options} value={value} onValueChange={(next) => next && onChange(next)}>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { OptionSelect } from '#/components/option-select';
 import { Field, FieldLabel } from '#/components/ui/field';
 import { Input } from '#/components/ui/input';
 import { FILM_FORMAT_LABEL, FILM_PROCESS_LABEL, FILM_TYPE_LABEL } from '#/constants/rolls';
@@ -15,7 +16,6 @@ import {
 import { useRollsStore } from '#/stores/rolls.store';
 
 import { RollsFormShell } from '../rolls-form-shell';
-import { RollsOptionSelect } from '../rolls-option-select';
 
 type StockFormProps = {
   stock: FilmStock | null;
@@ -111,7 +111,7 @@ export function StockForm({ stock, onSaved }: StockFormProps) {
       </div>
       <Field>
         <FieldLabel>Format</FieldLabel>
-        <RollsOptionSelect
+        <OptionSelect
           value={format}
           onChange={(value) => setFormat(value as FilmFormat)}
           options={FILM_FORMATS.map((f) => ({ value: f, label: FILM_FORMAT_LABEL[f] }))}
@@ -119,7 +119,7 @@ export function StockForm({ stock, onSaved }: StockFormProps) {
       </Field>
       <Field>
         <FieldLabel>Process</FieldLabel>
-        <RollsOptionSelect
+        <OptionSelect
           value={process}
           onChange={(value) => setProcess(value as FilmProcess)}
           options={FILM_PROCESSES.map((p) => ({ value: p, label: FILM_PROCESS_LABEL[p] }))}
@@ -127,7 +127,7 @@ export function StockForm({ stock, onSaved }: StockFormProps) {
       </Field>
       <Field>
         <FieldLabel>Type</FieldLabel>
-        <RollsOptionSelect
+        <OptionSelect
           value={type}
           onChange={(value) => setType(value as FilmType)}
           options={FILM_TYPES.map((t) => ({ value: t, label: FILM_TYPE_LABEL[t] }))}

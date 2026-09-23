@@ -1,3 +1,4 @@
+import { OptionSelect } from '#/components/option-select';
 import { Empty, EmptyContent, EmptyDescription } from '#/components/ui/empty';
 import { Field, FieldLabel } from '#/components/ui/field';
 import { Switch } from '#/components/ui/switch';
@@ -5,7 +6,6 @@ import { type RollFrame } from '#/shared/rolls';
 import { useRollsStore } from '#/stores/rolls.store';
 
 import { RollsField } from '../rolls-field';
-import { RollsOptionSelect } from '../rolls-option-select';
 
 const NONE = 'none';
 
@@ -58,7 +58,7 @@ export function FrameInspector() {
         />
         <Field>
           <FieldLabel>Lens</FieldLabel>
-          <RollsOptionSelect
+          <OptionSelect
             // A mixed selection has no single value; an empty value shows the placeholder.
             value={lensMixed ? '' : (lensId ?? NONE)}
             placeholder="Mixed"

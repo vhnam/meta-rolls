@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { OptionSelect } from '#/components/option-select';
 import { Button } from '#/components/ui/button';
 import {
   Dialog,
@@ -13,8 +14,6 @@ import { Input } from '#/components/ui/input';
 import { FILM_PROCESS_LABEL } from '#/constants/rolls';
 import { DEFAULT_CURRENCY, FILM_PROCESSES, type DevJob, type FilmProcess } from '#/shared/rolls';
 import { useRollsStore } from '#/stores/rolls.store';
-
-import { RollsOptionSelect } from '../rolls-option-select';
 
 const LAB_LIST_ID = 'dev-job-labs';
 
@@ -131,7 +130,7 @@ export function DevJobDialog({ rollId, job, defaultProcess, onClose }: DevJobDia
                 </Field>
                 <Field>
                   <FieldLabel>Process</FieldLabel>
-                  <RollsOptionSelect
+                  <OptionSelect
                     value={process}
                     onChange={(value) => setProcess(value as FilmProcess)}
                     options={FILM_PROCESSES.map((p) => ({

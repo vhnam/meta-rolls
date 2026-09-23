@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { OptionSelect } from '#/components/option-select';
 import { Button } from '#/components/ui/button';
 import {
   Dialog,
@@ -14,8 +15,6 @@ import { Input } from '#/components/ui/input';
 import { FILM_FORMAT_LABEL } from '#/constants/rolls';
 import { FILM_FORMATS, type FilmFormat, type FilmStock } from '#/shared/rolls';
 import { useRollsStore } from '#/stores/rolls.store';
-
-import { RollsOptionSelect } from '../rolls-option-select';
 
 const NEW_STOCK = 'new';
 
@@ -95,7 +94,7 @@ export function RollFormDialog({ open, onOpenChange }: RollFormDialogProps) {
             <FieldGroup>
               <Field>
                 <FieldLabel>Film stock</FieldLabel>
-                <RollsOptionSelect
+                <OptionSelect
                   value={stockId}
                   onChange={setStockId}
                   options={[
@@ -151,7 +150,7 @@ export function RollFormDialog({ open, onOpenChange }: RollFormDialogProps) {
                   </Field>
                   <Field className="col-span-2">
                     <FieldLabel>Format</FieldLabel>
-                    <RollsOptionSelect
+                    <OptionSelect
                       value={draft.format}
                       onChange={(format) => setDraft({ ...draft, format: format as FilmFormat })}
                       options={FILM_FORMATS.map((format) => ({
@@ -164,7 +163,7 @@ export function RollFormDialog({ open, onOpenChange }: RollFormDialogProps) {
               )}
               <Field>
                 <FieldLabel>Camera (optional)</FieldLabel>
-                <RollsOptionSelect
+                <OptionSelect
                   value={cameraId}
                   onChange={setCameraId}
                   options={[

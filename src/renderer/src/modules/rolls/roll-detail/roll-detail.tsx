@@ -2,6 +2,7 @@ import { IconAlertTriangle, IconCopy, IconTrash } from '@tabler/icons-react';
 import { IconMovie } from '@tabler/icons-react';
 import { useState } from 'react';
 
+import { OptionSelect } from '#/components/option-select';
 import { Button } from '#/components/ui/button';
 import { Empty, EmptyContent, EmptyDescription, EmptyMedia } from '#/components/ui/empty';
 import { Field, FieldLabel } from '#/components/ui/field';
@@ -22,7 +23,6 @@ import { RollFrameGrid } from '../roll-frames';
 import { RollScans, useRollScanStatus } from '../roll-scans';
 import { RollsField } from '../rolls-field';
 import { cameraLabel, stockLabel } from '../rolls-list/rolls-list-model';
-import { RollsOptionSelect } from '../rolls-option-select';
 
 const NONE = 'none';
 
@@ -121,7 +121,7 @@ function RollDetailBody({ roll }: { roll: Roll }) {
         <section className="flex flex-wrap items-end gap-2">
           <Field className="w-44">
             <FieldLabel>Status</FieldLabel>
-            <RollsOptionSelect
+            <OptionSelect
               value={roll.status}
               onChange={(status) => void changeStatus(status as Roll['status'])}
               options={ROLL_STATUSES.map((s) => ({ value: s, label: ROLL_STATUS_LABEL[s] }))}
@@ -144,7 +144,7 @@ function RollDetailBody({ roll }: { roll: Roll }) {
         <section className="grid grid-cols-2 gap-3">
           <Field>
             <FieldLabel>Film stock</FieldLabel>
-            <RollsOptionSelect
+            <OptionSelect
               value={roll.stockId}
               onChange={(stockId) => void updateRoll(roll.id, { stockId })}
               options={visible(stocks, roll.stockId).map((s) => ({
@@ -155,7 +155,7 @@ function RollDetailBody({ roll }: { roll: Roll }) {
           </Field>
           <Field>
             <FieldLabel>Camera</FieldLabel>
-            <RollsOptionSelect
+            <OptionSelect
               value={roll.cameraId ?? NONE}
               onChange={(id) => void updateRoll(roll.id, { cameraId: id === NONE ? null : id })}
               options={[
@@ -169,7 +169,7 @@ function RollDetailBody({ roll }: { roll: Roll }) {
           </Field>
           <Field>
             <FieldLabel>Default lens</FieldLabel>
-            <RollsOptionSelect
+            <OptionSelect
               value={roll.lensId ?? NONE}
               onChange={(id) => void updateRoll(roll.id, { lensId: id === NONE ? null : id })}
               options={[

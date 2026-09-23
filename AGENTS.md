@@ -89,7 +89,6 @@ src/renderer/src/
 │   │   ├── rolls-stocks/          # Stocks section: film stock list and form
 │   │   ├── rolls-form-shell/      # shared form layout (save, archive/restore)
 │   │   ├── roll-form-dialog/      # add roll (pick/create stock, camera, quantity)
-│   │   └── rolls-option-select/   # small value/label Select wrapper for the Rolls module
 │   ├── cull/
 │   │   ├── cull-screen/           # the /cull page: sidebar + preview + details
 │   │   └── cull-details/          # bottom panel: list/thumbnail view of the active album
@@ -112,6 +111,7 @@ src/renderer/src/
 │   ├── album-photo-toolbar/       # AlbumPhotoToolbar (view/zoom, optional leading slot)
 │   ├── album-details/             # AlbumDetails — album photo grid + toolbar (Cull/Deliver sidebars)
 │   ├── album-form-dialog/         # AlbumFormDialog (add/rename)
+│   ├── option-select/             # OptionSelect — value/label Select wrapper (Rolls, Media)
 │   ├── preview-zoom-select/       # PreviewZoomSelect — zoom dropdown shared by Media/Deliver toolbars
 │   └── app-error-fallback/        # AppErrorFallback — router's defaultErrorComponent
 ├── hooks/
