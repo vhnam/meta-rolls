@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.12.0] - 2026-09-24
+
+### Added
+
+- Rolls components (not yet routed): `RollsList` (grouped by status with counts, search, status/stock/camera filters, sort), `RollDetail` (editable name, stock/camera/lens, exposures, shot ISO with push/pull, dates, notes, status control with next-step button, format-mismatch warning, duplicate, delete with confirm), and `RollFormDialog` (pick or create a stock, optional camera, quantity).
+
 ## [3.11.0] - 2026-09-24
 
 ### Added

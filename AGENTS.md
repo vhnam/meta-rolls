@@ -67,6 +67,7 @@ src/renderer/src/
 │   ├── __root.tsx                 # renders AppLayout
 │   ├── index.tsx                  # redirects to /media
 │   ├── media.tsx                  # renders MediaScreen
+│   ├── rolls.tsx                  # renders RollsScreen
 │   ├── cull.tsx                   # renders CullScreen
 │   └── deliver.tsx                # renders DeliverScreen
 ├── layouts/
@@ -76,6 +77,12 @@ src/renderer/src/
 │   │   ├── media-screen/          # the /media page: browser + preview + albums panel + metadata
 │   │   ├── media-browser/         # folder tree + file list/thumbnails (Media-only)
 │   │   └── media-albums/          # album panel embedded in the Media screen
+│   ├── rolls/
+│   │   ├── rolls-screen/          # the /rolls page: list + detail
+│   │   ├── rolls-list/            # roll list: grouped by status, filters, search, sort
+│   │   ├── roll-detail/           # editable roll fields, status control
+│   │   ├── roll-form-dialog/      # add roll (pick/create stock, camera, quantity)
+│   │   └── rolls-option-select/   # small value/label Select wrapper for the Rolls module
 │   ├── cull/
 │   │   ├── cull-screen/           # the /cull page: sidebar + preview + details
 │   │   └── cull-details/          # bottom panel: list/thumbnail view of the active album
@@ -115,6 +122,7 @@ src/renderer/src/
 ├── stores/                        # Zustand, one store per screen concern
 │   ├── media-pool.store.ts        # scanned photos, folders, selection, media chrome
 │   ├── album.store.ts             # album list, active album, view/zoom, rate/add/remove
+│   ├── rolls.store.ts             # film rolls snapshot, list filters/sort, roll actions
 │   ├── canvas.store.ts            # print layout: slot placement/crop/fit, spreads, rotation
 │   └── settings.store.ts          # theme, language (Zustand persist → IPC)
 ├── types/                         # renderer domain types and const enums
