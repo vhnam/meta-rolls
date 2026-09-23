@@ -73,7 +73,7 @@ const IMAGE_EXTENSIONS = new Set([
 
 const isHidden = (name: string) => name.startsWith('.');
 
-const isImageFile = (name: string) => IMAGE_EXTENSIONS.has(extname(name).toLowerCase());
+export const isImageFile = (name: string) => IMAGE_EXTENSIONS.has(extname(name).toLowerCase());
 
 export const isRawImageFile = (filePath: string) =>
   RAW_IMAGE_EXTENSIONS.has(extname(filePath).toLowerCase());

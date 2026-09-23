@@ -1,13 +1,12 @@
 import { readFile, stat } from 'node:fs/promises';
 import { extname } from 'node:path';
-import { pathToFileURL } from 'node:url';
 
-import { nativeImage, net, protocol, type NativeImage } from 'electron';
+import { nativeImage, protocol, type NativeImage } from 'electron';
 
 import { MEDIA_FILE_SCHEME } from '../../../shared/media';
 import { extractRawPreviewJpeg, readImageOrientation } from '../services/exif-reader';
 import { readImageDimensions } from '../services/image-dimensions';
-import { isRawImageFile } from '../services/media-library';
+import { isImageFile, isRawImageFile } from '../services/media-library';
 import { applyExifOrientation } from './apply-exif-orientation';
 
 const DISPLAY_CACHE_LIMIT = 16;
@@ -133,23 +132,22 @@ export const registerMediaScheme = () => {
 export const handleMediaProtocol = () => {
   protocol.handle(MEDIA_FILE_SCHEME, async (request) => {
     const filePath = new URL(request.url).searchParams.get('path');
-    if (!filePath) {
+    if (!filePath || !isImageFile(filePath)) {
       return new Response('Not found', { status: 404 });
     }
 
     try {
       const display = await readDisplayBytes(filePath);
-      if (display) {
-        return new Response(Uint8Array.from(display.body), {
-          headers: {
-            'content-type': display.mime,
-            'content-length': String(display.body.length),
-            'cache-control': 'no-cache'
-          }
-        });
+      if (!display) {
+        return new Response('Not found', { status: 404 });
       }
-
-      return await net.fetch(pathToFileURL(filePath).href);
+      return new Response(Uint8Array.from(display.body), {
+        headers: {
+          'content-type': display.mime,
+          'content-length': String(display.body.length),
+          'cache-control': 'no-cache'
+        }
+      });
     } catch {
       return new Response('Not found', { status: 404 });
     }
