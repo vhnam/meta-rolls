@@ -21,6 +21,10 @@ const toPdfStem = (name: string) => {
   return stem.length > 0 ? stem : 'Album';
 };
 
+// Only paths this session actually wrote via exportPdf may be opened —
+// deliverOpenExportedFile must not become an arbitrary shell.openPath proxy.
+const exportedFilePaths = new Set<string>();
+
 export const registerDeliverIpc = () => {
   ipcMain.handle(IpcChannel.deliverExportPdf, async (event, payload: unknown) => {
     const request = parseDeliverPdfExportRequest(payload);
@@ -43,11 +47,12 @@ export const registerDeliverIpc = () => {
 
     const pdf = await renderDeliverPdf(request);
     await writeFile(result.filePath, pdf);
+    exportedFilePaths.add(result.filePath);
     return result.filePath;
   });
 
   ipcMain.handle(IpcChannel.deliverOpenExportedFile, async (_event, filePath: unknown) => {
-    if (typeof filePath !== 'string') {
+    if (typeof filePath !== 'string' || !exportedFilePaths.has(filePath)) {
       return false;
     }
     const error = await shell.openPath(filePath);
