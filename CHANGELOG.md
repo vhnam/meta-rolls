@@ -5,6 +5,12 @@ All notable changes to Meta Rolls are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.11] - 2026-09-23
+
+### Fixed
+
+- `DeliverScreen` subscribed to the entire media pool store (`useMediaPoolStore()` with no selector) just to compute the selected photo, so it re-rendered on every unrelated media-pool change (search query, zoom, folder scans elsewhere). It now selects `getSelectedPhoto(state, albumPhotoItems)` directly.
+
 ## [3.9.10] - 2026-09-23
 
 ### Added

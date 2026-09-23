@@ -34,11 +34,14 @@ export function DeliverScreen() {
   const [editingAlbum, setEditingAlbum] = useState<Album | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  const store = useMediaPoolStore();
   const activeAlbumId = useAlbumStore((state) => state.activeAlbumId);
   const activeAlbumPhotos = useAlbumStore(selectActiveAlbumPhotos);
   const albumPhotoItems = activeAlbumPhotos.map(toPhotoItem);
-  const selectedPhoto = getSelectedPhoto(store, albumPhotoItems);
+  // Selecting instead of subscribing to the whole store (as media-screen.tsx
+  // and cull-screen.tsx still do) means this only re-renders when the
+  // resolved selected photo actually changes, not on every unrelated
+  // media-pool state update (query, zoom, folder scans elsewhere, …).
+  const selectedPhoto = useMediaPoolStore((state) => getSelectedPhoto(state, albumPhotoItems));
   const spreadPhotoIds = useCanvasStore((state) => state.spreadPhotoIds);
   const placedPhotoIds = useMemo(
     () => new Set(spreadPhotoIds.flat().filter((id): id is string => id !== null)),
