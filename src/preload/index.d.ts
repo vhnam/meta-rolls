@@ -1,5 +1,3 @@
-import { ElectronAPI } from '@electron-toolkit/preload';
-
 import {
   type Album,
   type AlbumPhoto,
@@ -88,7 +86,6 @@ export type RendererApi = {
 
 declare global {
   interface Window {
-    electron: ElectronAPI;
     api: RendererApi;
   }
 }
